@@ -1,0 +1,343 @@
+{
+  "spells": {
+    "heal_minor": {
+      "spell_id": "heal_minor",
+      "name": "Minor Heal",
+      "description": "A basic healing spell that restores a small amount of health to the target.",
+      "school": "mystical",
+      "mana_cost": 10,
+      "cast_time": 2.0,
+      "cooldown": 5.0,
+      "range": 1,
+      "attribute_requirements": {
+        "spirit": {
+          "mystical": 5
+        }
+      },
+      "skill_requirements": {
+        "mystical_magic": 1
+      },
+      "progress_point_cost": 5,
+      "effects": [
+        {
+          "type": "heal",
+          "value": 15,
+          "scaling": "mystical"
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [],
+      "unlock_conditions": {
+        "mystical": 5
+      }
+    },
+    "magic_missile": {
+      "spell_id": "magic_missile",
+      "name": "Magic Missile",
+      "description": "A basic offensive spell that creates a bolt of magical energy to damage enemies.",
+      "school": "magical",
+      "mana_cost": 8,
+      "cast_time": 1.5,
+      "cooldown": 3.0,
+      "range": 2,
+      "attribute_requirements": {
+        "spirit": {
+          "magical": 5
+        }
+      },
+      "skill_requirements": {
+        "arcane_magic": 1
+      },
+      "progress_point_cost": 5,
+      "effects": [
+        {
+          "type": "damage",
+          "value": 12,
+          "scaling": "magical",
+          "damage_type": "magical"
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [],
+      "unlock_conditions": {
+        "magical": 5
+      }
+    },
+    "mind_blast": {
+      "spell_id": "mind_blast",
+      "name": "Mind Blast",
+      "description": "A psychic attack that damages the target's mind and can cause confusion.",
+      "school": "psionics",
+      "mana_cost": 12,
+      "cast_time": 2.5,
+      "cooldown": 8.0,
+      "range": 1,
+      "attribute_requirements": {
+        "mind": {
+          "psionics": 8
+        }
+      },
+      "skill_requirements": {
+        "psionics": 1
+      },
+      "progress_point_cost": 8,
+      "effects": [
+        {
+          "type": "damage",
+          "value": 18,
+          "scaling": "psionics",
+          "damage_type": "psychic"
+        },
+        {
+          "type": "status_effect",
+          "effect": "confusion",
+          "duration": 3,
+          "chance": 0.3
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [],
+      "unlock_conditions": {
+        "psionics": 8
+      }
+    },
+    "light_heal": {
+      "spell_id": "light_heal",
+      "name": "Light Heal",
+      "description": "A more powerful healing spell that restores moderate health to the target.",
+      "school": "mystical",
+      "mana_cost": 20,
+      "cast_time": 3.0,
+      "cooldown": 8.0,
+      "range": 1,
+      "attribute_requirements": {
+        "spirit": {
+          "mystical": 10
+        }
+      },
+      "skill_requirements": {
+        "mystical_magic": 5
+      },
+      "progress_point_cost": 15,
+      "effects": [
+        {
+          "type": "heal",
+          "value": 35,
+          "scaling": "mystical"
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [
+        {"spell": "heal_minor"}
+      ],
+      "unlock_conditions": {
+        "mystical": 10
+      }
+    },
+    "fireball": {
+      "spell_id": "fireball",
+      "name": "Fireball",
+      "description": "A powerful spell that creates a ball of fire to damage enemies in an area.",
+      "school": "magical",
+      "mana_cost": 25,
+      "cast_time": 4.0,
+      "cooldown": 12.0,
+      "range": 3,
+      "attribute_requirements": {
+        "spirit": {
+          "magical": 12
+        }
+      },
+      "skill_requirements": {
+        "arcane_magic": 8
+      },
+      "progress_point_cost": 20,
+      "effects": [
+        {
+          "type": "damage",
+          "value": 30,
+          "scaling": "magical",
+          "damage_type": "fire",
+          "area_of_effect": 2
+        }
+      ],
+      "target_type": "area",
+      "prerequisites": [
+        {"spell": "magic_missile"}
+      ],
+      "unlock_conditions": {
+        "magical": 12
+      }
+    },
+    "telepathy": {
+      "spell_id": "telepathy",
+      "name": "Telepathy",
+      "description": "Allows the caster to read the surface thoughts of the target.",
+      "school": "psionics",
+      "mana_cost": 15,
+      "cast_time": 2.0,
+      "cooldown": 10.0,
+      "range": 1,
+      "attribute_requirements": {
+        "mind": {
+          "psionics": 10
+        }
+      },
+      "skill_requirements": {
+        "psionics": 5
+      },
+      "progress_point_cost": 12,
+      "effects": [
+        {
+          "type": "information",
+          "effect": "read_thoughts",
+          "duration": 10
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [],
+      "unlock_conditions": {
+        "psionics": 10
+      }
+    },
+    "protection": {
+      "spell_id": "protection",
+      "name": "Protection",
+      "description": "Creates a magical barrier that reduces incoming damage for a short time.",
+      "school": "mystical",
+      "mana_cost": 18,
+      "cast_time": 2.5,
+      "cooldown": 15.0,
+      "range": 1,
+      "attribute_requirements": {
+        "spirit": {
+          "mystical": 8
+        }
+      },
+      "skill_requirements": {
+        "mystical_magic": 3
+      },
+      "progress_point_cost": 10,
+      "effects": [
+        {
+          "type": "status_effect",
+          "effect": "damage_reduction",
+          "value": 0.2,
+          "duration": 60
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [],
+      "unlock_conditions": {
+        "mystical": 8
+      }
+    },
+    "telekinesis": {
+      "spell_id": "telekinesis",
+      "name": "Telekinesis",
+      "description": "Allows the caster to move objects with their mind.",
+      "school": "psionics",
+      "mana_cost": 12,
+      "cast_time": 1.5,
+      "cooldown": 5.0,
+      "range": 2,
+      "attribute_requirements": {
+        "mind": {
+          "psionics": 8
+        }
+      },
+      "skill_requirements": {
+        "psionics": 3
+      },
+      "progress_point_cost": 8,
+      "effects": [
+        {
+          "type": "utility",
+          "effect": "move_object",
+          "duration": 30
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [],
+      "unlock_conditions": {
+        "psionics": 8
+      }
+    },
+    "lightning_bolt": {
+      "spell_id": "lightning_bolt",
+      "name": "Lightning Bolt",
+      "description": "A powerful spell that creates a bolt of lightning to damage a single target.",
+      "school": "magical",
+      "mana_cost": 22,
+      "cast_time": 3.5,
+      "cooldown": 10.0,
+      "range": 4,
+      "attribute_requirements": {
+        "spirit": {
+          "magical": 10
+        }
+      },
+      "skill_requirements": {
+        "arcane_magic": 5
+      },
+      "progress_point_cost": 15,
+      "effects": [
+        {
+          "type": "damage",
+          "value": 25,
+          "scaling": "magical",
+          "damage_type": "lightning"
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [
+        {"spell": "magic_missile"}
+      ],
+      "unlock_conditions": {
+        "magical": 10
+      }
+    },
+    "blessing": {
+      "spell_id": "blessing",
+      "name": "Blessing",
+      "description": "A divine blessing that increases the target's luck and provides minor protection.",
+      "school": "mystical",
+      "mana_cost": 16,
+      "cast_time": 2.0,
+      "cooldown": 20.0,
+      "range": 1,
+      "attribute_requirements": {
+        "spirit": {
+          "mystical": 8
+        },
+        "kismet": {
+          "luck": 5
+        }
+      },
+      "skill_requirements": {
+        "mystical_magic": 4
+      },
+      "progress_point_cost": 12,
+      "effects": [
+        {
+          "type": "status_effect",
+          "effect": "luck_bonus",
+          "value": 0.1,
+          "duration": 300
+        },
+        {
+          "type": "status_effect",
+          "effect": "damage_reduction",
+          "value": 0.05,
+          "duration": 300
+        }
+      ],
+      "target_type": "target",
+      "prerequisites": [],
+      "unlock_conditions": {
+        "mystical": 8,
+        "luck": 5
+      }
+    }
+  }
+}

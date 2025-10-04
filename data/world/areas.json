@@ -1,0 +1,64 @@
+{
+  "areas": {
+    "starting_area": {
+      "area_id": "starting_area",
+      "name": "The Starting Village",
+      "description": "A peaceful village where new adventurers begin their journey. The cobblestone streets are lined with shops and homes, and the air is filled with the sounds of daily life.",
+      "level_range": {
+        "min": 1,
+        "max": 5
+      },
+      "entry_requirements": {},
+      "environmental_effects": [],
+      "connected_areas": ["forest_area", "mountain_area"]
+    },
+    "forest_area": {
+      "area_id": "forest_area",
+      "name": "The Whispering Woods",
+      "description": "A dense forest filled with ancient trees and mysterious sounds. The canopy above blocks most sunlight, creating a dim, mystical atmosphere.",
+      "level_range": {
+        "min": 3,
+        "max": 10
+      },
+      "entry_requirements": {},
+      "environmental_effects": ["dim_lighting", "forest_sounds"],
+      "connected_areas": ["starting_area", "deep_forest"]
+    },
+    "mountain_area": {
+      "area_id": "mountain_area",
+      "name": "The Iron Peaks",
+      "description": "Rugged mountain terrain with rocky outcrops and steep paths. The air is thin and cold, and the sound of wind echoes through the peaks.",
+      "level_range": {
+        "min": 5,
+        "max": 15
+      },
+      "entry_requirements": {},
+      "environmental_effects": ["cold_weather", "high_altitude"],
+      "connected_areas": ["starting_area", "mountain_caves"]
+    },
+    "deep_forest": {
+      "area_id": "deep_forest",
+      "name": "The Shadowed Grove",
+      "description": "The deepest part of the forest, where the trees grow so thick that no light penetrates. Strange creatures lurk in the shadows.",
+      "level_range": {
+        "min": 8,
+        "max": 20
+      },
+      "entry_requirements": {},
+      "environmental_effects": ["dark_lighting", "magical_aura"],
+      "connected_areas": ["forest_area"]
+    },
+    "mountain_caves": {
+      "area_id": "mountain_caves",
+      "name": "The Crystal Caverns",
+      "description": "A network of caves deep within the mountains, filled with glowing crystals and ancient secrets.",
+      "level_range": {
+        "min": 10,
+        "max": 25
+      },
+      "entry_requirements": {},
+      "environmental_effects": ["crystal_light", "echoing_sounds"],
+      "connected_areas": ["mountain_area"]
+    }
+  }
+}

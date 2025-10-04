@@ -1,0 +1,1095 @@
+{% extends "base.html" %}
+
+{% block title %}{{ character.name }} - Mudra MUD{% endblock %}
+
+{% block head %}
+<style>
+    #game-container {
+        height: calc(100vh - 76px);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #game-header {
+        background: #2c3e50;
+        color: white;
+        padding: 10px;
+        border-bottom: 2px solid #34495e;
+    }
+    
+    #game-main {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+    
+    #left-panel {
+        width: 300px;
+        background: #34495e;
+        color: white;
+        padding: 10px;
+        overflow-y: auto;
+    }
+    
+    #center-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+    
+    #right-panel {
+        width: 300px;
+        background: #34495e;
+        color: white;
+        padding: 10px;
+        overflow-y: auto;
+    }
+    
+    #output-window {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.4;
+        background: #1a252f;
+        border: 1px solid #34495e;
+        margin: 10px;
+        border-radius: 5px;
+    }
+    
+    #input-container {
+        padding: 10px;
+        background: #2c3e50;
+        border-top: 1px solid #34495e;
+    }
+    
+    #command-input {
+        width: 100%;
+        padding: 10px;
+        background: #34495e;
+        color: white;
+        border: 1px solid #4a5f7a;
+        border-radius: 5px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+    }
+    
+    #command-input:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+    
+    #minimap-container {
+        margin-bottom: 20px;
+    }
+    
+    #minimap {
+        width: 100%;
+        height: 200px;
+        background: #1a252f;
+        border: 1px solid #4a5f7a;
+        border-radius: 5px;
+    }
+    
+    .character-panel {
+        margin-bottom: 20px;
+    }
+    
+    .attribute-section {
+        margin-bottom: 15px;
+    }
+    
+    .attribute-section h6 {
+        color: #3498db;
+        margin-bottom: 5px;
+    }
+    
+    .sub-attribute {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 3px;
+        font-size: 12px;
+    }
+    
+    .chat-window {
+        height: 300px;
+        background: #1a252f;
+        border: 1px solid #4a5f7a;
+        border-radius: 5px;
+        padding: 10px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+    
+    .chat-input {
+        width: 100%;
+        padding: 5px;
+        background: #34495e;
+        color: white;
+        border: 1px solid #4a5f7a;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+    
+    .inventory-panel {
+        background: #1a252f;
+        border: 1px solid #4a5f7a;
+        border-radius: 5px;
+        padding: 10px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .inventory-item {
+        padding: 5px;
+        margin-bottom: 5px;
+        background: #2c3e50;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .inventory-item:hover {
+        background: #3498db;
+    }
+    
+    .inventory-item.equipped {
+        border-left: 3px solid #e74c3c;
+    }
+    
+    /* Character Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .character-modal {
+        background: #2c3e50;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90%;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-header {
+        background: #34495e;
+        padding: 15px 20px;
+        border-bottom: 2px solid #4a5f7a;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        color: #ecf0f1;
+        font-size: 18px;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        color: #bdc3c7;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .modal-body {
+        padding: 0;
+        height: 500px;
+        overflow-y: auto;
+    }
+    
+    /* Tab Navigation */
+    .tab-navigation {
+        display: flex;
+        background: #34495e;
+        border-bottom: 2px solid #4a5f7a;
+    }
+    
+    .tab-button {
+        flex: 1;
+        padding: 12px 20px;
+        background: none;
+        border: none;
+        color: #bdc3c7;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .tab-button:hover {
+        background: #4a5f7a;
+        color: #ecf0f1;
+    }
+    
+    .tab-button.active {
+        background: #2c3e50;
+        color: #3498db;
+        border-bottom-color: #3498db;
+    }
+    
+    /* Tab Content */
+    .tab-content {
+        padding: 20px;
+    }
+    
+    .tab-panel {
+        display: none;
+    }
+    
+    .tab-panel.active {
+        display: block;
+    }
+    
+    /* Character Info Grid */
+    .character-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    .info-section {
+        background: #34495e;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #4a5f7a;
+    }
+    
+    .info-section h4 {
+        margin: 0 0 15px 0;
+        color: #3498db;
+        font-size: 16px;
+        border-bottom: 1px solid #4a5f7a;
+        padding-bottom: 8px;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .info-label {
+        color: #bdc3c7;
+        font-weight: 500;
+    }
+    
+    .info-value {
+        color: #ecf0f1;
+        font-weight: 600;
+    }
+    
+    /* Attributes Section */
+    .attributes-section {
+        grid-column: 1 / -1;
+    }
+    
+    .attribute-category {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #2c3e50;
+        border-radius: 6px;
+        border: 1px solid #4a5f7a;
+    }
+    
+    .attribute-category h5 {
+        margin: 0 0 12px 0;
+        color: #e74c3c;
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .attribute-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .attr-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 10px;
+        background: #34495e;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+    
+    .attr-name {
+        color: #bdc3c7;
+    }
+    
+    .attr-value {
+        color: #3498db;
+        font-weight: bold;
+    }
+    
+    /* Placeholder Content */
+    .placeholder-content {
+        text-align: center;
+        padding: 40px 20px;
+        color: #7f8c8d;
+    }
+    
+    .placeholder-content h4 {
+        color: #bdc3c7;
+        margin-bottom: 15px;
+    }
+    
+    .placeholder-content p {
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+    
+    /* Admin Panel Styles */
+    .admin-panel-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .admin-section {
+        background: #34495e;
+        border-radius: 8px;
+        border: 1px solid #4a5f7a;
+        overflow: hidden;
+    }
+    
+    .admin-section-header {
+        background: #2c3e50;
+        padding: 15px 20px;
+        border-bottom: 1px solid #4a5f7a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .admin-section-header i {
+        color: #3498db;
+        font-size: 18px;
+    }
+    
+    .admin-section-header h4 {
+        margin: 0;
+        color: #ecf0f1;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .admin-section-content {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .admin-btn {
+        background: #2c3e50;
+        border: 1px solid #4a5f7a;
+        border-radius: 6px;
+        padding: 12px 15px;
+        color: #ecf0f1;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+    }
+    
+    .admin-btn:hover {
+        background: #3498db;
+        border-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    }
+    
+    .admin-btn i {
+        color: #3498db;
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .admin-btn:hover i {
+        color: #ecf0f1;
+    }
+    
+    .admin-btn span {
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .admin-btn small {
+        display: block;
+        color: #bdc3c7;
+        font-size: 11px;
+        margin-top: 2px;
+    }
+    
+    .admin-btn:hover small {
+        color: #ecf0f1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="game-container">
+    <header id="game-header">
+        <div class="row">
+            <div class="col-md-4">
+                <strong>{{ character.name }}</strong> | 
+                HP: <span id="current-hp">{{ character.current_hp }}</span>/<span id="max-hp">{{ character.max_hp }}</span> | 
+                Mana: <span id="current-mana">{{ character.current_mana }}</span>/<span id="max-mana">{{ character.max_mana }}</span>
+                <button onclick="openCharacterModal()" style="margin-left: 10px; padding: 2px 6px; font-size: 12px;">C</button>
+            </div>
+            <div class="col-md-4 text-center">
+                <span id="current-room">{{ character.current_room.name if character.current_room else 'Unknown' }}</span>
+            </div>
+            <div class="col-md-4 text-end">
+                Trial Points: <span id="trial-points">{{ character.trial_points }}</span> | 
+                Progress Points: <span id="progress-points">{{ character.progress_points }}</span>
+                {% if character.is_admin %}
+                <button onclick="openAdminPanel()" class="btn btn-danger btn-sm ms-2" title="Admin Panel">
+                    <i class="fas fa-cog"></i> Admin
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <main id="game-main">
+        <aside id="left-panel">
+            <div id="minimap-container">
+                <h6>Minimap</h6>
+                <canvas id="minimap"></canvas>
+            </div>
+            
+            <div class="character-panel">
+                <h6>Attributes</h6>
+                <div class="attribute-section">
+                    <h6>BODY</h6>
+                    <div class="sub-attribute">
+                        <span>Strength:</span>
+                        <span id="strength">{{ character.get_attribute_value('body', 'strength') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Durability:</span>
+                        <span id="durability">{{ character.get_attribute_value('body', 'durability') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Endurance:</span>
+                        <span id="endurance">{{ character.get_attribute_value('body', 'endurance') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Vitality:</span>
+                        <span id="vitality">{{ character.get_attribute_value('body', 'vitality') }}</span>
+                    </div>
+                </div>
+                
+                <div class="attribute-section">
+                    <h6>MIND</h6>
+                    <div class="sub-attribute">
+                        <span>Intellect:</span>
+                        <span id="intellect">{{ character.get_attribute_value('mind', 'intellect') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Cognition:</span>
+                        <span id="cognition">{{ character.get_attribute_value('mind', 'cognition') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Willpower:</span>
+                        <span id="willpower">{{ character.get_attribute_value('mind', 'willpower') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Psionics:</span>
+                        <span id="psionics">{{ character.get_attribute_value('mind', 'psionics') }}</span>
+                    </div>
+                </div>
+                
+                <div class="attribute-section">
+                    <h6>SPIRIT</h6>
+                    <div class="sub-attribute">
+                        <span>Mystical:</span>
+                        <span id="mystical">{{ character.get_attribute_value('spirit', 'mystical') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Magical:</span>
+                        <span id="magical">{{ character.get_attribute_value('spirit', 'magical') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Metaphysical:</span>
+                        <span id="metaphysical">{{ character.get_attribute_value('spirit', 'metaphysical') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Percipience:</span>
+                        <span id="percipience">{{ character.get_attribute_value('spirit', 'percipience') }}</span>
+                    </div>
+                </div>
+                
+                <div class="attribute-section">
+                    <h6>KISMET</h6>
+                    <div class="sub-attribute">
+                        <span>Luck:</span>
+                        <span id="luck">{{ character.get_attribute_value('kismet', 'luck') }}</span>
+                    </div>
+                    <div class="sub-attribute">
+                        <span>Charisma:</span>
+                        <span id="charisma">{{ character.get_attribute_value('kismet', 'charisma') }}</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <section id="center-content">
+            <div id="output-window">
+                <div class="welcome-message">
+                    <h4>Welcome to Mudra MUD!</h4>
+                    <p>You are {{ character.name }}.</p>
+                    <p>Type <strong>help</strong> for available commands.</p>
+                    <hr>
+                </div>
+            </div>
+            
+            <div id="input-container">
+                <input type="text" id="command-input" placeholder="Enter command..." autocomplete="off">
+            </div>
+        </section>
+        
+        <aside id="right-panel">
+            <div class="chat-window">
+                <div id="chat-output">
+                    <div class="chat-message system">
+                        <span class="timestamp">[System]</span> Connected to chat
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-2">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Type message..." autocomplete="off">
+            </div>
+            
+            <div class="inventory-panel">
+                <h6>Inventory</h6>
+                <div id="inventory-list">
+                    {% for item in character.inventory %}
+                    <div class="inventory-item {% if item.equipped_character_id == character.id %}equipped{% endif %}" 
+                         data-item-id="{{ item.id }}">
+                        {{ item.name }}
+                        {% if item.equipped_character_id == character.id %}
+                        <small class="text-success">(equipped)</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+    </main>
+</div>
+
+<!-- Character Modal -->
+<div id="character-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content character-modal">
+        <div class="modal-header">
+            <h3>Character Information</h3>
+            <button class="modal-close" onclick="closeCharacterModal()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-button active" onclick="switchTab('character')">Character</button>
+                <button class="tab-button" onclick="switchTab('skills')">Skills</button>
+                <button class="tab-button" onclick="switchTab('spells')">Spells</button>
+            </div>
+            
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Character Tab -->
+                <div id="character-tab" class="tab-panel active">
+                    <div class="character-info-grid">
+                        <!-- Basic Info -->
+                        <div class="info-section">
+                            <h4>Basic Information</h4>
+                            <div class="info-row">
+                                <span class="info-label">Name:</span>
+                                <span class="info-value" id="char-name">{{ character.name }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Race:</span>
+                                <span class="info-value" id="char-race">{{ character.race or 'Unknown' }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="info-section">
+                            <h4>Statistics</h4>
+                            <div class="info-row">
+                                <span class="info-label">Hit Points:</span>
+                                <span class="info-value" id="char-hp">{{ character.current_hp }}/{{ character.max_hp }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Mana:</span>
+                                <span class="info-value" id="char-mana">{{ character.current_mana }}/{{ character.max_mana }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Movement:</span>
+                                <span class="info-value" id="char-movement">{{ character.current_movement }}/{{ character.max_movement }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Points -->
+                        <div class="info-section">
+                            <h4>Progression Points</h4>
+                            <div class="info-row">
+                                <span class="info-label">Trial Points:</span>
+                                <span class="info-value" id="char-trial-points">{{ character.trial_points }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Progress Points:</span>
+                                <span class="info-value" id="char-progress-points">{{ character.progress_points }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Currency -->
+                        <div class="info-section">
+                            <h4>Currency</h4>
+                            <div class="info-row">
+                                <span class="info-label">Gold:</span>
+                                <span class="info-value" id="char-gold">{{ character.gold if character.gold else 0 }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Silver:</span>
+                                <span class="info-value" id="char-silver">{{ character.silver if character.silver else 0 }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Copper:</span>
+                                <span class="info-value" id="char-copper">{{ character.copper if character.copper else 0 }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Attributes -->
+                        <div class="info-section attributes-section">
+                            <h4>Attributes</h4>
+                            <div class="attribute-category">
+                                <h5>BODY</h5>
+                                <div class="attribute-list">
+                                    <div class="attr-item">
+                                        <span class="attr-name">Strength:</span>
+                                        <span class="attr-value" id="attr-strength">{{ character.get_attribute_value('body', 'strength') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Durability:</span>
+                                        <span class="attr-value" id="attr-durability">{{ character.get_attribute_value('body', 'durability') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Endurance:</span>
+                                        <span class="attr-value" id="attr-endurance">{{ character.get_attribute_value('body', 'endurance') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Vitality:</span>
+                                        <span class="attr-value" id="attr-vitality">{{ character.get_attribute_value('body', 'vitality') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="attribute-category">
+                                <h5>MIND</h5>
+                                <div class="attribute-list">
+                                    <div class="attr-item">
+                                        <span class="attr-name">Intellect:</span>
+                                        <span class="attr-value" id="attr-intellect">{{ character.get_attribute_value('mind', 'intellect') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Cognition:</span>
+                                        <span class="attr-value" id="attr-cognition">{{ character.get_attribute_value('mind', 'cognition') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Willpower:</span>
+                                        <span class="attr-value" id="attr-willpower">{{ character.get_attribute_value('mind', 'willpower') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Psionics:</span>
+                                        <span class="attr-value" id="attr-psionics">{{ character.get_attribute_value('mind', 'psionics') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="attribute-category">
+                                <h5>SPIRIT</h5>
+                                <div class="attribute-list">
+                                    <div class="attr-item">
+                                        <span class="attr-name">Mystical:</span>
+                                        <span class="attr-value" id="attr-mystical">{{ character.get_attribute_value('spirit', 'mystical') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Magical:</span>
+                                        <span class="attr-value" id="attr-magical">{{ character.get_attribute_value('spirit', 'magical') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Metaphysical:</span>
+                                        <span class="attr-value" id="attr-metaphysical">{{ character.get_attribute_value('spirit', 'metaphysical') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Percipience:</span>
+                                        <span class="attr-value" id="attr-percipience">{{ character.get_attribute_value('spirit', 'percipience') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="attribute-category">
+                                <h5>KISMET</h5>
+                                <div class="attribute-list">
+                                    <div class="attr-item">
+                                        <span class="attr-name">Luck:</span>
+                                        <span class="attr-value" id="attr-luck">{{ character.get_attribute_value('kismet', 'luck') }}</span>
+                                    </div>
+                                    <div class="attr-item">
+                                        <span class="attr-name">Charisma:</span>
+                                        <span class="attr-value" id="attr-charisma">{{ character.get_attribute_value('kismet', 'charisma') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills Tab -->
+                <div id="skills-tab" class="tab-panel">
+                    <div class="placeholder-content">
+                        <h4>Skills</h4>
+                        <p>Skills system coming soon...</p>
+                        <p>This tab will display your character's learned skills and their levels.</p>
+                    </div>
+                </div>
+                
+                <!-- Spells Tab -->
+                <div id="spells-tab" class="tab-panel">
+                    <div class="placeholder-content">
+                        <h4>Spells</h4>
+                        <p>Spells system coming soon...</p>
+                        <p>This tab will display your character's known spells and their details.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Panel Modal -->
+<div id="admin-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content character-modal">
+        <div class="modal-header">
+            <h3><i class="fas fa-cog"></i> Admin Panel</h3>
+            <button class="modal-close" onclick="closeAdminPanel()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="admin-panel-grid">
+                <!-- Build Tools -->
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <i class="fas fa-hammer"></i>
+                        <h4>Build Tools</h4>
+                    </div>
+                    <div class="admin-section-content">
+                        <button class="admin-btn" onclick="openMapBuilder()">
+                            <i class="fas fa-map"></i>
+                            <span>Map Builder</span>
+                            <small>Create and edit rooms</small>
+                        </button>
+                        <button class="admin-btn" onclick="openAreaBuilder()">
+                            <i class="fas fa-globe"></i>
+                            <span>Area Builder</span>
+                            <small>Create and edit areas</small>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Content Management -->
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <i class="fas fa-edit"></i>
+                        <h4>Content Management</h4>
+                    </div>
+                    <div class="admin-section-content">
+                        <button class="admin-btn" onclick="openSkillsEditor()">
+                            <i class="fas fa-magic"></i>
+                            <span>Skills Editor</span>
+                            <small>Manage skills and abilities</small>
+                        </button>
+                        <button class="admin-btn" onclick="openSpellsEditor()">
+                            <i class="fas fa-scroll"></i>
+                            <span>Spells Editor</span>
+                            <small>Create and edit spells</small>
+                        </button>
+                        <button class="admin-btn" onclick="openItemsEditor()">
+                            <i class="fas fa-box"></i>
+                            <span>Items Editor</span>
+                            <small>Manage items and equipment</small>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Character Management -->
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <i class="fas fa-users"></i>
+                        <h4>Character Management</h4>
+                    </div>
+                    <div class="admin-section-content">
+                        <button class="admin-btn" onclick="openCharacterManager()">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Character Manager</span>
+                            <small>Manage all characters</small>
+                        </button>
+                        <button class="admin-btn" onclick="openPlayerManager()">
+                            <i class="fas fa-users-cog"></i>
+                            <span>Player Manager</span>
+                            <small>Manage player accounts</small>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- System Tools -->
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <i class="fas fa-tools"></i>
+                        <h4>System Tools</h4>
+                    </div>
+                    <div class="admin-section-content">
+                        <button class="admin-btn" onclick="openSystemLogs()">
+                            <i class="fas fa-file-alt"></i>
+                            <span>System Logs</span>
+                            <small>View system logs</small>
+                        </button>
+                        <button class="admin-btn" onclick="openDatabaseTools()">
+                            <i class="fas fa-database"></i>
+                            <span>Database Tools</span>
+                            <small>Database management</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Game state
+    const characterId = {{ character.id }};
+    const characterName = "{{ character.name }}";
+    
+    // Initialize game client
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure the function exists before calling it
+        if (typeof initializeGameClient === 'function') {
+            initializeGameClient();
+        } else {
+            // If function doesn't exist, wait a bit and try again
+            setTimeout(function() {
+                if (typeof initializeGameClient === 'function') {
+                    initializeGameClient();
+                } else {
+                    console.error('initializeGameClient function not found');
+                }
+            }, 100);
+        }
+        // Delay character modal initialization to ensure it runs after game client
+        setTimeout(initializeCharacterModal, 100);
+    });
+    
+    // Character Modal Functions
+    function initializeCharacterModal() {
+        console.log('Initializing character modal...');
+        
+        // Simple, direct keyboard handler
+        document.addEventListener('keydown', function(e) {
+            console.log('Key pressed:', e.key, 'Input focused:', isInputFocused(), 'Modal open:', isModalOpen());
+            
+            // Only handle C key when no input is focused and modal is closed
+            if (e.key === 'c' && !isInputFocused() && !isModalOpen()) {
+                console.log('C key pressed - opening character modal');
+                e.preventDefault();
+                e.stopPropagation();
+                openCharacterModal();
+            }
+            
+            // Handle Escape to close modal
+            if (e.key === 'Escape' && isModalOpen()) {
+                console.log('Escape pressed - closing character modal');
+                e.preventDefault();
+                e.stopPropagation();
+                closeCharacterModal();
+            }
+        });
+        
+        console.log('Character modal keyboard listener added');
+    }
+    
+    function isInputFocused() {
+        const activeElement = document.activeElement;
+        const isInput = activeElement && (
+            activeElement.tagName === 'INPUT' || 
+            activeElement.tagName === 'TEXTAREA' || 
+            activeElement.contentEditable === 'true'
+        );
+        console.log('Active element:', activeElement, 'Is input focused:', isInput);
+        return isInput;
+    }
+    
+    function isModalOpen() {
+        const modal = document.getElementById('character-modal');
+        return modal && modal.style.display !== 'none';
+    }
+    
+    function openCharacterModal() {
+        const modal = document.getElementById('character-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Focus the modal for accessibility
+            modal.focus();
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+            console.log('Character modal opened');
+        } else {
+            console.error('Character modal element not found');
+        }
+    }
+    
+    function closeCharacterModal() {
+        const modal = document.getElementById('character-modal');
+        modal.style.display = 'none';
+        // Restore body scroll
+        document.body.style.overflow = 'auto';
+    }
+    
+    function switchTab(tabName) {
+        // Remove active class from all tabs and panels
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+        
+        // Add active class to selected tab and panel
+        document.querySelector(`button[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+    
+    // Close modal when clicking outside of it
+    document.addEventListener('click', function(e) {
+        const characterModal = document.getElementById('character-modal');
+        const adminModal = document.getElementById('admin-modal');
+        
+        if (e.target === characterModal) {
+            closeCharacterModal();
+        }
+        
+        if (e.target === adminModal) {
+            closeAdminPanel();
+        }
+    });
+    
+    // Admin Panel Functions
+    function openAdminPanel() {
+        const modal = document.getElementById('admin-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Focus the modal for accessibility
+            modal.focus();
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+            console.log('Admin panel opened');
+        } else {
+            console.error('Admin panel element not found');
+        }
+    }
+    
+    function closeAdminPanel() {
+        const modal = document.getElementById('admin-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    // Admin Tool Functions
+    function openMapBuilder() {
+        closeAdminPanel();
+        // Open map builder in a new window/tab
+        window.open('http://localhost:5001', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+    
+    function openAreaBuilder() {
+        closeAdminPanel();
+        alert('Area Builder - Coming Soon!');
+    }
+    
+    function openSkillsEditor() {
+        closeAdminPanel();
+        alert('Skills Editor - Coming Soon!');
+    }
+    
+    function openSpellsEditor() {
+        closeAdminPanel();
+        alert('Spells Editor - Coming Soon!');
+    }
+    
+    function openItemsEditor() {
+        closeAdminPanel();
+        alert('Items Editor - Coming Soon!');
+    }
+    
+    function openCharacterManager() {
+        closeAdminPanel();
+        alert('Character Manager - Coming Soon!');
+    }
+    
+    function openPlayerManager() {
+        closeAdminPanel();
+        alert('Player Manager - Coming Soon!');
+    }
+    
+    function openSystemLogs() {
+        closeAdminPanel();
+        alert('System Logs - Coming Soon!');
+    }
+    
+    function openDatabaseTools() {
+        closeAdminPanel();
+        alert('Database Tools - Coming Soon!');
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,482 @@
+{% extends "base.html" %}
+
+{% block title %}Create Character - Mudra MUD{% endblock %}
+
+{% block head %}
+<style>
+    .creation-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .character-form {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .form-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        background: #f8f9fa;
+    }
+    
+    .section-title {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+    }
+    
+    .attribute-group {
+        margin-bottom: 25px;
+        padding: 15px;
+        background: white;
+        border-radius: 6px;
+        border-left: 4px solid #3498db;
+    }
+    
+    .attribute-group h6 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    
+    .sub-attribute {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+    
+    .sub-attribute label {
+        min-width: 120px;
+        margin-bottom: 0;
+        font-weight: 500;
+        color: #495057;
+    }
+    
+    .attribute-slider {
+        flex: 1;
+        margin: 0 15px;
+    }
+    
+    .attribute-value {
+        min-width: 40px;
+        text-align: center;
+        font-weight: bold;
+        color: #2c3e50;
+        background: #e9ecef;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    
+    .points-summary {
+        background: #e8f4fd;
+        border: 1px solid #bee5eb;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .points-remaining {
+        font-size: 18px;
+        font-weight: bold;
+        color: #0c5460;
+    }
+    
+    .points-total {
+        color: #6c757d;
+        font-size: 14px;
+    }
+    
+    .race-description {
+        font-size: 13px;
+        color: #6c757d;
+        margin-top: 5px;
+        font-style: italic;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .btn-action {
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-1px);
+    }
+    
+    .btn-action:disabled {
+        background: #bdc3c7;
+        color: #7f8c8d;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .validation-error {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="creation-container">
+    <div class="character-form">
+        <h2 class="text-center mb-4">Create Your Character</h2>
+        
+        <form id="character-form" method="POST">
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h4 class="section-title">Basic Information</h4>
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Character Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                    <div class="form-text">Choose a unique name for your character.</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="race" class="form-label">Race</label>
+                    <select class="form-select" id="race" name="race" required>
+                        <option value="Human">Human</option>
+                        <option value="Dwarf">Dwarf</option>
+                        <option value="Elf">Elf</option>
+                        <option value="Halfling">Halfling</option>
+                        <option value="Gnome">Gnome</option>
+                        <option value="Half-Elf">Half-Elf</option>
+                        <option value="Half-Orc">Half-Orc</option>
+                        <option value="Tiefling">Tiefling</option>
+                        <option value="Goblin">Goblin</option>
+                        <option value="Orc">Orc</option>
+                        <option value="Hobgoblin">Hobgoblin</option>
+                        <option value="Lizardfolk">Lizardfolk</option>
+                        <option value="Kobold">Kobold</option>
+                        <option value="Aasimar">Aasimar</option>
+                        <option value="Centaur">Centaur</option>
+                        <option value="Aarakocra">Aarakocra</option>
+                        <option value="Minotaur">Minotaur</option>
+                        <option value="Tabaxi">Tabaxi</option>
+                        <option value="Tortle">Tortle</option>
+                        <option value="Sprite">Sprite</option>
+                        <option value="Nymph">Nymph</option>
+                    </select>
+                    <div class="race-description" id="race-description">
+                        Humans are adaptable and ambitious, with no inherent strengths or weaknesses.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description (Optional)</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" 
+                              placeholder="Describe your character's appearance, background, or personality..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Attributes Section -->
+            <div class="form-section">
+                <h4 class="section-title">Attribute Distribution</h4>
+                
+                <div class="alert alert-info">
+                    <h6>Character System</h6>
+                    <p>Your character uses a <strong>classless progression system</strong> based on attributes:</p>
+                    <ul class="mb-0">
+                        <li><strong>BODY:</strong> Physical capabilities (strength, durability, endurance, vitality)</li>
+                        <li><strong>MIND:</strong> Mental capabilities (intellect, cognition, willpower, psionics)</li>
+                        <li><strong>SPIRIT:</strong> Magical capabilities (mystical, magical, metaphysical, percipience)</li>
+                        <li><strong>KISMET:</strong> Luck and social capabilities (luck, charisma)</li>
+                    </ul>
+                </div>
+                
+                <div class="points-summary">
+                    <div class="points-remaining" id="points-remaining">20</div>
+                    <div class="points-total">Trial Points Remaining (of 20 total)</div>
+                </div>
+                
+                <!-- BODY Attributes -->
+                <div class="attribute-group">
+                    <h6>BODY - Physical Capabilities</h6>
+                    
+                    <div class="sub-attribute">
+                        <label title="Physical power and muscle strength. Affects melee damage, carrying capacity, and physical tasks.">Strength:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="body" data-sub="strength">
+                        <div class="attribute-value" id="body-strength">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Physical toughness and resistance to damage. Affects armor effectiveness, damage reduction, and resistance to physical effects.">Durability:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="body" data-sub="durability">
+                        <div class="attribute-value" id="body-durability">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Stamina and physical endurance. Affects movement points, fatigue resistance, and sustained physical activity.">Endurance:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="body" data-sub="endurance">
+                        <div class="attribute-value" id="body-endurance">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Life force and health capacity. Primary factor in determining maximum hit points and healing rate.">Vitality:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="body" data-sub="vitality">
+                        <div class="attribute-value" id="body-vitality">0</div>
+                    </div>
+                </div>
+                
+                <!-- MIND Attributes -->
+                <div class="attribute-group">
+                    <h6>MIND - Mental Capabilities</h6>
+                    
+                    <div class="sub-attribute">
+                        <label title="Raw intelligence and reasoning ability. Affects learning speed, memory capacity, and complex problem solving.">Intellect:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="mind" data-sub="intellect">
+                        <div class="attribute-value" id="mind-intellect">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Perception, awareness, and information processing. Affects detection abilities, reaction time, and situational awareness.">Cognition:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="mind" data-sub="cognition">
+                        <div class="attribute-value" id="mind-cognition">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Mental fortitude and resistance to mental effects. Affects resistance to mind control, fear, and mental manipulation.">Willpower:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="mind" data-sub="willpower">
+                        <div class="attribute-value" id="mind-willpower">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Mental power for telepathic abilities. Affects psionic spell power, mental communication, and mind-based effects.">Psionics:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="mind" data-sub="psionics">
+                        <div class="attribute-value" id="mind-psionics">0</div>
+                    </div>
+                </div>
+                
+                <!-- SPIRIT Attributes -->
+                <div class="attribute-group">
+                    <h6>SPIRIT - Magical Capabilities</h6>
+                    
+                    <div class="sub-attribute">
+                        <label title="Divine and spiritual magical power. Affects healing spells, divine magic, and connection to higher powers.">Mystical:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="spirit" data-sub="mystical">
+                        <div class="attribute-value" id="spirit-mystical">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Arcane and elemental magical power. Affects elemental spells, magical item use, and arcane knowledge.">Magical:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="spirit" data-sub="magical">
+                        <div class="attribute-value" id="spirit-magical">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Understanding of reality and dimensional magic. Affects teleportation, dimensional spells, and reality manipulation.">Metaphysical:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="spirit" data-sub="metaphysical">
+                        <div class="attribute-value" id="spirit-metaphysical">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Spiritual awareness and magical perception. Affects magical detection, spiritual communication, and magical sensitivity.">Percipience:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="spirit" data-sub="percipience">
+                        <div class="attribute-value" id="spirit-percipience">0</div>
+                    </div>
+                </div>
+                
+                <!-- KISMET Attributes -->
+                <div class="attribute-group">
+                    <h6>KISMET - Luck and Social</h6>
+                    
+                    <div class="sub-attribute">
+                        <label title="Fortune and chance in all endeavors. Affects critical hits, random events, loot quality, and favorable outcomes.">Luck:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="kismet" data-sub="luck">
+                        <div class="attribute-value" id="kismet-luck">0</div>
+                    </div>
+                    
+                    <div class="sub-attribute">
+                        <label title="Social charm and leadership ability. Affects NPC interactions, social skills, group dynamics, and persuasion.">Charisma:</label>
+                        <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
+                               data-prime="kismet" data-sub="charisma">
+                        <div class="attribute-value" id="kismet-charisma">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hidden fields for attributes -->
+            <input type="hidden" name="attributes" id="attributes-input">
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-action btn-primary" id="create-btn" disabled>
+                    Create Character
+                </button>
+                <a href="{{ url_for('game.index') }}" class="btn-action btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Race descriptions
+    const raceDescriptions = {
+        'Human': 'Humans are adaptable and ambitious, with no inherent strengths or weaknesses.',
+        'Dwarf': 'Dwarves are hardy and strong, with natural resistance to magic and poison.',
+        'Elf': 'Elves are graceful and long-lived, with keen senses and natural magic affinity.',
+        'Halfling': 'Halflings are nimble and lucky, with natural stealth and courage.',
+        'Gnome': 'Gnomes are clever and curious, with natural magic resistance and illusion affinity.',
+        'Half-Elf': 'Half-Elves combine human adaptability with elven grace and magic.',
+        'Half-Orc': 'Half-Orcs are strong and resilient, with natural intimidation and endurance.',
+        'Tiefling': 'Tieflings have infernal heritage, with natural magic resistance and fire affinity.',
+        'Goblin': 'Goblins are small and cunning, with natural stealth and agility.',
+        'Orc': 'Orcs are powerful and aggressive, with natural strength and intimidation.',
+        'Hobgoblin': 'Hobgoblins are disciplined and militaristic, with natural leadership and strategy.',
+        'Lizardfolk': 'Lizardfolk are reptilian and adaptive, with natural armor and swimming.',
+        'Kobold': 'Kobolds are small and clever, with natural trap-making and pack tactics.',
+        'Aasimar': 'Aasimars have celestial heritage, with natural healing and divine magic.',
+        'Centaur': 'Centaurs are half-human, half-horse, with natural speed and strength.',
+        'Aarakocra': 'Aarakocras are bird-like, with natural flight and keen vision.',
+        'Minotaur': 'Minotaurs are bull-like, with natural strength and maze navigation.',
+        'Tabaxi': 'Tabaxis are cat-like, with natural agility and curiosity.',
+        'Tortle': 'Tortles are turtle-like, with natural armor and swimming.',
+        'Sprite': 'Sprites are tiny and magical, with natural invisibility and nature magic.',
+        'Nymph': 'Nymphs are nature spirits, with natural beauty and nature magic.'
+    };
+    
+    // Character creation state
+    let totalPoints = 20;
+    let usedPoints = 0;
+    let attributes = {
+        body: { strength: 0, durability: 0, endurance: 0, vitality: 0 },
+        mind: { intellect: 0, cognition: 0, willpower: 0, psionics: 0 },
+        spirit: { mystical: 0, magical: 0, metaphysical: 0, percipience: 0 },
+        kismet: { luck: 0, charisma: 0 }
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Race selection handler
+        const raceSelect = document.getElementById('race');
+        const raceDescription = document.getElementById('race-description');
+        
+        raceSelect.addEventListener('change', function() {
+            raceDescription.textContent = raceDescriptions[this.value] || '';
+        });
+        
+        // Attribute slider handlers
+        const sliders = document.querySelectorAll('.attribute-slider');
+        sliders.forEach(slider => {
+            slider.addEventListener('input', function() {
+                updateAttribute(this);
+                updatePointsSummary();
+                updateCreateButton();
+            });
+        });
+        
+        // Form submission handler
+        document.getElementById('character-form').addEventListener('submit', function(e) {
+            // Validate points usage
+            if (usedPoints !== totalPoints) {
+                e.preventDefault();
+                alert('Please distribute all your trial points before creating your character.');
+                return;
+            }
+            
+            // Set hidden attributes field
+            document.getElementById('attributes-input').value = JSON.stringify(attributes);
+        });
+    });
+    
+    function updateAttribute(slider) {
+        const prime = slider.dataset.prime;
+        const sub = slider.dataset.sub;
+        const value = parseInt(slider.value);
+        
+        // Update attributes object
+        attributes[prime][sub] = value;
+        
+        // Update display
+        document.getElementById(`${prime}-${sub}`).textContent = value;
+    }
+    
+    function updatePointsSummary() {
+        // Calculate used points
+        usedPoints = 0;
+        Object.values(attributes).forEach(primeAttr => {
+            Object.values(primeAttr).forEach(value => {
+                usedPoints += value;
+            });
+        });
+        
+        // Update display
+        const remaining = totalPoints - usedPoints;
+        document.getElementById('points-remaining').textContent = remaining;
+        
+        // Update color based on remaining points
+        const pointsElement = document.getElementById('points-remaining');
+        if (remaining === 0) {
+            pointsElement.style.color = '#27ae60';
+        } else if (remaining < 0) {
+            pointsElement.style.color = '#e74c3c';
+        } else {
+            pointsElement.style.color = '#0c5460';
+        }
+    }
+    
+    function updateCreateButton() {
+        const createBtn = document.getElementById('create-btn');
+        const remaining = totalPoints - usedPoints;
+        
+        if (remaining === 0) {
+            createBtn.disabled = false;
+        } else {
+            createBtn.disabled = true;
+        }
+    }
+</script>
+{% endblock %}

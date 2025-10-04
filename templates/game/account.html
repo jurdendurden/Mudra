@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Account - Mudra MUD{% endblock %}
+
+{% block head %}
+<style>
+    .account-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .account-header {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .account-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #3498db;
+    }
+    
+    .stat-label {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+    
+    .characters-section {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .characters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .character-card {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .character-card:hover {
+        border-color: #3498db;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+    }
+    
+    .character-card.selected {
+        border-color: #e74c3c;
+        background: #fff5f5;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+    
+    .character-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+    
+    .character-info {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .character-description {
+        font-size: 13px;
+        color: #8e9aaf;
+        font-style: italic;
+        margin-top: 10px;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .btn-action {
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-1px);
+    }
+    
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #219a52;
+        transform: translateY(-1px);
+    }
+    
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #c0392b;
+        transform: translateY(-1px);
+    }
+    
+    .btn-action:disabled {
+        background: #bdc3c7;
+        color: #7f8c8d;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .no-characters {
+        text-align: center;
+        color: #6c757d;
+        padding: 40px;
+        font-size: 16px;
+    }
+    
+    .welcome-message {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+    <div class="account-header">
+        <h1>Welcome back, {{ current_user.username }}!</h1>
+        <p class="welcome-message">Manage your characters and continue your adventures</p>
+        
+        <div class="account-stats">
+            <div class="stat-item">
+                <div class="stat-value">{{ characters|length }}</div>
+                <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ "%.1f"|format(total_hours) }}</div>
+                <div class="stat-label">Hours Played</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ current_user.created_at.strftime('%Y-%m-%d') }}</div>
+                <div class="stat-label">Account Created</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="characters-section">
+        <h2>Your Characters</h2>
+        
+        {% if characters %}
+        <div class="characters-grid">
+            {% for character in characters %}
+            <div class="character-card" data-character-id="{{ character.id }}">
+                <div class="character-name">{{ character.name }}</div>
+                <div class="character-info">
+                    <strong>Race:</strong> {{ character.race or 'Unknown' }}
+                </div>
+                <div class="character-info">
+                    <strong>Created:</strong> {{ character.created_at.strftime('%Y-%m-%d') }}
+                </div>
+                <div class="character-info">
+                    <strong>Last Played:</strong> {{ character.last_played.strftime('%Y-%m-%d %H:%M') if character.last_played else 'Never' }}
+                </div>
+                <div class="character-info">
+                    <strong>Trial Points:</strong> {{ character.trial_points }}
+                </div>
+                <div class="character-info">
+                    <strong>Progress Points:</strong> {{ character.progress_points }}
+                </div>
+                {% if character.description %}
+                <div class="character-description">{{ character.description }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-characters">
+            <h3>No Characters Yet</h3>
+            <p>Create your first character to begin your adventure!</p>
+        </div>
+        {% endif %}
+        
+        <div class="action-buttons">
+            <a href="{{ url_for('game.create_character') }}" class="btn-action btn-primary">
+                Create Character
+            </a>
+            
+            <button id="load-character-btn" class="btn-action btn-success" disabled>
+                Load Character
+            </button>
+            
+            <button id="delete-character-btn" class="btn-action btn-danger" disabled>
+                Delete Character
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedCharacterId = null;
+    
+    // Character selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const characterCards = document.querySelectorAll('.character-card');
+        const loadBtn = document.getElementById('load-character-btn');
+        const deleteBtn = document.getElementById('delete-character-btn');
+        
+        characterCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selection from all cards
+                characterCards.forEach(c => c.classList.remove('selected'));
+                
+                // Select this card
+                this.classList.add('selected');
+                selectedCharacterId = this.dataset.characterId;
+                
+                // Enable buttons
+                loadBtn.disabled = false;
+                deleteBtn.disabled = false;
+            });
+        });
+        
+        // Load character button
+        loadBtn.addEventListener('click', function() {
+            if (selectedCharacterId) {
+                window.location.href = `/game/play/${selectedCharacterId}`;
+            }
+        });
+        
+        // Delete character button
+        deleteBtn.addEventListener('click', function() {
+            if (selectedCharacterId) {
+                if (confirm('Are you sure you want to delete this character? This action cannot be undone.')) {
+                    // Create form and submit
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/game/delete-character/${selectedCharacterId}`;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mudra MUD - Map Builder</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .builder-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .builder-header {
+            background: #2c3e50;
+            padding: 15px;
+            border-bottom: 2px solid #34495e;
+        }
+        
+        .builder-main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: #34495e;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .canvas-container {
+            flex: 1;
+            background: #2c3e50;
+            position: relative;
+            overflow: auto;
+        }
+        
+        .map-canvas {
+            width: 100%;
+            height: 100%;
+            background: #1a252f;
+            position: relative;
+            min-width: 2000px;
+            min-height: 2000px;
+        }
+        
+        .room-node {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background: #3498db;
+            border: 2px solid #2980b9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 10px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .room-node:hover {
+            background: #e74c3c;
+            border-color: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        .room-node.selected {
+            background: #f39c12;
+            border-color: #e67e22;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+        }
+        
+        .connection-line {
+            position: absolute;
+            background: #95a5a6;
+            height: 2px;
+            transform-origin: left center;
+            pointer-events: none;
+        }
+        
+        .toolbar {
+            background: #34495e;
+            padding: 10px;
+            border-bottom: 1px solid #4a5f7a;
+        }
+        
+        .form-control, .form-select {
+            background: #2c3e50;
+            border: 1px solid #4a5f7a;
+            color: white;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background: #2c3e50;
+            border-color: #3498db;
+            color: white;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            border-color: #2980b9;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            border-color: #1f4e79;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            border-color: #229954;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+            border-color: #1e8449;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            border-color: #c0392b;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+            border-color: #a93226;
+        }
+        
+        .room-list-item {
+            background: #2c3e50;
+            border: 1px solid #4a5f7a;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .room-list-item:hover {
+            background: #3498db;
+            border-color: #2980b9;
+        }
+        
+        .room-list-item.selected {
+            background: #f39c12;
+            border-color: #e67e22;
+        }
+        
+        .modal-content {
+            background: #2c3e50;
+            color: white;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #4a5f7a;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #4a5f7a;
+        }
+    </style>
+</head>
+<body>
+    <div class="builder-container">
+        <!-- Header -->
+        <div class="builder-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-hammer"></i> Mudra MUD Map Builder</h3>
+                <div>
+                    <button class="btn btn-success me-2" onclick="saveMap()">
+                        <i class="fas fa-save"></i> Save Map
+                    </button>
+                    <button class="btn btn-primary" onclick="addRoom()">
+                        <i class="fas fa-plus"></i> Add Room
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="builder-main">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h5>Rooms</h5>
+                <div id="room-list">
+                    <!-- Room list will be populated by JavaScript -->
+                </div>
+                
+                <hr>
+                
+                <h5>Areas</h5>
+                <div id="area-list">
+                    <!-- Area list will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Canvas -->
+            <div class="canvas-container">
+                <div class="map-canvas" id="map-canvas">
+                    <!-- Room nodes and connections will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Room Editor Modal -->
+    <div class="modal fade" id="roomModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Room Editor</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="roomForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roomId" class="form-label">Room ID</label>
+                                    <input type="text" class="form-control" id="roomId" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomName" class="form-label">Room Name</label>
+                                    <input type="text" class="form-control" id="roomName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="areaSelect" class="form-label">Area</label>
+                                    <select class="form-select" id="areaSelect">
+                                        <option value="">Select Area</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roomX" class="form-label">X Position</label>
+                                    <input type="number" class="form-control" id="roomX" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomY" class="form-label">Y Position</label>
+                                    <input type="number" class="form-control" id="roomY" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roomDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="roomDescription" rows="4"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Exits</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitNorth">
+                                        <label class="form-check-label" for="exitNorth">North</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitSouth">
+                                        <label class="form-check-label" for="exitSouth">South</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitEast">
+                                        <label class="form-check-label" for="exitEast">East</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitWest">
+                                        <label class="form-check-label" for="exitWest">West</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteRoom()" id="deleteBtn" style="display: none;">Delete</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRoom()">Save Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables
+        let rooms = [];
+        let areas = [];
+        let selectedRoom = null;
+        let roomModal = null;
+        
+        // Initialize the map builder
+        document.addEventListener('DOMContentLoaded', function() {
+            roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
+            loadAreas();
+            loadRooms();
+        });
+        
+        // Load areas from API
+        async function loadAreas() {
+            try {
+                const response = await fetch('/api/areas');
+                areas = await response.json();
+                populateAreaSelect();
+                renderAreaList();
+            } catch (error) {
+                console.error('Error loading areas:', error);
+            }
+        }
+        
+        // Load rooms from API
+        async function loadRooms() {
+            try {
+                const response = await fetch('/api/rooms');
+                rooms = await response.json();
+                renderRoomList();
+                renderMap();
+            } catch (error) {
+                console.error('Error loading rooms:', error);
+            }
+        }
+        
+        // Populate area select dropdown
+        function populateAreaSelect() {
+            const select = document.getElementById('areaSelect');
+            select.innerHTML = '<option value="">Select Area</option>';
+            areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area.id;
+                option.textContent = area.name;
+                select.appendChild(option);
+            });
+        }
+        
+        // Render room list in sidebar
+        function renderRoomList() {
+            const container = document.getElementById('room-list');
+            container.innerHTML = '';
+            
+            rooms.forEach(room => {
+                const div = document.createElement('div');
+                div.className = 'room-list-item';
+                div.innerHTML = `
+                    <div class="fw-bold">${room.name}</div>
+                    <div class="small text-muted">${room.room_id}</div>
+                `;
+                div.onclick = () => selectRoom(room);
+                container.appendChild(div);
+            });
+        }
+        
+        // Render area list in sidebar
+        function renderAreaList() {
+            const container = document.getElementById('area-list');
+            container.innerHTML = '';
+            
+            areas.forEach(area => {
+                const div = document.createElement('div');
+                div.className = 'room-list-item';
+                div.innerHTML = `
+                    <div class="fw-bold">${area.name}</div>
+                    <div class="small text-muted">${area.area_id}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Render map canvas
+        function renderMap() {
+            const canvas = document.getElementById('map-canvas');
+            canvas.innerHTML = '';
+            
+            // Render room nodes
+            rooms.forEach(room => {
+                const node = document.createElement('div');
+                node.className = 'room-node';
+                node.style.left = (room.x * 100 + 50) + 'px';
+                node.style.top = (room.y * 80 + 50) + 'px';
+                node.innerHTML = room.name;
+                node.onclick = () => selectRoom(room);
+                canvas.appendChild(node);
+            });
+            
+            // Render connections
+            rooms.forEach(room => {
+                if (room.exits) {
+                    Object.entries(room.exits).forEach(([direction, targetRoomId]) => {
+                        const targetRoom = rooms.find(r => r.room_id === targetRoomId);
+                        if (targetRoom) {
+                            drawConnection(room, targetRoom, direction);
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Draw connection between rooms
+        function drawConnection(room1, room2, direction) {
+            const canvas = document.getElementById('map-canvas');
+            const line = document.createElement('div');
+            line.className = 'connection-line';
+            
+            const x1 = room1.x * 100 + 90;
+            const y1 = room1.y * 80 + 60;
+            const x2 = room2.x * 100 + 90;
+            const y2 = room2.y * 80 + 60;
+            
+            const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            line.style.left = x1 + 'px';
+            line.style.top = y1 + 'px';
+            line.style.width = length + 'px';
+            line.style.transform = `rotate(${angle}deg)`;
+            
+            canvas.appendChild(line);
+        }
+        
+        // Select a room
+        function selectRoom(room) {
+            selectedRoom = room;
+            
+            // Update UI
+            document.querySelectorAll('.room-list-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            document.querySelectorAll('.room-node').forEach(node => {
+                node.classList.remove('selected');
+            });
+            
+            // Highlight selected room
+            event.target.closest('.room-list-item')?.classList.add('selected');
+            event.target.closest('.room-node')?.classList.add('selected');
+            
+            // Populate form
+            document.getElementById('roomId').value = room.room_id;
+            document.getElementById('roomName').value = room.name;
+            document.getElementById('roomDescription').value = room.description;
+            document.getElementById('areaSelect').value = room.area_id || '';
+            document.getElementById('roomX').value = room.x;
+            document.getElementById('roomY').value = room.y;
+            
+            // Set exits
+            document.getElementById('exitNorth').checked = room.exits && room.exits.north;
+            document.getElementById('exitSouth').checked = room.exits && room.exits.south;
+            document.getElementById('exitEast').checked = room.exits && room.exits.east;
+            document.getElementById('exitWest').checked = room.exits && room.exits.west;
+            
+            // Show delete button
+            document.getElementById('deleteBtn').style.display = 'inline-block';
+            
+            roomModal.show();
+        }
+        
+        // Add new room
+        function addRoom() {
+            selectedRoom = null;
+            
+            // Clear form
+            document.getElementById('roomForm').reset();
+            document.getElementById('roomX').value = 0;
+            document.getElementById('roomY').value = 0;
+            
+            // Hide delete button
+            document.getElementById('deleteBtn').style.display = 'none';
+            
+            roomModal.show();
+        }
+        
+        // Save room
+        async function saveRoom() {
+            const formData = {
+                room_id: document.getElementById('roomId').value,
+                name: document.getElementById('roomName').value,
+                description: document.getElementById('roomDescription').value,
+                area_id: document.getElementById('areaSelect').value || null,
+                x: parseInt(document.getElementById('roomX').value),
+                y: parseInt(document.getElementById('roomY').value),
+                exits: {
+                    north: document.getElementById('exitNorth').checked,
+                    south: document.getElementById('exitSouth').checked,
+                    east: document.getElementById('exitEast').checked,
+                    west: document.getElementById('exitWest').checked
+                }
+            };
+            
+            try {
+                let response;
+                if (selectedRoom) {
+                    // Update existing room
+                    response = await fetch(`/api/rooms/${selectedRoom.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    // Create new room
+                    response = await fetch('/api/rooms', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                }
+                
+                if (response.ok) {
+                    roomModal.hide();
+                    loadRooms(); // Reload rooms
+                } else {
+                    alert('Error saving room');
+                }
+            } catch (error) {
+                console.error('Error saving room:', error);
+                alert('Error saving room');
+            }
+        }
+        
+        // Delete room
+        async function deleteRoom() {
+            if (!selectedRoom) return;
+            
+            if (confirm('Are you sure you want to delete this room?')) {
+                try {
+                    const response = await fetch(`/api/rooms/${selectedRoom.id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        roomModal.hide();
+                        loadRooms(); // Reload rooms
+                    } else {
+                        alert('Error deleting room');
+                    }
+                } catch (error) {
+                    console.error('Error deleting room:', error);
+                    alert('Error deleting room');
+                }
+            }
+        }
+        
+        // Save map (placeholder)
+        function saveMap() {
+            alert('Map saved! (This is a placeholder function)');
+        }
+    </script>
+</body>
+</html>

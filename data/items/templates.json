@@ -1,0 +1,280 @@
+{
+  "item_templates": {
+    "iron_longsword": {
+      "template_id": "iron_longsword",
+      "name": "Iron Longsword",
+      "description": "A well-crafted iron longsword with a leather-wrapped hilt. The blade is sharp and well-balanced, suitable for both cutting and thrusting attacks.",
+      "base_type": "weapon.blade.sword",
+      "subtype": "longsword",
+      "weight": 4.5,
+      "value": 150,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "metal.iron", "quantity": 3},
+        {"type": "wood.oak", "quantity": 1},
+        {"type": "fabric.leather", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "smithing:5",
+        "yields": [
+          {"type": "metal.iron", "quantity": 2},
+          {"type": "wood.oak", "quantity": 1},
+          {"type": "fabric.leather", "quantity": 1}
+        ],
+        "quality_dependent": true
+      },
+      "equipment_stats": {
+        "damage": [8, 12],
+        "attack_speed": 1.0,
+        "durability": 100,
+        "weapon_type": "blade"
+      },
+      "requirements": {
+        "strength": 10,
+        "cognition": 5
+      }
+    },
+    "leather_armor": {
+      "template_id": "leather_armor",
+      "name": "Leather Armor",
+      "description": "Sturdy leather armor that provides good protection while maintaining mobility. The leather is well-treated and reinforced at key points.",
+      "base_type": "armor.light.leather",
+      "subtype": "armor",
+      "weight": 8.0,
+      "value": 120,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "fabric.leather", "quantity": 4},
+        {"type": "fabric.cotton", "quantity": 2}
+      ],
+      "disassembly_data": {
+        "skill_required": "leatherworking:3",
+        "yields": [
+          {"type": "fabric.leather", "quantity": 3},
+          {"type": "fabric.cotton", "quantity": 1}
+        ],
+        "quality_dependent": true
+      },
+      "equipment_stats": {
+        "armor": 5,
+        "durability": 80,
+        "armor_type": "light"
+      },
+      "requirements": {
+        "strength": 8
+      }
+    },
+    "healing_potion": {
+      "template_id": "healing_potion",
+      "name": "Healing Potion",
+      "description": "A red potion that glows faintly. When consumed, it restores health and provides a warm, comforting feeling.",
+      "base_type": "consumable.potion.health",
+      "subtype": "potion",
+      "weight": 0.5,
+      "value": 50,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "herb.healing_herb", "quantity": 2},
+        {"type": "liquid.water", "quantity": 1},
+        {"type": "container.glass_vial", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "alchemy:2",
+        "yields": [
+          {"type": "herb.healing_herb", "quantity": 1},
+          {"type": "container.glass_vial", "quantity": 1}
+        ],
+        "quality_dependent": false
+      },
+      "equipment_stats": {
+        "healing": 25,
+        "duration": 0,
+        "consumable_type": "potion"
+      },
+      "requirements": {}
+    },
+    "iron_ingot": {
+      "template_id": "iron_ingot",
+      "name": "Iron Ingot",
+      "description": "A solid bar of refined iron, ready for crafting into weapons, tools, or armor. The metal has a dull gray sheen and feels heavy in the hand.",
+      "base_type": "component.metal.iron",
+      "subtype": "ingot",
+      "weight": 2.0,
+      "value": 25,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "ore.iron_ore", "quantity": 2}
+      ],
+      "disassembly_data": {
+        "skill_required": "smithing:1",
+        "yields": [
+          {"type": "ore.iron_ore", "quantity": 1}
+        ],
+        "quality_dependent": false
+      },
+      "equipment_stats": {},
+      "requirements": {}
+    },
+    "oak_plank": {
+      "template_id": "oak_plank",
+      "name": "Oak Plank",
+      "description": "A sturdy plank of oak wood, well-seasoned and ready for crafting. The wood has a rich grain pattern and a pleasant, earthy smell.",
+      "base_type": "component.wood.oak",
+      "subtype": "plank",
+      "weight": 1.5,
+      "value": 15,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "wood.oak_log", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "woodworking:1",
+        "yields": [
+          {"type": "wood.oak_log", "quantity": 1}
+        ],
+        "quality_dependent": false
+      },
+      "equipment_stats": {},
+      "requirements": {}
+    },
+    "leather_strip": {
+      "template_id": "leather_strip",
+      "name": "Leather Strip",
+      "description": "A long strip of tanned leather, flexible and strong. Useful for binding, wrapping, or as a component in crafting.",
+      "base_type": "component.fabric.leather",
+      "subtype": "strip",
+      "weight": 0.5,
+      "value": 10,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "hide.animal_hide", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "leatherworking:1",
+        "yields": [
+          {"type": "hide.animal_hide", "quantity": 1}
+        ],
+        "quality_dependent": false
+      },
+      "equipment_stats": {},
+      "requirements": {}
+    },
+    "rusty_sword": {
+      "template_id": "rusty_sword",
+      "name": "Rusty Sword",
+      "description": "An old, rusted sword that has seen better days. The blade is pitted and dull, but it could still be useful in a pinch or as a starting weapon.",
+      "base_type": "weapon.blade.sword",
+      "subtype": "sword",
+      "weight": 3.0,
+      "value": 20,
+      "quality_tier": "poor",
+      "components_required": [
+        {"type": "metal.iron", "quantity": 2},
+        {"type": "wood.oak", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "smithing:1",
+        "yields": [
+          {"type": "metal.iron", "quantity": 1},
+          {"type": "wood.oak", "quantity": 1}
+        ],
+        "quality_dependent": false
+      },
+      "equipment_stats": {
+        "damage": [3, 6],
+        "attack_speed": 1.2,
+        "durability": 30,
+        "weapon_type": "blade"
+      },
+      "requirements": {
+        "strength": 5
+      }
+    },
+    "bread_loaf": {
+      "template_id": "bread_loaf",
+      "name": "Bread Loaf",
+      "description": "A fresh loaf of bread with a golden crust. The smell is warm and inviting, and it would make a good meal for a hungry traveler.",
+      "base_type": "consumable.food.bread",
+      "subtype": "loaf",
+      "weight": 1.0,
+      "value": 5,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "grain.wheat", "quantity": 2},
+        {"type": "liquid.water", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "cooking:1",
+        "yields": [
+          {"type": "grain.wheat", "quantity": 1}
+        ],
+        "quality_dependent": false
+      },
+      "equipment_stats": {
+        "healing": 10,
+        "duration": 0,
+        "consumable_type": "food"
+      },
+      "requirements": {}
+    },
+    "spell_scroll": {
+      "template_id": "spell_scroll",
+      "name": "Spell Scroll",
+      "description": "An ancient scroll covered in mystical runes. The parchment is old but well-preserved, and the ink still glows faintly with magical energy.",
+      "base_type": "consumable.scroll.spell",
+      "subtype": "scroll",
+      "weight": 0.2,
+      "value": 100,
+      "quality_tier": "uncommon",
+      "components_required": [
+        {"type": "parchment.ancient_parchment", "quantity": 1},
+        {"type": "ink.magical_ink", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "enchanting:5",
+        "yields": [
+          {"type": "parchment.ancient_parchment", "quantity": 1}
+        ],
+        "quality_dependent": false
+      },
+      "equipment_stats": {
+        "spell": "heal_minor",
+        "uses": 1,
+        "consumable_type": "scroll"
+      },
+      "requirements": {
+        "mystical": 5
+      }
+    },
+    "backpack": {
+      "template_id": "backpack",
+      "name": "Backpack",
+      "description": "A sturdy leather backpack with multiple compartments. It can hold a significant amount of gear and supplies for long journeys.",
+      "base_type": "container.backpack",
+      "subtype": "backpack",
+      "weight": 2.0,
+      "value": 80,
+      "quality_tier": "common",
+      "components_required": [
+        {"type": "fabric.leather", "quantity": 3},
+        {"type": "fabric.cotton", "quantity": 2},
+        {"type": "metal.iron", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "leatherworking:3",
+        "yields": [
+          {"type": "fabric.leather", "quantity": 2},
+          {"type": "fabric.cotton", "quantity": 1},
+          {"type": "metal.iron", "quantity": 1}
+        ],
+        "quality_dependent": true
+      },
+      "equipment_stats": {
+        "capacity": 50,
+        "weight_reduction": 0.1,
+        "container_type": "backpack"
+      },
+      "requirements": {}
+    }
+  }
+}

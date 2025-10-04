@@ -1,0 +1,477 @@
+{
+  "skills": {
+    "smithing": {
+      "skill_id": "smithing",
+      "name": "Smithing",
+      "description": "The art of working with metal to create weapons, armor, and tools. Higher levels allow for more complex items and better quality.",
+      "category": "crafting",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "strength": 8,
+          "durability": 5
+        },
+        "mind": {
+          "cognition": 5
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "weapon_crafting",
+        "armor_crafting",
+        "tool_crafting",
+        "metal_working",
+        "repair_equipment"
+      ],
+      "related_skills": {
+        "mining": 0.1,
+        "engineering": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "leatherworking": {
+      "skill_id": "leatherworking",
+      "name": "Leatherworking",
+      "description": "The craft of working with leather and hides to create armor, clothing, and containers. Essential for light armor and utility items.",
+      "category": "crafting",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "durability": 5
+        },
+        "mind": {
+          "cognition": 3
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "leather_armor_crafting",
+        "clothing_crafting",
+        "container_crafting",
+        "hide_processing"
+      ],
+      "related_skills": {
+        "hunting": 0.1,
+        "tailoring": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "alchemy": {
+      "skill_id": "alchemy",
+      "name": "Alchemy",
+      "description": "The mystical art of combining ingredients to create potions, elixirs, and magical compounds. Requires both knowledge and intuition.",
+      "category": "crafting",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "intellect": 8,
+          "cognition": 5
+        },
+        "spirit": {
+          "mystical": 5
+        }
+      },
+      "cost_formula": "level * 3",
+      "governs": [
+        "potion_brewing",
+        "elixir_creation",
+        "ingredient_processing",
+        "magical_compounds"
+      ],
+      "related_skills": {
+        "herbalism": 0.15,
+        "enchanting": 0.1
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "woodworking": {
+      "skill_id": "woodworking",
+      "name": "Woodworking",
+      "description": "The craft of shaping wood into useful items like tools, furniture, and weapon components. A fundamental crafting skill.",
+      "category": "crafting",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "strength": 5,
+          "durability": 3
+        },
+        "mind": {
+          "cognition": 3
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "tool_crafting",
+        "furniture_crafting",
+        "weapon_components",
+        "wood_processing"
+      ],
+      "related_skills": {
+        "carpentry": 0.1,
+        "engineering": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "sword_fighting": {
+      "skill_id": "sword_fighting",
+      "name": "Sword Fighting",
+      "description": "The art of combat with bladed weapons. Improves accuracy, damage, and special techniques with swords and similar weapons.",
+      "category": "combat",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "strength": 8,
+          "endurance": 5
+        },
+        "mind": {
+          "cognition": 3
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "sword_accuracy",
+        "sword_damage",
+        "sword_techniques",
+        "parrying"
+      ],
+      "related_skills": {
+        "tactics": 0.1,
+        "dueling": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "archery": {
+      "skill_id": "archery",
+      "name": "Archery",
+      "description": "The skill of using bows and other ranged weapons. Improves accuracy, range, and damage with projectile weapons.",
+      "category": "combat",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "strength": 6,
+          "endurance": 5
+        },
+        "mind": {
+          "cognition": 5
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "bow_accuracy",
+        "bow_damage",
+        "bow_range",
+        "arrow_crafting"
+      ],
+      "related_skills": {
+        "hunting": 0.1,
+        "tactics": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "lockpicking": {
+      "skill_id": "lockpicking",
+      "name": "Lockpicking",
+      "description": "The art of opening locks without keys. Useful for accessing locked containers, doors, and chests.",
+      "category": "utility",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "durability": 3
+        },
+        "mind": {
+          "cognition": 8,
+          "intellect": 5
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "lock_opening",
+        "trap_disarming",
+        "mechanism_understanding"
+      ],
+      "related_skills": {
+        "engineering": 0.1,
+        "stealth": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "herbalism": {
+      "skill_id": "herbalism",
+      "name": "Herbalism",
+      "description": "Knowledge of plants and their properties. Essential for gathering ingredients for alchemy and healing.",
+      "category": "utility",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "intellect": 5,
+          "cognition": 5
+        },
+        "spirit": {
+          "percipience": 3
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "plant_identification",
+        "ingredient_gathering",
+        "plant_cultivation",
+        "poison_detection"
+      ],
+      "related_skills": {
+        "alchemy": 0.15,
+        "survival": 0.1
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "survival": {
+      "skill_id": "survival",
+      "name": "Survival",
+      "description": "The ability to survive in the wilderness. Improves resource gathering, navigation, and environmental resistance.",
+      "category": "utility",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "endurance": 8,
+          "vitality": 5
+        },
+        "mind": {
+          "cognition": 5
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "wilderness_navigation",
+        "resource_gathering",
+        "environmental_resistance",
+        "camping"
+      ],
+      "related_skills": {
+        "herbalism": 0.1,
+        "hunting": 0.1
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "enchanting": {
+      "skill_id": "enchanting",
+      "name": "Enchanting",
+      "description": "The art of imbuing items with magical properties. Requires deep understanding of mystical forces and item properties.",
+      "category": "magic",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "intellect": 8,
+          "cognition": 8
+        },
+        "spirit": {
+          "mystical": 10,
+          "magical": 8
+        }
+      },
+      "cost_formula": "level * 4",
+      "governs": [
+        "item_enchanting",
+        "magical_imbuing",
+        "enchantment_removal",
+        "magical_analysis"
+      ],
+      "related_skills": {
+        "alchemy": 0.1,
+        "mystical_magic": 0.15
+      },
+      "prerequisites": [
+        {"skill": "alchemy", "level": 10}
+      ],
+      "unlock_conditions": {
+        "mystical": 10
+      }
+    },
+    "mystical_magic": {
+      "skill_id": "mystical_magic",
+      "name": "Mystical Magic",
+      "description": "The study and practice of divine and mystical magic. Focuses on healing, protection, and divine powers.",
+      "category": "magic",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "intellect": 8,
+          "willpower": 10
+        },
+        "spirit": {
+          "mystical": 12,
+          "percipience": 8
+        }
+      },
+      "cost_formula": "level * 3",
+      "governs": [
+        "healing_spells",
+        "protection_spells",
+        "divine_magic",
+        "spiritual_awareness"
+      ],
+      "related_skills": {
+        "enchanting": 0.15,
+        "alchemy": 0.1
+      },
+      "prerequisites": [],
+      "unlock_conditions": {
+        "mystical": 8
+      }
+    },
+    "arcane_magic": {
+      "skill_id": "arcane_magic",
+      "name": "Arcane Magic",
+      "description": "The study of arcane forces and magical energy. Focuses on elemental magic, teleportation, and magical manipulation.",
+      "category": "magic",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "intellect": 10,
+          "cognition": 8
+        },
+        "spirit": {
+          "magical": 12,
+          "metaphysical": 8
+        }
+      },
+      "cost_formula": "level * 3",
+      "governs": [
+        "elemental_spells",
+        "teleportation",
+        "magical_manipulation",
+        "arcane_knowledge"
+      ],
+      "related_skills": {
+        "enchanting": 0.15,
+        "alchemy": 0.1
+      },
+      "prerequisites": [],
+      "unlock_conditions": {
+        "magical": 8
+      }
+    },
+    "psionics": {
+      "skill_id": "psionics",
+      "name": "Psionics",
+      "description": "The study of mental powers and psychic abilities. Focuses on mind reading, telekinesis, and mental influence.",
+      "category": "magic",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "intellect": 8,
+          "psionics": 12,
+          "willpower": 10
+        }
+      },
+      "cost_formula": "level * 3",
+      "governs": [
+        "telepathy",
+        "telekinesis",
+        "mental_influence",
+        "psychic_awareness"
+      ],
+      "related_skills": {
+        "enchanting": 0.1,
+        "mystical_magic": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {
+        "psionics": 8
+      }
+    },
+    "diplomacy": {
+      "skill_id": "diplomacy",
+      "name": "Diplomacy",
+      "description": "The art of negotiation and peaceful conflict resolution. Improves interactions with NPCs and social situations.",
+      "category": "social",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "intellect": 5,
+          "cognition": 5
+        },
+        "kismet": {
+          "charisma": 8
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "npc_interaction",
+        "negotiation",
+        "conflict_resolution",
+        "social_influence"
+      ],
+      "related_skills": {
+        "intimidation": 0.05,
+        "performance": 0.1
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "intimidation": {
+      "skill_id": "intimidation",
+      "name": "Intimidation",
+      "description": "The ability to influence others through fear and threat. Useful for getting information or avoiding conflict.",
+      "category": "social",
+      "max_level": 100,
+      "attribute_requirements": {
+        "body": {
+          "strength": 8
+        },
+        "kismet": {
+          "charisma": 5
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "threat_delivery",
+        "fear_induction",
+        "social_dominance",
+        "interrogation"
+      ],
+      "related_skills": {
+        "diplomacy": 0.05,
+        "performance": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    },
+    "performance": {
+      "skill_id": "performance",
+      "name": "Performance",
+      "description": "The art of entertaining and inspiring others through music, storytelling, or other performances.",
+      "category": "social",
+      "max_level": 100,
+      "attribute_requirements": {
+        "mind": {
+          "cognition": 5
+        },
+        "kismet": {
+          "charisma": 10,
+          "luck": 3
+        }
+      },
+      "cost_formula": "level * 2",
+      "governs": [
+        "entertainment",
+        "inspiration",
+        "crowd_control",
+        "artistic_expression"
+      ],
+      "related_skills": {
+        "diplomacy": 0.1,
+        "intimidation": 0.05
+      },
+      "prerequisites": [],
+      "unlock_conditions": {}
+    }
+  }
+}

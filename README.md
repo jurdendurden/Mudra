@@ -1,6 +1,7 @@
 # Mudra MUD
 
-A web-based Multi-User Dungeon (MUD) built with Flask and vanilla JavaScript, featuring a classless progression system based on attributes, skills, and detailed item crafting/disassembly mechanics.
+A web-based Multi-User Dungeon (MUD) built with Flask and vanilla JavaScript, featuring a classless/levelless 
+progression system based on attributes, skills, and detailed item crafting/disassembly mechanics.
 
 ## Features
 
@@ -9,6 +10,8 @@ A web-based Multi-User Dungeon (MUD) built with Flask and vanilla JavaScript, fe
 - **Deep Item System**: Complex inheritance model with components, crafting, and disassembly
 - **Real-time Communication**: WebSocket-based chat and game events
 - **Command Parser**: Comprehensive command system for all game interactions
+- **3D World System**: Full cartesian coordinate system with vertical movement (up/down)
+- **Map Builder**: Visual tool for creating and managing game world
 - **Minimap**: Canvas-based real-time map display
 
 ### Character System
@@ -30,6 +33,14 @@ A web-based Multi-User Dungeon (MUD) built with Flask and vanilla JavaScript, fe
 - **3 Spell Schools**: Mystical (divine), Magical (arcane), Psionics (mind)
 - **Learning System**: Find teachers, meet requirements, spend progress points
 - **Skill Synergies**: Related skills provide bonuses to each other
+
+### World & Map System
+- **3D Cartesian Coordinates**: Rooms positioned on X, Y, Z axes for clean spatial organization
+- **6-Directional Movement**: North, South, East, West, Up, Down
+- **Multiple Areas**: Starting Village, Whispering Woods, Iron Peaks, Shadowed Grove, Crystal Caverns
+- **33+ Unique Rooms**: Each with detailed descriptions, items, NPCs, and environmental effects
+- **Coordinate Validation**: Automatic checking to prevent room overlaps
+- **Visual Map Builder**: Web-based tool for creating and editing rooms with real-time visualization
 
 ## Technology Stack
 
@@ -98,11 +109,19 @@ The game will be available at `http://localhost:5000`
 ## Game Data Structure
 
 ### JSON Data Files
-- `data/world/areas.json` - Game areas and zones
-- `data/world/rooms.json` - Individual room data
+- `data/world/areas.json` - Game areas and zones with level ranges
+- `data/world/rooms.json` - Individual room data with 3D coordinates (33+ rooms)
 - `data/items/templates.json` - Item templates and recipes
 - `data/skills/skills.json` - Skill definitions and requirements
 - `data/spells/spells.json` - Spell definitions and effects
+
+### Room Coordinate System
+Each room has:
+- `x_coord`, `y_coord`, `z_coord` - 3D position in game world
+- `exits` - Dictionary of directional exits (north, south, east, west, up, down)
+- `area_id` - Reference to parent area
+- Environmental properties (lighting, temperature, weather)
+- Room flags (is_safe, is_indoors, is_water, is_air)
 
 ### Database Models
 - **Player**: User accounts and authentication
@@ -166,8 +185,55 @@ Mudra/
 1. **Items**: Add templates to `data/items/templates.json`
 2. **Skills**: Add definitions to `data/skills/skills.json`
 3. **Spells**: Add definitions to `data/spells/spells.json`
-4. **Rooms**: Add room data to `data/world/rooms.json`
+4. **Rooms**: Use the Map Builder tool or manually edit `data/world/rooms.json`
 5. **Commands**: Add handlers to `app/systems/commands.py`
+
+### Map Builder Tool
+The Map Builder is a visual web interface for creating and managing the game world:
+
+```bash
+# Run the map builder (separate from main app)
+python map_builder.py
+```
+
+Access at `http://localhost:5001`
+
+Features:
+- Visual room placement with coordinate display
+- Z-level filtering for multi-floor maps
+- Automatic coordinate conflict detection
+- Support for all 6 exit directions (N, S, E, W, Up, Down)
+- Real-time map visualization with connection lines
+- Room editing and deletion
+- Drag-and-drop room repositioning (Ctrl+drag)
+- Multi-select with drag selection (Shift+drag)
+- Automatic reciprocal exit creation
+- Room ID recycling (reuses deleted IDs)
+- Map export to JSON format
+- Real-time coordinate display
+
+### Coordinate System
+The game uses a 3D cartesian coordinate system:
+- **X-axis**: East (+) / West (-)
+- **Y-axis**: North (+) / South (-)
+- **Z-axis**: Up (+) / Down (-)
+
+### Coordinate Validation
+Validate room coordinates to prevent overlaps:
+
+```bash
+# Validate database coordinates
+python scripts/validate_coordinates.py
+
+# Validate a JSON file
+python scripts/validate_coordinates.py --json data/world/rooms.json
+```
+
+The validator checks for:
+- Coordinate overlaps between rooms
+- Invalid exit directions
+- Mismatched exit connections
+- Coordinate range statistics
 
 ### Testing
 ```bash
@@ -232,15 +298,20 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [ ] Learning/progression
 - [ ] Skill UI
 
-### Phase 6: World Building (Planned)
-- [ ] Area/room system
+### Phase 6: World Building (In Progress)
+- [x] 3D cartesian coordinate system
+- [x] Area/room system with 33+ rooms
+- [x] 5 distinct areas (Village, Forest, Mountains, Deep Forest, Crystal Caverns)
+- [x] Visual Map Builder tool
+- [x] Coordinate validation system
+- [x] Multi-level support (up/down movement)
 - [ ] NPC framework
 - [ ] Loot generation
-- [ ] Minimap implementation
+- [x] Minimap implementation
 
 ### Phase 7: Polish & Features (Planned)
 - [ ] Advanced chat system
-- [ ] Sound effects (optional)
+- [ ] Sound effects
 - [ ] Advanced UI features
 - [ ] Admin tools
 - [ ] Testing and balancing

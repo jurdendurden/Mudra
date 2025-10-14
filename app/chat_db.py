@@ -1,5 +1,8 @@
 """
 Separate database module for chat messages
+
+Run this script to initialize the chat database.
+DCH 10/14/2025
 """
 import sqlite3
 import os

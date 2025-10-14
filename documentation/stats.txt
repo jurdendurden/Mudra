@@ -1,0 +1,52 @@
+Prime Attributes: 
+	- body, mind, spirit, kismet
+
+Sub Attributes: 
+	- BODY: strength, durability, endurance, vitality
+	- MIND: intellect, cognition, willpower, psionics
+	- SPIRIT: mystical, magical, metaphysical, percipience
+	- KISMET: luck, charisma
+
+- Players begin with 20 trial points to spend on sub attributes. 
+- Players can only invest in one sub attribute (SA) per prime attribute category initially.
+
+UNLOCKING MORE ATTRIBUTES:
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+Body/Mind/Spirit:
+
+Open 2nd sub attribute 		- spend 5 points in first sub attribute
+Open 3rd sub attribute		- 15 points spent between first 2 sub attributes
+Open 4th sub attribute		- 30 points spent between first 3 sub attributes, at least 2 at 12+
+
+Kismet:
+
+Open 2nd sub attribute		- spent 10 points in first sub attribute
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+body (0/400)
+	- strength (0/100)	added damage, ability to break/lift/push/pull things
+	- durability (0/100)	retain consciousness during KO state, damage reduction
+	- endurance (0/100)	determines movement gains
+	- vitality (0/100)	determines hp gains, recovery from critical wounds
+
+mind (0/400)
+	- intellect (0/100)	quicker learning of languages/spells/etc, higher spell dam
+	- cognition (0/100)	haggling, calculations, crafting bonuses
+	- willpower (0/100)	ability to withstand psionics/debuffs/charm effects
+	- psionics (0/100)	ability to use psionics
+
+spirit (0/400)
+	- mystical (0/100)	religious capability (priest)	
+	- magical (0/100)	spellcasting ability (wizards)
+	- metaphysical (0/100)	see through illusions, 
+	- percipience (0/100)	learn upper tier skills/spells/harder languages, better success with spells/skills 
+				when not fully trained, perception checks	
+
+kismet (0/200)
+	- luck (0/100)		better loot, crafting, coins found, etc.
+	- charisma (0/100)	diplomacy/seduction/haggling bonuses, added charmies
+
+

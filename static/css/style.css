@@ -1,6 +1,11 @@
-/* Custom styles for Mudra MUD */
+/* Generic Styles */
+body {
+    background-color: #1a252f;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-/* Game Interface Styles */
+/* Game Interface */
 
 #game-container {
     height: calc(100vh - 76px);

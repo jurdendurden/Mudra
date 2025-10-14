@@ -1,10 +1,12 @@
 /* Custom styles for Mudra MUD */
 
 /* Game Interface Styles */
+
 #game-container {
     height: calc(100vh - 76px);
     display: flex;
     flex-direction: column;
+    background-color: #1a252f;
 }
 
 #game-header {

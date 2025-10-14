@@ -97,6 +97,13 @@ def register_game_events(socketio):
                 'action': result.get('action'),
                 'message': result.get('room_message')
             }, room=room_name, include_self=False)
+        
+        # If command was chat, emit chat message to all players
+        if result.get('action') == 'chat' and result.get('chat_message'):
+            # Add player's censor preference to the message
+            chat_data = result['chat_message'].copy()
+            chat_data['player_censor_enabled'] = character.player.censor_enabled
+            emit('chat_message', chat_data, broadcast=True)
     
     @socketio.on('request_room_info')
     def handle_request_room_info():

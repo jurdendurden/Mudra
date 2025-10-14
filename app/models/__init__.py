@@ -5,9 +5,10 @@ from .item import Item, ItemTemplate
 from .room import Room, Area
 from .skill import Skill, CharacterSkill
 from .spell import Spell, CharacterSpell
+from .chat_message import ChatMessage
 
 __all__ = [
     'Player', 'Character', 'Item', 'ItemTemplate', 
     'Room', 'Area', 'Skill', 'CharacterSkill', 
-    'Spell', 'CharacterSpell'
+    'Spell', 'CharacterSpell', 'ChatMessage'
 ]

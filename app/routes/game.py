@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models.character import Character
 from app.models.room import Room
+from app.models.chat_message import ChatMessage
 
 game_bp = Blueprint('game', __name__)
 
@@ -179,4 +180,18 @@ def update_attributes(character_id):
         'success': True,
         'new_value': value,
         'remaining_points': character.trial_points
+    })
+
+@game_bp.route('/api/chat/recent', methods=['GET'])
+@login_required
+def get_recent_chat():
+    """Get recent chat messages"""
+    limit = request.args.get('limit', 50, type=int)
+    
+    # Get recent chat messages from chat database
+    messages = ChatMessage.get_recent(limit)
+    
+    return jsonify({
+        'success': True,
+        'messages': messages
     })

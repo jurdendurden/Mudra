@@ -1,0 +1,3 @@
+# Chat database files
+instance/chat_messages.db
+*.db

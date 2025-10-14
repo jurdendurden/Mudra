@@ -15,6 +15,7 @@ class Player(UserMixin, db.Model):
     last_login = db.Column(db.DateTime)
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
+    censor_enabled = db.Column(db.Boolean, default=True)
     
     # Relationships
     characters = db.relationship('Character', backref='player', lazy='dynamic', cascade='all, delete-orphan')

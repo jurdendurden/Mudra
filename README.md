@@ -110,6 +110,7 @@ The game will be available at `http://localhost:5000`
 - **Item**: Item instances and templates
 - **Room**: Game world locations
 - **Skill/Spell**: Character abilities and progression
+- **ChatMessage**: Player chat communications with timestamps
 
 ## Game Commands
 
@@ -131,6 +132,8 @@ The game will be available at `http://localhost:5000`
 ### Social
 - `say <message>` - Say something to the room
 - `emote <action>` - Perform an emote
+- `chat <message>` - Send a chat message to all players (use in main command input)
+- `censor` - Toggle chat censorship on/off
 - `who` - List online players
 
 ### System
@@ -209,6 +212,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [ ] Basic equipment system
 - [ ] Crafting system
 - [ ] Disassembly mechanics
+
+### Phase 3.5: Chat System ✅
+- [x] Chat command implementation
+- [x] Chat message database storage
+- [x] Real-time chat display
+- [x] Chat history loading
+- [x] Chat censorship system
 
 ### Phase 4: Combat System (Planned)
 - [ ] Combat engine

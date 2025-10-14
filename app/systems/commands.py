@@ -3,6 +3,7 @@ from app import db
 from app.models.character import Character
 from app.models.room import Room
 from app.models.item import Item
+from app.models.chat_message import ChatMessage
 
 class CommandProcessor:
     """Process and execute game commands"""
@@ -35,6 +36,8 @@ class CommandProcessor:
             'go': self.cmd_go,
             'say': self.cmd_say,
             'emote': self.cmd_emote,
+            'chat': self.cmd_chat,
+            'censor': self.cmd_censor,
             'who': self.cmd_who,
             'help': self.cmd_help,
             'quit': self.cmd_quit,
@@ -327,6 +330,47 @@ class CommandProcessor:
             'room_message': f'{character.name} {emote}'
         }
     
+    def cmd_chat(self, character, args):
+        """Send a chat message to all players"""
+        if not args:
+            return {'error': 'Chat what?'}
+        
+        message = ' '.join(args)
+        
+        # Create chat message record
+        chat_message = ChatMessage(
+            character_id=character.id,
+            character_name=character.name,
+            message=message
+        )
+        
+        # Save to chat database
+        chat_message.save()
+        
+        # Format message with timestamp
+        timestamp = chat_message.timestamp.strftime('%H:%M:%S')
+        formatted_message = f'[chat] {timestamp} {character.name}: {message}'
+        
+        return {
+            'affects_room': True,
+            'action': 'chat',
+            'room_message': formatted_message,
+            'chat_message': chat_message.to_dict()
+        }
+    
+    def cmd_censor(self, character, args):
+        """Toggle chat censorship on/off"""
+        # Get the player associated with this character
+        player = character.player
+
+        # Toggle the censor setting
+        player.censor_enabled = not player.censor_enabled
+
+        db.session.commit()
+
+        status = "on" if player.censor_enabled else "off"
+        return {'message': f'Chat censoring turned {status}.'}
+    
     def cmd_who(self, character, args):
         """Show who is online"""
         # TODO: Implement online player list
@@ -343,7 +387,7 @@ class CommandProcessor:
 <u>Equipment:</u>
   equip <item>, unequip <item>, inventory/i
 <u>Social:</u>
-  say <message>, emote <action>, who
+  say <message>, emote <action>, chat <message>, censor, who
 <u>System:</u>
   help, save, quit
         """

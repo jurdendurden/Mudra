@@ -15,7 +15,6 @@ class GameClient {
     initializeElements() {
         this.outputWindow = document.getElementById('output-window');
         this.commandInput = document.getElementById('command-input');
-        this.chatInput = document.getElementById('chat-input');
         this.chatOutput = document.getElementById('chat-output');
         this.inventoryList = document.getElementById('inventory-list');
         this.minimap = document.getElementById('minimap');
@@ -25,11 +24,6 @@ class GameClient {
         // Command input
         if (this.commandInput) {
             this.commandInput.addEventListener('keydown', (e) => this.handleCommandInput(e));
-        }
-        
-        // Chat input
-        if (this.chatInput) {
-            this.chatInput.addEventListener('keydown', (e) => this.handleChatInput(e));
         }
         
         // Inventory items
@@ -73,6 +67,9 @@ class GameClient {
             
             // Request initial room info
             this.socket.emit('request_room_info');
+            
+            // Load recent chat messages
+            this.loadRecentChatMessages();
         });
         
         this.socket.on('command_result', (data) => {
@@ -108,15 +105,6 @@ class GameClient {
         }
     }
     
-    handleChatInput(e) {
-        if (e.key === 'Enter') {
-            const message = this.chatInput.value.trim();
-            if (message) {
-                this.sendChatMessage(message);
-                this.chatInput.value = '';
-            }
-        }
-    }
     
     handleInventoryClick(e) {
         const item = e.target.closest('.inventory-item');
@@ -167,25 +155,24 @@ class GameClient {
             return;
         }
         
-        this.socket.emit('chat_message', { 
-            message: message, 
-            channel: 'local' 
-        });
+        // Send as chat command
+        this.sendCommand(`chat ${message}`);
     }
     
     handleCommandResult(data) {
-        if (data.error) {
-            this.addOutput(data.error, 'error');
-        } else if (data.message) {
-            this.addOutput(data.message, 'game');
+        if (data.result && data.result.error) {
+            this.addOutput(data.result.error, 'error');
+        } else if (data.result && data.result.message) {
+            this.addOutput(data.result.message, 'game');
         }
         
         // Handle special results
-        if (data.new_room) {
-            this.updateRoomInfo({ room: data.new_room });
+        if (data.result && data.result.new_room) {
+            this.updateRoomInfo({ room: data.result.new_room });
         }
         
-        if (data.quit) {
+        
+        if (data.result && data.result.quit) {
             // Handle quit command
             setTimeout(() => {
                 window.location.href = '/auth/logout';
@@ -227,17 +214,50 @@ class GameClient {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-message';
         
-        const timestamp = new Date().toLocaleTimeString();
-        const channel = data.channel || 'local';
+        // Use timestamp from server if available, otherwise use current time
+        const timestamp = data.formatted_timestamp || new Date().toLocaleTimeString();
+        
+        // Filter message if player has censorship enabled
+        let message = data.message;
+        if (data.player_censor_enabled) {
+            message = this.filterMessage(message);
+        }
         
         messageDiv.innerHTML = `
             <span class="timestamp">[${timestamp}]</span>
             <span class="character">${data.character_name}:</span>
-            <span class="message">${data.message}</span>
+            <span class="message">${message}</span>
         `;
         
         this.chatOutput.appendChild(messageDiv);
         this.chatOutput.scrollTop = this.chatOutput.scrollHeight;
+    }
+    
+    filterMessage(message) {
+        // Filter profanity from chat messages
+        if (!message) return message;
+        
+        // Common English curse words and slurs
+        const filteredWords = [
+            'damn', 'hell', 'crap', 'shit', 'fuck', 'bitch', 'ass', 'asshole',
+            'bastard', 'piss', 'pissed', 'cunt', 'cock', 'dick', 'pussy',
+            'whore', 'slut', 'fag', 'faggot', 'nigger', 'nigga', 'kike',
+            'chink', 'spic', 'wetback', 'retard', 'retarded', 'gay',
+            'f*ck', 'f**k', 'f***', 'sh*t', 's**t', 'a$$', 'b*tch', 'b**ch',
+            'd*mn', 'h*ll', 'cr*p', 'p*ss', 'c*nt', 'c*ck', 'd*ck', 'p*ssy',
+            'wh*re', 'sl*t', 'f*g', 'f*ggot', 'n*gger', 'n*gga', 'k*ke',
+            'ch*nk', 'sp*c', 'ret*rd', 'g*y', 'wtf', 'omg', 'stfu', 'gtfo'
+        ];
+        
+        let filteredMessage = message;
+        
+        filteredWords.forEach(word => {
+            const regex = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+            const asterisks = '*'.repeat(word.length);
+            filteredMessage = filteredMessage.replace(regex, asterisks);
+        });
+        
+        return filteredMessage;
     }
     
     addOutput(text, type = 'game') {
@@ -302,6 +322,27 @@ class GameClient {
             `;
             this.inventoryList.appendChild(itemDiv);
         });
+    }
+    
+    async loadRecentChatMessages() {
+        try {
+            const response = await fetch('/game/api/chat/recent?limit=20');
+            const data = await response.json();
+            
+            if (data.success && data.messages) {
+                // Clear existing chat messages
+                if (this.chatOutput) {
+                    this.chatOutput.innerHTML = '';
+                }
+                
+                // Add recent messages
+                data.messages.forEach(msg => {
+                    this.addChatMessage(msg);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load recent chat messages:', error);
+        }
     }
 }
 

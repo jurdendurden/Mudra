@@ -8,7 +8,8 @@ import os
 
 # Initialize extensions
 db = SQLAlchemy()
-socketio = SocketIO()
+# Force threading async mode to avoid eventlet/gevent on Python 3.13
+socketio = SocketIO(async_mode="threading")
 login_manager = LoginManager()
 migrate = Migrate()
 redis_client = None
@@ -73,7 +74,7 @@ def create_app(config_name=None):
     register_chat_events(socketio)
     
     # Import models for migration
-    from app.models import player, character, item, room
+    from app.models import player, character, item, room, chat_message
     
     return app
 

@@ -472,7 +472,7 @@
                 </select>
                 
                 <h5>Rooms</h5>
-                <select class="form-select" id="room-list" size="20">
+                <select class="form-select" id="room-list" size="20" multiple>
                     <!-- Room list will be populated by JavaScript -->
                 </select>
             </div>
@@ -829,11 +829,11 @@
              // Add change handler to select room on canvas
              select.onchange = function() {
                  if (this.value) {
-                     const room = rooms.find(r => r.id === parseInt(this.value));
-                     if (room) {
-                         selectRoomById(room.id);
-                         this.value = ''; // Reset dropdown
-                     }
+                    const selectedOptions = Array.from(this.selectedOptions);
+                    const selectedRoomIds = selectedOptions.map(option => parseInt(option.value));
+                    selectRoomsByIds(selectedRoomIds);
+                 } else {
+                    selectRoomsByIds([]);
                  }
              };
         }
@@ -1210,19 +1210,32 @@
             // Update selection display
             updateSelectionDisplay();
         }
-        
-        // Select a room by ID (from dropdown or other source)
-        function selectRoomById(roomId) {
-            const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-            
-            selectedRoom = room;
-            
+
+        function displayClearSelectedRooms() {
             // Remove all selected classes
             document.querySelectorAll('.room-node').forEach(n => {
                 n.classList.remove('selected');
             });
+        }
+
+        function selectRoomsByIds(roomIds) {
+            displayClearSelectedRooms();
+            roomIds.forEach(id => {
+                selectRoomById(id, false);
+            });
+        }
+
+        // Select a room by ID (from dropdown or other source)
+        function selectRoomById(roomId, remove = true) {
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) return;
             
+            selectedRoom = room;
+
+            if(remove) {
+                displayClearSelectedRooms();
+            }
+
             // Find and highlight the room node on canvas
             const nodes = document.querySelectorAll('.room-node');
             nodes.forEach(node => {

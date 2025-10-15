@@ -1,3 +1,19 @@
 # Chat database files
 instance/chat_messages.db
 *.db
+__pycache__/
+*.pyc
+*~
+.cache
+.pytest_cache
+instance/
+.webassets-cache
+htmlcov/
+dist/
+build/
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/

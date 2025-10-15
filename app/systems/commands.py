@@ -10,6 +10,12 @@ class CommandProcessor:
     
     def __init__(self):
         self.commands = {
+            'north': self.cmd_move,
+            'south': self.cmd_move,
+            'east': self.cmd_move,
+            'west': self.cmd_move,
+            'up': self.cmd_move,
+            'down': self.cmd_move,
             'look': self.cmd_look,
             'examine': self.cmd_examine,
             'inventory': self.cmd_inventory,
@@ -18,12 +24,6 @@ class CommandProcessor:
             'drop': self.cmd_drop,
             'equip': self.cmd_equip,
             'unequip': self.cmd_unequip,
-            'north': self.cmd_move,
-            'south': self.cmd_move,
-            'east': self.cmd_move,
-            'west': self.cmd_move,
-            'up': self.cmd_move,
-            'down': self.cmd_move,
             'go': self.cmd_go,
             'say': self.cmd_say,
             'emote': self.cmd_emote,
@@ -68,7 +68,7 @@ class CommandProcessor:
         # First pass: exact match
         if command in self.commands:
             try:
-                return self.commands[command](character, args, unparsed_args)
+                return self.commands[command](character, args, unparsed_args, command)
                 # For directional commands, pass the direction as the first argument
                 if command in ['north', 'n', 'south', 's', 'east', 'e', 'west', 'w', 'up', 'u', 'down', 'd']:
                     print(f"[PROCESS_COMMAND] Processing directional command: {command}")
@@ -88,7 +88,7 @@ class CommandProcessor:
         for cmd_name in self.commands:
             if cmd_name.startswith(command):
                 try:
-                    return self.commands[cmd_name](character, args, unparsed_args)
+                    return self.commands[cmd_name](character, args, unparsed_args, cmd_name)
                 except Exception as e:
                     return {'error': f'Command error: {str(e)}'}
 
@@ -128,7 +128,7 @@ class CommandProcessor:
         
         return description
     
-    def cmd_look(self, character, args):
+    def cmd_look(self, character, args, unparsed_args, command_key=None):
         """Look at room or object"""
         if not character.current_room:
             return {'error': 'You are not in a room'}
@@ -146,7 +146,7 @@ class CommandProcessor:
             target = ' '.join(args)
             return self._look_at_object(character, target)
     
-    def cmd_examine(self, character, args, unparsed_args):
+    def cmd_examine(self, character, args, unparsed_args, command_key=None):
         """Examine an object in detail"""
         if not args:
             return {'error': 'Examine what?'}
@@ -154,7 +154,7 @@ class CommandProcessor:
         target = ' '.join(args)
         return self._examine_object(character, target)
     
-    def cmd_inventory(self, character, args, unparsed_args):
+    def cmd_inventory(self, character, args, unparsed_args, command_key=None):
         """Show character inventory"""
         items = character.inventory.all()
         
@@ -168,7 +168,7 @@ class CommandProcessor:
         
         return {'message': message}
     
-    def cmd_get(self, character, args, unparsed_args):
+    def cmd_get(self, character, args, unparsed_args, command_key=None):
         """Get/take an item from the room"""
         if not args:
             return {'error': 'Get what?'}
@@ -202,7 +202,7 @@ class CommandProcessor:
             'room_message': f'{character.name} picks up {item.name}.'
         }
     
-    def cmd_drop(self, character, args, unparsed_args):
+    def cmd_drop(self, character, args, unparsed_args, command_key=None):
         """Drop an item in the room"""
         if not args:
             return {'error': 'Drop what?'}
@@ -239,7 +239,7 @@ class CommandProcessor:
             'room_message': f'{character.name} drops {item.name}.'
         }
     
-    def cmd_equip(self, character, args, unparsed_args):
+    def cmd_equip(self, character, args, unparsed_args, command_key=None):
         """Equip an item"""
         if not args:
             return {'error': 'Equip what?'}
@@ -266,7 +266,7 @@ class CommandProcessor:
         
         return {'message': f'You equip {item.name}.'}
     
-    def cmd_unequip(self, character, args, unparsed_args):
+    def cmd_unequip(self, character, args, unparsed_args, command_key=None):
         """Unequip an item"""
         if not args:
             return {'error': 'Unequip what?'}
@@ -291,7 +291,7 @@ class CommandProcessor:
         
         return {'message': f'You unequip {item.name}.'}
     
-    def cmd_move(self, character, direction_cmd, extra_args):
+    def cmd_move(self, character, args, extra_args, direction_cmd):
         """Move in a direction (called by directional commands)"""
         if not character.current_room:
             return {'error': 'You are not in a room'}
@@ -355,7 +355,7 @@ class CommandProcessor:
         
         return result
     
-    def cmd_go(self, character, args, unparsed_args):
+    def cmd_go(self, character, args, unparsed_args, command_key=None):
         """Go in a direction"""
         if not args:
             return {'error': 'Go where?'}
@@ -409,7 +409,7 @@ class CommandProcessor:
             }
         }
     
-    def cmd_say(self, character, args, unparsed_args):
+    def cmd_say(self, character, args, unparsed_args, command_key=None):
         """Say something"""
         if not unparsed_args or unparsed_args.isspace():
             return {'error': 'Say what?'}
@@ -423,7 +423,7 @@ class CommandProcessor:
             'room_message': f'{character.name} says, "{message}"'
         }
     
-    def cmd_emote(self, character, args, unparsed_args):
+    def cmd_emote(self, character, args, unparsed_args, command_key=None):
         """Perform an emote"""
         if not unparsed_args or unparsed_args.isspace():
             return {'error': 'Emote what?'}
@@ -437,7 +437,7 @@ class CommandProcessor:
             'room_message': f'{character.name} {emote}'
         }
     
-    def cmd_chat(self, character, args, unparsed_args):
+    def cmd_chat(self, character, args, unparsed_args, command_key=None):
         """Send a chat message to all players"""
         if not args:
             return {'error': 'Chat what?'}
@@ -465,7 +465,7 @@ class CommandProcessor:
             'chat_message': chat_message.to_dict()
         }
     
-    def cmd_censor(self, character, args, unparsed_args):
+    def cmd_censor(self, character, args, unparsed_args, command_key=None):
         """Toggle chat censorship on/off"""
         # Get the player associated with this character
         player = character.player
@@ -478,12 +478,12 @@ class CommandProcessor:
         status = "on" if player.censor_enabled else "off"
         return {'message': f'Chat censoring turned {status}.'}
     
-    def cmd_who(self, character, args, unparsed_args):
+    def cmd_who(self, character, args, unparsed_args, command_key=None):
         """Show who is online"""
         # TODO: Implement online player list
         return {'message': 'Online players: (feature not implemented yet)'}
     
-    def cmd_help(self, character, args, unparsed_args):
+    def cmd_help(self, character, args, unparsed_args, command_key=None):
         """Show help"""
         help_text = """
 <b>Available Commands:</b>
@@ -503,11 +503,11 @@ class CommandProcessor:
         """
         return {'message': help_text}
     
-    def cmd_quit(self, character, args, unparsed_args):
+    def cmd_quit(self, character, args, unparsed_args, command_key=None):
         """Quit the game"""
         return {'message': 'Goodbye!', 'quit': True}
     
-    def cmd_save(self, character, args, unparsed_args):
+    def cmd_save(self, character, args, unparsed_args, command_key=None):
         """Save character"""
         db.session.commit()
         return {'message': 'Character saved.'}

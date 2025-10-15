@@ -78,6 +78,9 @@ def register_game_events(socketio):
             emit('error', {'message': 'No active character'})
             return
         
+        # Refresh character from database to ensure we have latest state
+        db.session.refresh(character)
+        
         # Process command
         processor = CommandProcessor()
         result = processor.process_command(character, command)
@@ -86,6 +89,18 @@ def register_game_events(socketio):
         print(f"[SOCKET] Result keys: {result.keys() if result else 'None'}")
         print(f"[SOCKET] Result action: {result.get('action', 'NOT SET') if result else 'NO RESULT'}")
         print(f"[SOCKET] Full result: {result}")
+        
+        # Refresh character to get latest coordinates after command execution
+        db.session.refresh(character)
+        
+        # Add character coordinates to result for immediate client-side update
+        result['character_position'] = {
+            'x': character.x_coord,
+            'y': character.y_coord,
+            'z': character.z_coord
+        }
+        
+        print(f"[SOCKET] Character position after command: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
         
         # Emit result to client
         emit('command_result', {

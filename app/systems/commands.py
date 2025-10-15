@@ -307,16 +307,18 @@ class CommandProcessor:
         character.y_coord = target_room.y_coord
         character.z_coord = target_room.z_coord
         
-        print(f"[MOVE DEBUG] {character.name} moving from {old_coords} to ({target_room.x_coord}, {target_room.y_coord}, {target_room.z_coord})")
-        print(f"[MOVE DEBUG] Character coords before commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        print(f"[MOVE] Character ID: {character.id}")
+        print(f"[MOVE] Moving from {old_coords} to ({target_room.x_coord}, {target_room.y_coord}, {target_room.z_coord})")
+        print(f"[MOVE] Character coords before commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
         
         db.session.commit()
         
-        print(f"[MOVE DEBUG] Character coords after commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        print(f"[MOVE] Character coords after commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
         
         # Verify the update persisted
         db.session.refresh(character)
-        print(f"[MOVE DEBUG] Character coords after refresh: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        print(f"[MOVE] Character coords after refresh: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        print(f"[MOVE] ✅ Database update confirmed for character {character.id}")
         
         # Get formatted room description (same as look command)
         room_description = self._format_room_description(target_room, character, include_items_and_chars=True)
@@ -353,12 +355,24 @@ class CommandProcessor:
             return {'error': 'Target room not found.'}
         
         # Move character
+        old_coords = (character.x_coord, character.y_coord, character.z_coord)
         character.current_room_id = target_room.id
         character.x_coord = target_room.x_coord
         character.y_coord = target_room.y_coord
         character.z_coord = target_room.z_coord
         
+        print(f"[GO] Character ID: {character.id}")
+        print(f"[GO] Moving from {old_coords} to ({target_room.x_coord}, {target_room.y_coord}, {target_room.z_coord})")
+        print(f"[GO] Character coords before commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        
         db.session.commit()
+        
+        print(f"[GO] Character coords after commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        
+        # Verify the update persisted
+        db.session.refresh(character)
+        print(f"[GO] Character coords after refresh: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        print(f"[GO] ✅ Database update confirmed for character {character.id}")
         
         # Get formatted room description (same as look command)
         room_description = self._format_room_description(target_room, character, include_items_and_chars=True)

@@ -269,6 +269,9 @@ def get_recent_chat():
 @login_required
 def get_minimap_data(character_id):
     """Get nearby rooms for minimap display"""
+    # Expire all objects in session to force fresh data from database
+    db.session.expire_all()
+    
     character = Character.query.filter_by(
         id=character_id, 
         player_id=current_user.id

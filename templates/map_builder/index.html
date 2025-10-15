@@ -57,6 +57,8 @@
             position: relative;
             min-width: 2000px;
             min-height: 2000px;
+            padding-top: 10px;
+            padding-left: 10px;
         }
         
         .map-canvas.gridlines-boxed {
@@ -64,7 +66,7 @@
                 linear-gradient(to right, rgba(52, 152, 219, 0.15) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(52, 152, 219, 0.15) 1px, transparent 1px);
             background-size: 50px 50px;
-            background-position: 995px 995px;
+            background-position: 1005px 1005px;
         }
         
         .map-canvas.gridlines-centered {
@@ -72,7 +74,7 @@
                 linear-gradient(to right, rgba(52, 152, 219, 0.15) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(52, 152, 219, 0.15) 1px, transparent 1px);
             background-size: 50px 50px;
-            background-position: 1020px 1020px;
+            background-position: 1030px 1030px;
         }
         
         .room-node {
@@ -187,6 +189,30 @@
             z-index: 1001;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             pointer-events: none;
+        }
+        
+        .coordinate-label {
+            position: absolute;
+            color: #95a5a6;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 10px;
+            font-weight: bold;
+            pointer-events: none;
+            user-select: none;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+        
+        .coordinate-label.x-axis {
+            top: 0px;
+            transform: translateX(-50%);
+        }
+        
+        .coordinate-label.y-axis {
+            left: 0px;
+            top: 0px;
+            transform: translateY(-50%);
+            writing-mode: horizontal-tb;
         }
         
         .connection-line {
@@ -401,6 +427,12 @@
                             <i class="fas fa-map-marked-alt"></i> Surrounding Areas
                         </label>
                     </div>
+                    <div class="form-check form-switch me-4">
+                        <input class="form-check-input" type="checkbox" id="showCoordinatesToggle" onchange="toggleCoordinateLabels()">
+                        <label class="form-check-label text-white" for="showCoordinatesToggle">
+                            <i class="fas fa-hashtag"></i> Show X/Y
+                        </label>
+                    </div>
                     <div class="form-check form-switch me-2">
                         <input class="form-check-input" type="checkbox" id="gridlinesToggle" onchange="toggleGridlines()" checked>
                         <label class="form-check-label text-white" for="gridlinesToggle">
@@ -603,6 +635,11 @@
         let draggedNodes = []; // For multi-room dragging
         let dragOffset = { x: 0, y: 0 };
         
+        // Canvas constants
+        const CANVAS_PADDING = 10; // Padding offset for canvas
+        const CANVAS_CENTER = 1000; // Canvas center offset
+        const GRID_SIZE = 50; // Size of each grid cell
+        
         // Undo history (max 3 actions)
         let undoHistory = [];
         const MAX_UNDO_STEPS = 3;
@@ -691,6 +728,56 @@
                 } else {
                     canvas.classList.add('gridlines-boxed');
                 }
+            }
+        }
+        
+        // Toggle coordinate labels on/off
+        function toggleCoordinateLabels() {
+            const canvas = document.getElementById('map-canvas');
+            const toggle = document.getElementById('showCoordinatesToggle');
+            
+            // Remove all existing coordinate labels
+            const existingLabels = canvas.querySelectorAll('.coordinate-label');
+            existingLabels.forEach(label => label.remove());
+            
+            if (toggle.checked) {
+                // Determine the range of coordinates to display
+                // Show labels from -20 to +20 for both X and Y axes
+                const minCoord = -20;
+                const maxCoord = 20;
+                
+                // Create X-axis labels (along the top, in the padding area)
+                for (let x = minCoord; x <= maxCoord; x++) {
+                    if (x === 0) continue; // Skip 0 for cleaner look
+                    const label = document.createElement('div');
+                    label.className = 'coordinate-label x-axis';
+                    label.textContent = x;
+                    // Position in top padding area, accounting for canvas padding
+                    label.style.left = `${x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px`;
+                    label.style.top = '2px';
+                    canvas.appendChild(label);
+                }
+                
+                // Create Y-axis labels (along the left, in the padding area)
+                for (let y = minCoord; y <= maxCoord; y++) {
+                    if (y === 0) continue; // Skip 0 for cleaner look
+                    const label = document.createElement('div');
+                    label.className = 'coordinate-label y-axis';
+                    label.textContent = y;
+                    // Position in left padding area, accounting for canvas padding
+                    label.style.left = '2px';
+                    label.style.top = `${-y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px`;
+                    canvas.appendChild(label);
+                }
+                
+                // Add origin label (0,0) at the intersection
+                const originLabel = document.createElement('div');
+                originLabel.className = 'coordinate-label';
+                originLabel.textContent = '0';
+                originLabel.style.left = '0px';
+                originLabel.style.top = '0px';
+                originLabel.style.color = '#3498db';
+                canvas.appendChild(originLabel);
             }
         }
         
@@ -852,8 +939,8 @@
              filteredRooms.forEach(room => {
                 const node = document.createElement('div');
                 node.className = 'room-node';
-                 node.style.left = (room.x * 50 + 1000) + 'px';
-                 node.style.top = (-room.y * 50 + 1000) + 'px';
+                 node.style.left = (room.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING) + 'px';
+                 node.style.top = (-room.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING) + 'px';
                  node.innerHTML = `${room.name}`;
                  
                  // Add exit indicators for up/down
@@ -906,8 +993,8 @@
             surroundingRooms.forEach(room => {
                 const node = document.createElement('div');
                 node.className = 'room-node surrounding-area';
-                node.style.left = (room.x * 50 + 1000) + 'px';
-                node.style.top = (-room.y * 50 + 1000) + 'px';
+                node.style.left = (room.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING) + 'px';
+                node.style.top = (-room.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING) + 'px';
                 node.innerHTML = `${room.name}`;
                 
                 // Add exit indicators for up/down
@@ -949,6 +1036,13 @@
                     });
                 }
             });
+            
+            // Restore coordinate labels if they were enabled
+            const showCoordinatesToggle = document.getElementById('showCoordinatesToggle');
+            if (showCoordinatesToggle && showCoordinatesToggle.checked) {
+                // Re-create the coordinate labels since canvas was cleared
+                toggleCoordinateLabels();
+            }
         }
         
          // Draw connection between rooms (horizontal connections only - up/down use arrows)
@@ -957,11 +1051,11 @@
             const line = document.createElement('div');
             line.className = 'connection-line';
             
-             // Calculate center points of 40x40px rooms with 50px spacing on both axes
-             const x1 = room1.x * 50 + 1020;
-             const y1 = -room1.y * 50 + 1020;
-             const x2 = room2.x * 50 + 1020;
-             const y2 = -room2.y * 50 + 1020;
+             // Calculate center points of 40x40px rooms with GRID_SIZE spacing on both axes
+             const x1 = room1.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING + (GRID_SIZE / 2 - 5);
+             const y1 = -room1.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING + (GRID_SIZE / 2 - 5);
+             const x2 = room2.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING + (GRID_SIZE / 2 - 5);
+             const y2 = -room2.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING + (GRID_SIZE / 2 - 5);
              
              // Calculate angle and distance
              const angle = Math.atan2(y2 - y1, x2 - x1);
@@ -1044,15 +1138,55 @@
             const clickX = event.clientX - rect.left + scrollLeft;
             const clickY = event.clientY - rect.top + scrollTop;
             
-            const gridX = Math.round((clickX - 1020) / 50);
-            const gridY = Math.round(-(clickY - 1020) / 50);
+            const gridX = Math.round((clickX - (CANVAS_CENTER + CANVAS_PADDING)) / GRID_SIZE);
+            const gridY = Math.round(-(clickY - (CANVAS_CENTER + CANVAS_PADDING)) / GRID_SIZE);
             
             // Get current Z-level
             const zFilter = document.getElementById('zLevelFilter').value;
             const gridZ = (zFilter === 'all') ? 0 : parseInt(zFilter);
             
-            // Update display
-            coordDisplay.textContent = `X: ${gridX}, Y: ${gridY}, Z: ${gridZ}`;
+            // Update display with coordinates and selection info
+            let displayText = `X: ${gridX}, Y: ${gridY}, Z: ${gridZ}`;
+            
+            // Add selection information
+            if (multiSelectedRooms.length > 1) {
+                displayText += ` | ${multiSelectedRooms.length} Rooms Selected`;
+            } else if (multiSelectedRooms.length === 1) {
+                const room = rooms.find(r => r.id === multiSelectedRooms[0]);
+                if (room) {
+                    displayText += ` | Selected: ${room.name} (X: ${room.x}, Y: ${room.y}, Z: ${room.z})`;
+                }
+            } else if (selectedRoom) {
+                displayText += ` | Selected: ${selectedRoom.name} (X: ${selectedRoom.x}, Y: ${selectedRoom.y}, Z: ${selectedRoom.z})`;
+            }
+            
+            coordDisplay.textContent = displayText;
+        }
+        
+        // Update selection display without requiring mouse movement
+        function updateSelectionDisplay() {
+            const coordDisplay = document.getElementById('coord-display');
+            if (!coordDisplay) return;
+            
+            // Get current coordinates from display or use defaults
+            const currentText = coordDisplay.textContent;
+            const coordMatch = currentText.match(/X: (-?\d+), Y: (-?\d+), Z: (-?\d+)/);
+            
+            let displayText = coordMatch ? coordMatch[0] : 'X: 0, Y: 0, Z: 0';
+            
+            // Add selection information
+            if (multiSelectedRooms.length > 1) {
+                displayText += ` | ${multiSelectedRooms.length} Rooms Selected`;
+            } else if (multiSelectedRooms.length === 1) {
+                const room = rooms.find(r => r.id === multiSelectedRooms[0]);
+                if (room) {
+                    displayText += ` | Selected: ${room.name} (X: ${room.x}, Y: ${room.y}, Z: ${room.z})`;
+                }
+            } else if (selectedRoom) {
+                displayText += ` | Selected: ${selectedRoom.name} (X: ${selectedRoom.x}, Y: ${selectedRoom.y}, Z: ${selectedRoom.z})`;
+            }
+            
+            coordDisplay.textContent = displayText;
         }
         
         // Select a room visually (single click)
@@ -1072,6 +1206,9 @@
             
             // Add selected class to clicked node
             node.classList.add('selected');
+            
+            // Update selection display
+            updateSelectionDisplay();
         }
         
         // Select a room by ID (from dropdown or other source)
@@ -1091,14 +1228,17 @@
             nodes.forEach(node => {
                 // Match by checking innerHTML content (not ideal but works)
                 if (node.innerHTML.includes(room.name) && 
-                    node.style.left === `${room.x * 50 + 1000}px` &&
-                    node.style.top === `${-room.y * 50 + 1000}px`) {
+                    node.style.left === `${room.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px` &&
+                    node.style.top === `${-room.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px`) {
                     node.classList.add('selected');
                     
                     // Scroll node into view
                     node.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
                 }
             });
+            
+            // Update selection display
+            updateSelectionDisplay();
         }
         
         // Open room editor (double click)
@@ -1153,12 +1293,12 @@
              }
              
              // Calculate grid coordinates from click position
-             // Formula: reverse of (x * 50 + 1000) and (-y * 50 + 1000)
+             // Formula: reverse of (x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING) and (-y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING)
              const clickX = event.offsetX;
              const clickY = event.offsetY;
              
-             const gridX = Math.round((clickX - 1020) / 50);
-             const gridY = Math.round(-(clickY - 1020) / 50);
+             const gridX = Math.round((clickX - (CANVAS_CENTER + CANVAS_PADDING)) / GRID_SIZE);
+             const gridY = Math.round(-(clickY - (CANVAS_CENTER + CANVAS_PADDING)) / GRID_SIZE);
              
              // Get current Z-level from filter, or default to 0
              const zFilter = document.getElementById('zLevelFilter').value;
@@ -1273,6 +1413,9 @@
             
             // Hide delete button
             document.getElementById('deleteBtn').style.display = 'none';
+            
+            // Update selection display
+            updateSelectionDisplay();
             
             roomModal.show();
          }
@@ -1607,6 +1750,12 @@
                     roomModal.hide();
                     await loadRooms(); // Reload rooms
                     renderMap(); // Redraw entire map with all connection lines
+                    
+                    // Update selectedRoom reference after reload
+                    if (selectedRoom) {
+                        selectedRoom = rooms.find(r => r.id === selectedRoom.id) || selectedRoom;
+                    }
+                    updateSelectionDisplay();
                 } else {
                     alert('Error saving room');
                 }
@@ -1769,6 +1918,7 @@
                     selectedRoom = null;
                     await loadRooms();
                     renderMap();
+                    updateSelectionDisplay();
                 } else {
                     alert('Error deleting room');
                 }
@@ -1814,8 +1964,8 @@
                         
                         // Find which room this node represents
                         const matchingRoom = draggedRooms.find(r => 
-                            r.x * 50 + 1000 === nodeLeft && 
-                            -r.y * 50 + 1000 === nodeTop
+                            r.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING === nodeLeft && 
+                            -r.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING === nodeTop
                         );
                         
                         if (matchingRoom) {
@@ -2108,13 +2258,13 @@
                 // Calculate how much the primary dragged node has moved
                 const newLeft = mouseX - dragOffset.x;
                 const newTop = mouseY - dragOffset.y;
-                const deltaX = newLeft - (draggedRoom.x * 50 + 1000);
-                const deltaY = newTop - (-draggedRoom.y * 50 + 1000);
+                const deltaX = newLeft - (draggedRoom.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING);
+                const deltaY = newTop - (-draggedRoom.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING);
                 
                 // Move all dragged nodes by the same delta
                 draggedNodes.forEach(({ node, room }) => {
-                    const baseLeft = room.x * 50 + 1000;
-                    const baseTop = -room.y * 50 + 1000;
+                    const baseLeft = room.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING;
+                    const baseTop = -room.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING;
                     
                     node.style.left = (baseLeft + deltaX) + 'px';
                     node.style.top = (baseTop + deltaY) + 'px';
@@ -2178,8 +2328,8 @@
                         : rooms.filter(r => (r.z || 0) === parseInt(zFilter));
                     
                     filteredRooms.forEach(room => {
-                        const roomLeft = room.x * 50 + 1000;
-                        const roomTop = -room.y * 50 + 1000;
+                        const roomLeft = room.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING;
+                        const roomTop = -room.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING;
                         const roomRight = roomLeft + 40;
                         const roomBottom = roomTop + 40;
                         
@@ -2217,6 +2367,9 @@
                 copyBtn.style.display = 'none';
                 autoExitBtn.disabled = true;
             }
+            
+            // Update selection display
+            updateSelectionDisplay();
         }
         
         // Clear multi selection
@@ -2224,6 +2377,7 @@
             multiSelectedRooms = [];
             selectedRoom = null; // Also clear single selection
             updateMultiSelection();
+            // updateMultiSelection already calls updateSelectionDisplay
         }
         
         // Copy selected rooms
@@ -2442,8 +2596,8 @@
                 
                 // Find the room this node represents
                 const clickedRoom = rooms.find(r => 
-                    r.x * 50 + 1000 === nodeLeft && 
-                    -r.y * 50 + 1000 === nodeTop
+                    r.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING === nodeLeft && 
+                    -r.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING === nodeTop
                 );
                 
                 if (clickedRoom) {

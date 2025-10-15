@@ -101,8 +101,9 @@ class GameClient {
                 clearInterval(this.minimapUpdateInterval);
             }
             this.minimapUpdateInterval = setInterval(() => {
-                console.log('Periodic minimap update triggered');
-                this.loadMinimap();
+                console.log('⏰ Periodic minimap update triggered (every 5s)');
+                // Only refresh room data, NOT player position (position comes from socket only)
+                this.loadMinimap(false);
             }, 5000);
             console.log('Minimap auto-update started (every 5 seconds)');
         });
@@ -110,16 +111,38 @@ class GameClient {
         this.socket.on('command_result', (data) => {
             console.log('Command result received:', data);
             console.log('Result action:', data.result ? data.result.action : 'no result');
+            console.log('Character position from server:', data.result?.character_position);
             
             this.handleCommandResult(data);
             
-            // Reload minimap and coordinates after movement commands
+            // Update player position immediately from server response
+            if (data.result && data.result.character_position) {
+                const newPos = data.result.character_position;
+                console.log(`📍 Updating position from server: (${newPos.x}, ${newPos.y}, ${newPos.z})`);
+                
+                const oldPos = { ...this.playerPosition };
+                this.playerPosition = newPos;
+                
+                console.log(`Position changed: (${oldPos.x}, ${oldPos.y}, ${oldPos.z}) → (${newPos.x}, ${newPos.y}, ${newPos.z})`);
+                
+                // Update coordinates display immediately
+                this.updateCoordinatesDisplay();
+                
+                // Force immediate minimap redraw with updated position (before API fetch)
+                if (this.nearbyRooms.length > 0) {
+                    console.log('⚡ Immediate minimap redraw with updated position');
+                    this.renderMinimap();
+                }
+            }
+            
+            // Reload minimap data from server after movement commands
             if (data.result && data.result.action === 'move') {
-                console.log('✅ Movement detected! Updating minimap and coordinates...');
-                // Immediate update, then reload minimap from server
-                this.loadMinimap();
+                console.log('✅ Movement detected! Fetching fresh room data from server...');
+                
+                // Load fresh room data but DON'T update position (we already have it from socket)
+                this.loadMinimap(false);
             } else {
-                console.log('❌ Not a movement command (action:', data.result ? data.result.action : 'none', ')');
+                console.log('Not a movement command (action:', data.result ? data.result.action : 'none', ')');
             }
         });
         
@@ -441,20 +464,20 @@ class GameClient {
         }
     }
     
-    async loadMinimap() {
+    async loadMinimap(updatePosition = true) {
         if (!this.characterId) {
-            console.log('Minimap: No character ID');
+            console.log('❌ Minimap: No character ID');
             return;
         }
         if (!this.minimapCtx) {
-            console.log('Minimap: No canvas context');
+            console.log('❌ Minimap: No canvas context');
             return;
         }
         
         try {
             // Add cache-busting parameter to ensure fresh data
             const apiUrl = `/game/api/minimap/${this.characterId}?t=${Date.now()}`;
-            console.log(`Loading minimap from: ${apiUrl}`);
+            console.log(`🔄 Loading minimap from: ${apiUrl} (updatePosition: ${updatePosition})`);
             const response = await fetch(apiUrl, {
                 cache: 'no-cache',
                 headers: {
@@ -464,47 +487,67 @@ class GameClient {
             });
             const data = await response.json();
             
-            console.log('Minimap API response:', data);
+            console.log('📦 Minimap API response:', data);
             
             if (data.success) {
-                console.log(`Minimap loaded: ${data.rooms.length} rooms, player at (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
+                const oldPos = { ...this.playerPosition };
+                console.log(`✅ Minimap loaded: ${data.rooms.length} rooms, API player pos: (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
                 
-                // Check if position actually changed
-                if (this.playerPosition.x !== data.player_position.x || 
-                    this.playerPosition.y !== data.player_position.y || 
-                    this.playerPosition.z !== data.player_position.z) {
-                    console.log(`Player position changed from (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z}) to (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
+                // Update room data
+                this.nearbyRooms = data.rooms;
+                
+                // Only update position if requested (to avoid overwriting fresh socket data)
+                if (updatePosition) {
+                    // Check if position actually changed
+                    if (this.playerPosition.x !== data.player_position.x || 
+                        this.playerPosition.y !== data.player_position.y || 
+                        this.playerPosition.z !== data.player_position.z) {
+                        console.log(`🚶 Player position CHANGED from (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z}) to (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
+                    } else {
+                        console.log(`⏸️ Player position UNCHANGED at (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
+                    }
+                    
+                    this.playerPosition = data.player_position;
+                    
+                    console.log('🔢 Calling updateCoordinatesDisplay()...');
+                    this.updateCoordinatesDisplay();
+                } else {
+                    console.log(`🔒 Keeping current player position: (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z}) (not overwriting with API data)`);
                 }
                 
-                this.nearbyRooms = data.rooms;
-                this.playerPosition = data.player_position;
+                console.log('🎨 Calling renderMinimap()...');
                 this.renderMinimap();
-                this.updateCoordinatesDisplay();
             } else {
-                console.error('Minimap API returned error:', data);
+                console.error('❌ Minimap API returned error:', data);
             }
         } catch (error) {
-            console.error('Failed to load minimap:', error);
+            console.error('❌ Failed to load minimap:', error);
         }
     }
     
     renderMinimap() {
         if (!this.minimapCtx || !this.minimap) {
-            console.log('Minimap render skipped: no context or canvas');
+            console.error('❌ Minimap render skipped: no context or canvas');
             return;
         }
         
-        console.log(`Rendering minimap: ${this.nearbyRooms.length} rooms at player position (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z})`);
+        console.log(`🎨 === RENDERING MINIMAP START ===`);
+        console.log(`   Rooms: ${this.nearbyRooms.length}`);
+        console.log(`   Player Position: (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z})`);
         
         const ctx = this.minimapCtx;
         const canvas = this.minimap;
         
-        // Clear canvas
+        console.log(`   Canvas size: ${canvas.width}x${canvas.height}`);
+        
+        // Clear canvas completely
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        console.log(`   ✓ Canvas cleared`);
         
         // Fill background
         ctx.fillStyle = '#1a252f';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        console.log(`   ✓ Background filled`);
         
         // Calculate scale and offset
         const cellSize = 18; // Scaled down from 40px to 18px
@@ -543,9 +586,12 @@ class GameClient {
         
         if (!playerRoomFound) {
             console.warn(`⚠️ Player position (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z}) not found in nearby rooms!`);
+            console.warn(`   Nearby rooms:`, this.nearbyRooms.map(r => `(${r.x}, ${r.y}, ${r.z})`));
+        } else {
+            console.log(`   ✓ Player room rendered at (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z})`);
         }
         
-        console.log('✅ Minimap rendering complete');
+        console.log(`🎨 === RENDERING MINIMAP COMPLETE ===`);
     }
     
     drawMinimapConnection(ctx, room1, room2, centerX, centerY, cellSize) {

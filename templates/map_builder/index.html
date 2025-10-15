@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mudra MUD - Map Builder</title>
+    <title>Mudra - Map Builder</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -59,6 +59,22 @@
             min-height: 2000px;
         }
         
+        .map-canvas.gridlines-boxed {
+            background-image: 
+                linear-gradient(to right, rgba(52, 152, 219, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(52, 152, 219, 0.15) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: 995px 995px;
+        }
+        
+        .map-canvas.gridlines-centered {
+            background-image: 
+                linear-gradient(to right, rgba(52, 152, 219, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(52, 152, 219, 0.15) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: 1020px 1020px;
+        }
+        
         .room-node {
             position: absolute;
             width: 40px;
@@ -76,6 +92,18 @@
             font-weight: bold;
             transition: all 0.3s ease;
             user-select: none;
+        }
+        
+        .room-node.surrounding-area {
+            background: #2c3e50;
+            border: 2px solid #34495e;
+            opacity: 0.7;
+            cursor: default;
+        }
+        
+        .room-node.surrounding-area:hover {
+            border-color: #7f8c8d;
+            transform: scale(1.05);
         }
         
         .room-node:hover {
@@ -218,6 +246,42 @@
             border-color: #a93226;
         }
         
+        .btn-warning {
+            background: #f39c12;
+            border-color: #e67e22;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+            border-color: #d35400;
+            color: white;
+        }
+        
+        .btn-warning:disabled {
+            background: #7f8c8d;
+            border-color: #6c7a89;
+            color: #bdc3c7;
+            opacity: 0.6;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            border-color: #7f8c8d;
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: #7f8c8d;
+            border-color: #6c7a89;
+        }
+        
+        .btn-secondary:disabled {
+            background: #4a5f7a;
+            border-color: #34495e;
+            color: #7f8c8d;
+            opacity: 0.6;
+        }
+        
         .modal-content {
             background: #2c3e50;
             color: white;
@@ -230,6 +294,98 @@
         .modal-footer {
             border-top: 1px solid #4a5f7a;
         }
+        
+        .btn-outline-primary {
+            color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #3498db;
+            border-color: #3498db;
+            color: white;
+        }
+        
+        .btn-outline-secondary {
+            color: #95a5a6;
+            border-color: #95a5a6;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: #95a5a6;
+            border-color: #95a5a6;
+            color: white;
+        }
+        
+        .btn-outline-success {
+            color: #27ae60;
+            border-color: #27ae60;
+        }
+        
+        .btn-outline-success:hover {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+        
+        .form-check-input {
+            background-color: #34495e;
+            border-color: #4a5f7a;
+        }
+        
+        .form-check-input:checked {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .form-check-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .form-select-sm {
+            background-color: #2c3e50;
+            border-color: #4a5f7a;
+            color: white;
+            font-size: 0.875rem;
+        }
+        
+        .form-select-sm:focus {
+            background-color: #2c3e50;
+            border-color: #3498db;
+            color: white;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        .context-menu {
+            position: fixed;
+            background: #2c3e50;
+            border: 1px solid #34495e;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            min-width: 150px;
+            padding: 4px 0;
+        }
+        
+        .context-menu-item {
+            padding: 8px 16px;
+            color: #ecf0f1;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .context-menu-item:hover {
+            background: #34495e;
+        }
+        
+        .context-menu-item i {
+            width: 16px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -237,8 +393,24 @@
         <!-- Header -->
         <div class="builder-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h3><i class="fas fa-hammer"></i> Mudra MUD Map Builder</h3>
+                <h3><i class="fas fa-hammer"></i> Mudra Map Builder</h3>
                 <div class="d-flex align-items-center">
+                    <div class="form-check form-switch me-4">
+                        <input class="form-check-input" type="checkbox" id="surroundingAreasToggle" onchange="renderMap()">
+                        <label class="form-check-label text-white" for="surroundingAreasToggle">
+                            <i class="fas fa-map-marked-alt"></i> Surrounding Areas
+                        </label>
+                    </div>
+                    <div class="form-check form-switch me-2">
+                        <input class="form-check-input" type="checkbox" id="gridlinesToggle" onchange="toggleGridlines()" checked>
+                        <label class="form-check-label text-white" for="gridlinesToggle">
+                            <i class="fas fa-border-all"></i> Gridlines
+                        </label>
+                    </div>
+                    <select class="form-select form-select-sm me-4" id="gridAlignmentSelect" onchange="updateGridAlignment()" style="width: 140px;">
+                        <option value="boxed">Boxed</option>
+                        <option value="centered">Centered</option>
+                    </select>
                     <label class="me-2 text-white">Z-Level:</label>
                     <select class="form-select me-3" id="zLevelFilter" onchange="renderMap()" style="width: 100px;">
                         <option value="all">All</option>
@@ -246,11 +418,14 @@
                     <button class="btn btn-info btn-sm me-2" id="copySelectedBtn" onclick="copySelectedRooms()" style="display: none;">
                         <i class="fas fa-copy"></i> Copy Selected
                     </button>
+                    <button class="btn btn-warning btn-sm me-2" id="autoExitBtn" onclick="autoExitSelectedRooms()" disabled>
+                        <i class="fas fa-route"></i> Auto Exit
+                    </button>
+                    <button class="btn btn-secondary btn-sm me-2" id="undoBtn" onclick="undoLastAction()" disabled>
+                        <i class="fas fa-undo"></i> Undo
+                    </button>
                     <button class="btn btn-success me-2" onclick="saveMap()">
                         <i class="fas fa-save"></i> Save Map
-                    </button>
-                    <button class="btn btn-primary" onclick="addRoom()">
-                        <i class="fas fa-plus"></i> Add Room
                     </button>
                 </div>
             </div>
@@ -260,7 +435,7 @@
         <div class="builder-main">
             <!-- Sidebar -->
             <div class="sidebar">
-                <h5>Filter by Area</h5>
+                <h5>Current Area</h5>
                 <select class="form-select mb-3" id="area-filter">
                 </select>
                 
@@ -326,7 +501,20 @@
                             <textarea class="form-control" id="roomDescription" rows="4"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Exits</label>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Exits</label>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-primary" onclick="selectAllExits()">
+                                        <i class="fas fa-check-double"></i> Select All
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearAllExits()">
+                                        <i class="fas fa-times"></i> Clear All
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success" onclick="autoSelectExits()">
+                                        <i class="fas fa-magic"></i> Auto Detect
+                                    </button>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-check">
@@ -366,6 +554,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="roomLighting" class="form-label">Lighting</label>
+                            <select class="form-select" id="roomLighting">
+                                <option value="dark">Dark</option>
+                                <option value="dim">Dim</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="bright">Bright</option>
+                            </select>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -374,6 +571,13 @@
                     <button type="button" class="btn btn-primary" onclick="saveRoom()">Save Room</button>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu" style="display: none;">
+        <div class="context-menu-item" onclick="changeSelectedRoomNames()">
+            <i class="fas fa-edit"></i> Change Name
         </div>
     </div>
     
@@ -395,7 +599,13 @@
         let isDraggingRoom = false;
         let draggedRoom = null;
         let draggedNode = null;
+        let draggedRooms = []; // For multi-room dragging
+        let draggedNodes = []; // For multi-room dragging
         let dragOffset = { x: 0, y: 0 };
+        
+        // Undo history (max 3 actions)
+        let undoHistory = [];
+        const MAX_UNDO_STEPS = 3;
         
         // Initialize the map builder
         document.addEventListener('DOMContentLoaded', function() {
@@ -429,6 +639,13 @@
              // Add keyboard handler for Delete key
              document.addEventListener('keydown', handleKeyPress);
              
+             // Add context menu handlers
+             document.addEventListener('click', hideContextMenu);
+             document.addEventListener('contextmenu', handleContextMenu);
+             
+             // Initialize gridlines (enabled by default with boxed alignment)
+             canvas.classList.add('gridlines-boxed');
+             
             loadAreas();
             loadRooms();
         });
@@ -455,6 +672,35 @@
                 renderMap();
             } catch (error) {
                 console.error('Error loading rooms:', error);
+            }
+        }
+        
+        // Toggle gridlines on/off
+        function toggleGridlines() {
+            const canvas = document.getElementById('map-canvas');
+            const toggle = document.getElementById('gridlinesToggle');
+            const alignment = document.getElementById('gridAlignmentSelect').value;
+            
+            // Remove both gridline classes
+            canvas.classList.remove('gridlines-boxed', 'gridlines-centered');
+            
+            if (toggle.checked) {
+                // Add the appropriate class based on alignment
+                if (alignment === 'centered') {
+                    canvas.classList.add('gridlines-centered');
+                } else {
+                    canvas.classList.add('gridlines-boxed');
+                }
+            }
+        }
+        
+        // Update grid alignment
+        function updateGridAlignment() {
+            const toggle = document.getElementById('gridlinesToggle');
+            
+            // Only update if gridlines are currently enabled
+            if (toggle.checked) {
+                toggleGridlines();
             }
         }
         
@@ -548,6 +794,7 @@
             // Get current filters
             const zFilter = document.getElementById('zLevelFilter').value;
             const areaFilter = document.getElementById('area-filter')?.value || null;
+            const showSurrounding = document.getElementById('surroundingAreasToggle')?.checked || false;
             
             // Populate Z-level filter if empty
             const zLevels = [...new Set(rooms.map(r => r.z || 0))].sort((a, b) => a - b);
@@ -575,6 +822,29 @@
                 filteredRooms = filteredRooms.filter(room => {
                     const area = areas.find(a => a.id === room.area_id);
                     return area && area.area_id === areaFilter;
+                });
+            }
+            
+            // Get surrounding area rooms if toggle is on
+            let surroundingRooms = [];
+            if (showSurrounding && filteredRooms.length > 0) {
+                // Find rooms within 30 units of any filtered room
+                surroundingRooms = rooms.filter(room => {
+                    // Skip if room is already in filtered rooms
+                    if (filteredRooms.some(fr => fr.id === room.id)) return false;
+                    
+                    // Skip if not on same Z-level
+                    if (zFilter !== 'all' && (room.z || 0) !== parseInt(zFilter)) return false;
+                    
+                    // Check if within 30 units of any filtered room
+                    return filteredRooms.some(fr => {
+                        const distance = Math.sqrt(
+                            Math.pow(room.x - fr.x, 2) + 
+                            Math.pow(room.y - fr.y, 2) + 
+                            Math.pow((room.z || 0) - (fr.z || 0), 2)
+                        );
+                        return distance <= 30;
+                    });
                 });
             }
             
@@ -629,6 +899,38 @@
                          openRoomEditor(room);
                      }
                  };
+                canvas.appendChild(node);
+            });
+            
+            // Render surrounding area rooms (if toggle is on)
+            surroundingRooms.forEach(room => {
+                const node = document.createElement('div');
+                node.className = 'room-node surrounding-area';
+                node.style.left = (room.x * 50 + 1000) + 'px';
+                node.style.top = (-room.y * 50 + 1000) + 'px';
+                node.innerHTML = `${room.name}`;
+                
+                // Add exit indicators for up/down
+                if (room.exits) {
+                    if (room.exits.up) {
+                        const upArrow = document.createElement('div');
+                        upArrow.className = 'exit-indicator exit-up';
+                        node.appendChild(upArrow);
+                    }
+                    if (room.exits.down) {
+                        const downArrow = document.createElement('div');
+                        downArrow.className = 'exit-indicator exit-down';
+                        node.appendChild(downArrow);
+                    }
+                }
+                
+                // Add hover events for tooltip
+                node.addEventListener('mouseenter', (e) => showTooltip(e, room));
+                node.addEventListener('mouseleave', hideTooltip);
+                node.addEventListener('mousemove', updateTooltipPosition);
+                
+                // Note: No drag/select handlers for surrounding rooms - they're read-only
+                
                 canvas.appendChild(node);
             });
             
@@ -687,6 +989,14 @@
             // Build tooltip content
             let tooltipText = `Coords: (${room.x}, ${room.y}, ${room.z || 0})\nRoom ID: ${room.room_id}`;
             
+            // Add area information
+            if (room.area_id) {
+                const area = areas.find(a => a.id === room.area_id);
+                if (area) {
+                    tooltipText += `\nArea: ${area.name}`;
+                }
+            }
+            
             // Add exits information
             if (room.exits && Object.keys(room.exits).length > 0) {
                 tooltipText += '\n\nExits:';
@@ -725,9 +1035,14 @@
             const coordDisplay = document.getElementById('coord-display');
             if (!coordDisplay) return;
             
-            // Calculate grid coordinates from mouse position
-            const clickX = event.offsetX;
-            const clickY = event.offsetY;
+            // Calculate grid coordinates from mouse position relative to the canvas
+            const canvas = document.getElementById('map-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const scrollLeft = canvas.scrollLeft || 0;
+            const scrollTop = canvas.scrollTop || 0;
+            
+            const clickX = event.clientX - rect.left + scrollLeft;
+            const clickY = event.clientY - rect.top + scrollTop;
             
             const gridX = Math.round((clickX - 1020) / 50);
             const gridY = Math.round(-(clickY - 1020) / 50);
@@ -807,6 +1122,9 @@
             document.getElementById('exitUp').checked = room.exits && room.exits.up ? true : false;
             document.getElementById('exitDown').checked = room.exits && room.exits.down ? true : false;
             
+            // Set lighting
+            document.getElementById('roomLighting').value = room.lighting || 'normal';
+            
             // Show delete button
             document.getElementById('deleteBtn').style.display = 'inline-block';
             
@@ -882,20 +1200,28 @@
              };
              
              try {
-                 const response = await fetch('/api/rooms', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json'
-                     },
-                     body: JSON.stringify(formData)
-                 });
-                 
-                 if (response.ok) {
-                     loadRooms(); // Reload rooms to show new room
-                 } else {
-                     const error = await response.json();
-                     alert('Error creating room: ' + (error.error || 'Unknown error'));
-                 }
+                const response = await fetch('/api/rooms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    const createdRoom = await response.json();
+                    
+                    // Add to undo history
+                    addToUndoHistory({
+                        type: 'create',
+                        room: createdRoom
+                    });
+                    
+                    loadRooms(); // Reload rooms to show new room
+                } else {
+                    const error = await response.json();
+                    alert('Error creating room: ' + (error.error || 'Unknown error'));
+                }
              } catch (error) {
                  console.error('Error creating room:', error);
                  alert('Error creating room');
@@ -960,6 +1286,74 @@
                 const checkboxId = `exit${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
                 document.getElementById(checkboxId).checked = false;
             }
+        }
+        
+        // Select all exits
+        async function selectAllExits() {
+            const directions = ['north', 'south', 'east', 'west', 'up', 'down'];
+            
+            for (const direction of directions) {
+                const checkboxId = `exit${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+                const checkbox = document.getElementById(checkboxId);
+                
+                if (!checkbox.checked) {
+                    checkbox.checked = true;
+                    // Trigger the change handler to validate/create rooms if needed
+                    await handleExitChange(direction, true);
+                }
+            }
+        }
+        
+        // Clear all exits
+        function clearAllExits() {
+            const directions = ['north', 'south', 'east', 'west', 'up', 'down'];
+            
+            directions.forEach(direction => {
+                const checkboxId = `exit${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+                const checkbox = document.getElementById(checkboxId);
+                checkbox.checked = false;
+            });
+        }
+        
+        // Auto select exits where adjacent rooms exist
+        function autoSelectExits() {
+            const x = parseInt(document.getElementById('roomX').value);
+            const y = parseInt(document.getElementById('roomY').value);
+            const z = parseInt(document.getElementById('roomZ').value);
+            
+            const directionOffsets = {
+                'north': { x: 0, y: 1, z: 0 },
+                'south': { x: 0, y: -1, z: 0 },
+                'east': { x: 1, y: 0, z: 0 },
+                'west': { x: -1, y: 0, z: 0 },
+                'up': { x: 0, y: 0, z: 1 },
+                'down': { x: 0, y: 0, z: -1 }
+            };
+            
+            let selectedCount = 0;
+            
+            Object.entries(directionOffsets).forEach(([direction, offset]) => {
+                const targetX = x + offset.x;
+                const targetY = y + offset.y;
+                const targetZ = z + offset.z;
+                
+                // Check if room exists at target coordinates
+                const targetRoom = rooms.find(r => 
+                    r.x === targetX && r.y === targetY && (r.z || 0) === targetZ
+                );
+                
+                const checkboxId = `exit${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+                const checkbox = document.getElementById(checkboxId);
+                
+                if (targetRoom) {
+                    checkbox.checked = true;
+                    selectedCount++;
+                } else {
+                    checkbox.checked = false;
+                }
+            });
+            
+            console.log(`Auto-selected ${selectedCount} exit(s) based on adjacent rooms`);
         }
         
         // Check if exit destination exists, offer to create if not
@@ -1126,12 +1520,18 @@
                 x: x,
                 y: y,
                 z: z,
-                exits: exits
+                exits: exits,
+                lighting: document.getElementById('roomLighting').value
             };
             
             try {
                 let response;
+                let previousState = null;
+                
                 if (selectedRoom) {
+                    // Save previous state for undo
+                    previousState = JSON.parse(JSON.stringify(selectedRoom));
+                    
                     // Update existing room
                     response = await fetch(`/api/rooms/${selectedRoom.id}`, {
                         method: 'PUT',
@@ -1152,6 +1552,23 @@
                 }
                 
                 if (response.ok) {
+                    const updatedRoom = await response.json();
+                    
+                    // Add to undo history if this was an update
+                    if (previousState) {
+                        addToUndoHistory({
+                            type: 'update',
+                            room: updatedRoom,
+                            previousState: previousState
+                        });
+                    } else {
+                        // This was a create operation
+                        addToUndoHistory({
+                            type: 'create',
+                            room: updatedRoom
+                        });
+                    }
+                    
                     // Update reciprocal exits in connected rooms
                     for (const update of roomsToUpdate) {
                         const targetRoom = update.room;
@@ -1204,12 +1621,21 @@
             if (!selectedRoom) return;
             
             if (confirm('Are you sure you want to delete this room?')) {
+                // Save room state before deleting
+                const roomToDelete = JSON.parse(JSON.stringify(selectedRoom));
+                
                 try {
                     const response = await fetch(`/api/rooms/${selectedRoom.id}`, {
                         method: 'DELETE'
                     });
                     
                     if (response.ok) {
+                        // Add to undo history
+                        addToUndoHistory({
+                            type: 'delete',
+                            room: roomToDelete
+                        });
+                        
                         roomModal.hide();
                         await loadRooms(); // Reload rooms
                         renderMap(); // Redraw entire map
@@ -1285,13 +1711,36 @@
         
         // Handle keyboard shortcuts
         function handleKeyPress(event) {
-            // Delete key to delete selected rooms
-            if (event.key === 'Delete') {
-                // Don't trigger if user is typing in an input field
-                if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+            // Enter key in Room Editor - save room
+            if (event.key === 'Enter' && (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA')) {
+                const modal = document.getElementById('roomModal');
+                if (modal && modal.classList.contains('show')) {
+                    event.preventDefault();
+                    saveRoom();
                     return;
                 }
-                
+            }
+            
+            // Don't trigger other shortcuts if user is typing in an input field
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+                return;
+            }
+            
+            // Escape key to deselect rooms
+            if (event.key === 'Escape') {
+                clearMultiSelection();
+                return;
+            }
+            
+            // Ctrl+Z for undo
+            if (event.ctrlKey && event.key === 'z') {
+                event.preventDefault();
+                undoLastAction();
+                return;
+            }
+            
+            // Delete key to delete selected rooms
+            if (event.key === 'Delete') {
                 // Handle multi-selection deletion
                 if (multiSelectedRooms.length > 0) {
                     deleteSelectedRooms();
@@ -1341,9 +1790,6 @@
                 draggedNode = node;
                 
                 const nodeRect = node.getBoundingClientRect();
-                const canvasRect = document.getElementById('map-canvas').getBoundingClientRect();
-                const canvasScrollLeft = document.getElementById('map-canvas').scrollLeft;
-                const canvasScrollTop = document.getElementById('map-canvas').scrollTop;
                 
                 dragOffset = {
                     x: event.clientX - nodeRect.left,
@@ -1353,8 +1799,37 @@
                 // Hide tooltip during drag
                 hideTooltip();
                 
-                // Add dragging cursor
-                node.style.cursor = 'grabbing';
+                // Check if this room is part of a multi-selection
+                if (multiSelectedRooms.includes(room.id)) {
+                    // Dragging multiple rooms - collect all selected rooms and their nodes
+                    draggedRooms = multiSelectedRooms.map(roomId => rooms.find(r => r.id === roomId)).filter(r => r);
+                    console.log(`Dragging ${draggedRooms.length} rooms from selection:`, draggedRooms.map(r => r.room_id));
+                    
+                    // Find all nodes for selected rooms
+                    draggedNodes = [];
+                    const allNodes = document.querySelectorAll('.room-node');
+                    allNodes.forEach(n => {
+                        const nodeLeft = parseInt(n.style.left);
+                        const nodeTop = parseInt(n.style.top);
+                        
+                        // Find which room this node represents
+                        const matchingRoom = draggedRooms.find(r => 
+                            r.x * 50 + 1000 === nodeLeft && 
+                            -r.y * 50 + 1000 === nodeTop
+                        );
+                        
+                        if (matchingRoom) {
+                            draggedNodes.push({ node: n, room: matchingRoom });
+                            n.style.cursor = 'grabbing';
+                        }
+                    });
+                    console.log(`Found ${draggedNodes.length} nodes for dragging`);
+                } else {
+                    // Dragging single room
+                    draggedRooms = [room];
+                    draggedNodes = [{ node: node, room: room }];
+                    node.style.cursor = 'grabbing';
+                }
             }
         }
         
@@ -1370,40 +1845,92 @@
             const dropX = event.clientX - rect.left + canvas.scrollLeft;
             const dropY = event.clientY - rect.top + canvas.scrollTop;
             
-            // Calculate new grid position
+            // Calculate new grid position for the primary dragged room
             const newGridX = Math.round((dropX - dragOffset.x - 1000) / 50);
             const newGridY = Math.round(-(dropY - dragOffset.y - 1000) / 50);
-            const currentZ = draggedRoom.z || 0;
+            
+            // Calculate the offset from original position
+            const deltaX = newGridX - draggedRoom.x;
+            const deltaY = newGridY - draggedRoom.y;
             
             // Check if position is different
-            if (newGridX !== draggedRoom.x || newGridY !== draggedRoom.y) {
+            if (deltaX !== 0 || deltaY !== 0) {
                 
-                // Check for coordinate conflict
-                const existingRoom = rooms.find(r => 
-                    r.id !== draggedRoom.id && 
-                    r.x === newGridX && 
-                    r.y === newGridY && 
-                    (r.z || 0) === currentZ
-                );
+                // Check for coordinate conflicts for all rooms being moved
+                let hasConflict = false;
+                for (const roomToMove of draggedRooms) {
+                    const targetX = roomToMove.x + deltaX;
+                    const targetY = roomToMove.y + deltaY;
+                    const targetZ = roomToMove.z || 0;
+                    
+                    const existingRoom = rooms.find(r => 
+                        !draggedRooms.find(dr => dr.id === r.id) && // Not one of the rooms being moved
+                        r.x === targetX && 
+                        r.y === targetY && 
+                        (r.z || 0) === targetZ
+                    );
+                    
+                    if (existingRoom) {
+                        alert(`Cannot move rooms: position (${targetX}, ${targetY}, ${targetZ}) is occupied by ${existingRoom.name}`);
+                        hasConflict = true;
+                        break;
+                    }
+                }
                 
-                if (existingRoom) {
-                    alert(`Cannot move room: position (${newGridX}, ${newGridY}, ${currentZ}) is occupied by ${existingRoom.name}`);
-                } else {
-                    // Update room position
-                    await updateRoomPosition(draggedRoom, newGridX, newGridY, currentZ);
+                if (!hasConflict) {
+                    // Update all room positions
+                    console.log(`Moving ${draggedRooms.length} room(s)`);
+                    if (draggedRooms.length === 1) {
+                        // Single room - use the full update with exit cleanup
+                        const newX = draggedRooms[0].x + deltaX;
+                        const newY = draggedRooms[0].y + deltaY;
+                        const newZ = draggedRooms[0].z || 0;
+                        await updateRoomPosition(draggedRooms[0], newX, newY, newZ);
+                    } else {
+                        // Multiple rooms - simple position update without exit cleanup
+                        // (exits remain intact since rooms move together)
+                        for (const roomToMove of draggedRooms) {
+                            const newX = roomToMove.x + deltaX;
+                            const newY = roomToMove.y + deltaY;
+                            const newZ = roomToMove.z || 0;
+                            
+                            try {
+                                await fetch(`/api/rooms/${roomToMove.id}`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        room_id: roomToMove.room_id,
+                                        name: roomToMove.name,
+                                        description: roomToMove.description,
+                                        area_id: roomToMove.area_id,
+                                        x: newX,
+                                        y: newY,
+                                        z: newZ,
+                                        exits: roomToMove.exits || {}
+                                    })
+                                });
+                            } catch (error) {
+                                console.error(`Error updating room ${roomToMove.room_id}:`, error);
+                            }
+                        }
+                    }
                 }
             }
             
-            // Reset drag state
-            if (draggedNode) {
-                draggedNode.style.cursor = 'grab';
-                draggedNode.style.opacity = '1';
-                draggedNode.style.zIndex = '';
-            }
+            // Reset drag state for all nodes
+            draggedNodes.forEach(({ node }) => {
+                node.style.cursor = 'grab';
+                node.style.opacity = '1';
+                node.style.zIndex = '';
+            });
             
             isDraggingRoom = false;
             draggedRoom = null;
             draggedNode = null;
+            draggedRooms = [];
+            draggedNodes = [];
             
             // Redraw map
             await loadRooms();
@@ -1573,15 +2100,27 @@
         // Handle canvas drag (either selection or room move)
         function handleCanvasDrag(event) {
             if (isDraggingRoom && draggedNode) {
-                // Handle room drag
+                // Handle room drag (single or multiple)
                 const rect = event.currentTarget.getBoundingClientRect();
                 const mouseX = event.clientX - rect.left + event.currentTarget.scrollLeft;
                 const mouseY = event.clientY - rect.top + event.currentTarget.scrollTop;
                 
-                draggedNode.style.left = (mouseX - dragOffset.x) + 'px';
-                draggedNode.style.top = (mouseY - dragOffset.y) + 'px';
-                draggedNode.style.opacity = '0.6';
-                draggedNode.style.zIndex = '1000';
+                // Calculate how much the primary dragged node has moved
+                const newLeft = mouseX - dragOffset.x;
+                const newTop = mouseY - dragOffset.y;
+                const deltaX = newLeft - (draggedRoom.x * 50 + 1000);
+                const deltaY = newTop - (-draggedRoom.y * 50 + 1000);
+                
+                // Move all dragged nodes by the same delta
+                draggedNodes.forEach(({ node, room }) => {
+                    const baseLeft = room.x * 50 + 1000;
+                    const baseTop = -room.y * 50 + 1000;
+                    
+                    node.style.left = (baseLeft + deltaX) + 'px';
+                    node.style.top = (baseTop + deltaY) + 'px';
+                    node.style.opacity = '0.6';
+                    node.style.zIndex = '1000';
+                });
                 
             } else if (isSelecting && selectionBox) {
                 // Handle selection drag
@@ -1667,12 +2206,16 @@
             // Redraw map to update multi-selected visual states
             renderMap();
             
-            // Show/hide action buttons
+            // Show/hide and enable/disable action buttons
             const copyBtn = document.getElementById('copySelectedBtn');
+            const autoExitBtn = document.getElementById('autoExitBtn');
+            
             if (multiSelectedRooms.length > 0) {
                 copyBtn.style.display = 'inline-block';
+                autoExitBtn.disabled = false;
             } else {
                 copyBtn.style.display = 'none';
+                autoExitBtn.disabled = true;
             }
         }
         
@@ -1760,6 +2303,358 @@
             await loadRooms();
             renderMap();
             clearMultiSelection();
+        }
+        
+        // Auto-exit selected rooms
+        async function autoExitSelectedRooms() {
+            if (multiSelectedRooms.length === 0) {
+                alert('No rooms selected');
+                return;
+            }
+            
+            if (!confirm(`Auto-detect and set exits for ${multiSelectedRooms.length} selected room(s)?`)) {
+                return;
+            }
+            
+            const directionOffsets = {
+                'north': { x: 0, y: 1, z: 0 },
+                'south': { x: 0, y: -1, z: 0 },
+                'east': { x: 1, y: 0, z: 0 },
+                'west': { x: -1, y: 0, z: 0 },
+                'up': { x: 0, y: 0, z: 1 },
+                'down': { x: 0, y: 0, z: -1 }
+            };
+            
+            const oppositeDirections = {
+                'north': 'south',
+                'south': 'north',
+                'east': 'west',
+                'west': 'east',
+                'up': 'down',
+                'down': 'up'
+            };
+            
+            let totalExitsAdded = 0;
+            
+            for (const roomId of multiSelectedRooms) {
+                const room = rooms.find(r => r.id === roomId);
+                if (!room) continue;
+                
+                const newExits = {};
+                const roomsToUpdate = [];
+                
+                // Check all six directions for adjacent rooms
+                for (const [direction, offset] of Object.entries(directionOffsets)) {
+                    const targetX = room.x + offset.x;
+                    const targetY = room.y + offset.y;
+                    const targetZ = (room.z || 0) + offset.z;
+                    
+                    // Find room at target coordinates
+                    const targetRoom = rooms.find(r => 
+                        r.x === targetX && r.y === targetY && (r.z || 0) === targetZ
+                    );
+                    
+                    if (targetRoom) {
+                        // Add exit to target room
+                        newExits[direction] = targetRoom.room_id;
+                        totalExitsAdded++;
+                        
+                        // Also add reciprocal exit in target room
+                        const oppositeDir = oppositeDirections[direction];
+                        roomsToUpdate.push({
+                            room: targetRoom,
+                            direction: oppositeDir,
+                            targetRoomId: room.room_id
+                        });
+                    }
+                }
+                
+                // Update the current room with new exits
+                try {
+                    await fetch(`/api/rooms/${room.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            room_id: room.room_id,
+                            name: room.name,
+                            description: room.description,
+                            area_id: room.area_id,
+                            x: room.x,
+                            y: room.y,
+                            z: room.z || 0,
+                            exits: newExits
+                        })
+                    });
+                    
+                    // Update reciprocal exits in connected rooms
+                    for (const update of roomsToUpdate) {
+                        const targetRoom = update.room;
+                        const newTargetExits = { ...(targetRoom.exits || {}) };
+                        newTargetExits[update.direction] = update.targetRoomId;
+                        
+                        try {
+                            await fetch(`/api/rooms/${targetRoom.id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    room_id: targetRoom.room_id,
+                                    name: targetRoom.name,
+                                    description: targetRoom.description,
+                                    area_id: targetRoom.area_id,
+                                    x: targetRoom.x,
+                                    y: targetRoom.y,
+                                    z: targetRoom.z || 0,
+                                    exits: newTargetExits
+                                })
+                            });
+                        } catch (error) {
+                            console.error('Error updating reciprocal exit:', error);
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error auto-exiting room ${room.room_id}:`, error);
+                }
+            }
+            
+            await loadRooms();
+            renderMap();
+            clearMultiSelection();
+            
+            alert(`Auto-exit complete! Added ${totalExitsAdded} exit(s) to ${multiSelectedRooms.length} room(s).`);
+        }
+        
+        // Handle context menu (right-click)
+        function handleContextMenu(event) {
+            // Check if right-click is on a room-node
+            const target = event.target;
+            const isRoomNode = target.classList.contains('room-node') || target.closest('.room-node');
+            
+            if (isRoomNode) {
+                event.preventDefault();
+                
+                const roomNode = target.classList.contains('room-node') ? target : target.closest('.room-node');
+                const nodeLeft = parseInt(roomNode.style.left);
+                const nodeTop = parseInt(roomNode.style.top);
+                
+                // Find the room this node represents
+                const clickedRoom = rooms.find(r => 
+                    r.x * 50 + 1000 === nodeLeft && 
+                    -r.y * 50 + 1000 === nodeTop
+                );
+                
+                if (clickedRoom) {
+                    // If clicked room is not in multi-selection, select only it
+                    if (!multiSelectedRooms.includes(clickedRoom.id)) {
+                        multiSelectedRooms = [clickedRoom.id];
+                        selectedRoom = clickedRoom;
+                        updateMultiSelection();
+                    }
+                    
+                    // Show context menu at mouse position
+                    const contextMenu = document.getElementById('contextMenu');
+                    contextMenu.style.display = 'block';
+                    contextMenu.style.left = event.pageX + 'px';
+                    contextMenu.style.top = event.pageY + 'px';
+                }
+            }
+        }
+        
+        // Hide context menu
+        function hideContextMenu() {
+            const contextMenu = document.getElementById('contextMenu');
+            contextMenu.style.display = 'none';
+        }
+        
+        // Change selected room names
+        async function changeSelectedRoomNames() {
+            hideContextMenu();
+            
+            const roomsToChange = multiSelectedRooms.length > 0 
+                ? multiSelectedRooms.map(id => rooms.find(r => r.id === id)).filter(r => r)
+                : (selectedRoom ? [selectedRoom] : []);
+            
+            if (roomsToChange.length === 0) {
+                alert('No rooms selected');
+                return;
+            }
+            
+            if (roomsToChange.length === 1) {
+                // Single room - prompt for new name
+                const room = roomsToChange[0];
+                const newName = prompt(`Enter new name for room "${room.name}":`, room.name);
+                
+                if (newName && newName.trim() && newName !== room.name) {
+                    try {
+                        const response = await fetch(`/api/rooms/${room.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                room_id: room.room_id,
+                                name: newName.trim(),
+                                description: room.description,
+                                area_id: room.area_id,
+                                x: room.x,
+                                y: room.y,
+                                z: room.z || 0,
+                                exits: room.exits,
+                                lighting: room.lighting
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            await loadRooms();
+                            renderMap();
+                        } else {
+                            alert('Error updating room name');
+                        }
+                    } catch (error) {
+                        console.error('Error updating room name:', error);
+                        alert('Error updating room name');
+                    }
+                }
+            } else {
+                // Multiple rooms - prompt for name
+                const newName = prompt(
+                    `Enter name for ${roomsToChange.length} selected rooms:`,
+                    'Room'
+                );
+                
+                if (newName && newName.trim()) {
+                    let count = 0;
+                    for (const room of roomsToChange) {
+                        count++;
+                        
+                        try {
+                            await fetch(`/api/rooms/${room.id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    room_id: room.room_id,
+                                    name: newName.trim(),
+                                    description: room.description,
+                                    area_id: room.area_id,
+                                    x: room.x,
+                                    y: room.y,
+                                    z: room.z || 0,
+                                    exits: room.exits,
+                                    lighting: room.lighting
+                                })
+                            });
+                        } catch (error) {
+                            console.error(`Error updating room ${room.room_id}:`, error);
+                        }
+                    }
+                    
+                    await loadRooms();
+                    renderMap();
+                    alert(`Updated names for ${count} room(s)`);
+                }
+            }
+        }
+        
+        // Add action to undo history
+        function addToUndoHistory(action) {
+            undoHistory.push(action);
+            
+            // Keep only last 3 actions
+            if (undoHistory.length > MAX_UNDO_STEPS) {
+                undoHistory.shift();
+            }
+            
+            updateUndoButton();
+        }
+        
+        // Update undo button state
+        function updateUndoButton() {
+            const undoBtn = document.getElementById('undoBtn');
+            undoBtn.disabled = undoHistory.length === 0;
+        }
+        
+        // Undo last action
+        async function undoLastAction() {
+            if (undoHistory.length === 0) {
+                return;
+            }
+            
+            const action = undoHistory.pop();
+            updateUndoButton();
+            
+            try {
+                switch (action.type) {
+                    case 'create':
+                        // Undo room creation by deleting it
+                        await fetch(`/api/rooms/${action.room.id}`, {
+                            method: 'DELETE'
+                        });
+                        break;
+                        
+                    case 'delete':
+                        // Undo deletion by recreating the room
+                        await fetch('/api/rooms', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                room_id: action.room.room_id,
+                                name: action.room.name,
+                                description: action.room.description,
+                                area_id: action.room.area_id,
+                                x: action.room.x,
+                                y: action.room.y,
+                                z: action.room.z || 0,
+                                exits: action.room.exits || {},
+                                lighting: action.room.lighting || 'normal'
+                            })
+                        });
+                        break;
+                        
+                    case 'update':
+                        // Undo update by restoring previous state
+                        await fetch(`/api/rooms/${action.room.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                room_id: action.previousState.room_id,
+                                name: action.previousState.name,
+                                description: action.previousState.description,
+                                area_id: action.previousState.area_id,
+                                x: action.previousState.x,
+                                y: action.previousState.y,
+                                z: action.previousState.z || 0,
+                                exits: action.previousState.exits || {},
+                                lighting: action.previousState.lighting || 'normal'
+                            })
+                        });
+                        break;
+                        
+                    case 'bulk':
+                        // Undo bulk operation
+                        for (const subAction of action.actions.reverse()) {
+                            // Recursively undo each action in the bulk operation
+                            undoHistory.push(subAction);
+                            await undoLastAction();
+                        }
+                        break;
+                }
+                
+                await loadRooms();
+                renderMap();
+                console.log('Undo successful');
+            } catch (error) {
+                console.error('Error undoing action:', error);
+                alert('Error undoing action');
+            }
         }
     </script>
 </body>

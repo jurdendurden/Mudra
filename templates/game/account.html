@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Account - Mudra MUD{% endblock %}
+{% block title %}Account - Mudra{% endblock %}
 
 {% block head %}
 <style>
@@ -41,7 +41,8 @@
     }
     
     .characters-section {
-        background: white;
+        background: #2c3e50;
+        color: white;
         border-radius: 10px;
         padding: 30px;
         margin-bottom: 30px;
@@ -56,12 +57,13 @@
     }
     
     .character-card {
-        border: 2px solid #e9ecef;
+        border: 2px solid #434950;
         border-radius: 8px;
         padding: 20px;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: #f8f9fa;
+        background: #2c3e50;
+        color: white;
     }
     
     .character-card:hover {
@@ -71,15 +73,15 @@
     }
     
     .character-card.selected {
-        border-color: #e74c3c;
-        background: #fff5f5;
+        border-color: #00ff00;
+        background: #2c3e50;
         box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
     }
     
     .character-name {
         font-size: 18px;
         font-weight: bold;
-        color: #2c3e50;
+        color: #d0d3d6;
         margin-bottom: 10px;
     }
     

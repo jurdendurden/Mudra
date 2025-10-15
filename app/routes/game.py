@@ -7,6 +7,53 @@ from app.models.chat_message import ChatMessage
 
 game_bp = Blueprint('game', __name__)
 
+def get_starting_village_location():
+    """Get the starting village room and coordinates"""
+    starting_room = Room.query.filter_by(room_id='room_001').first()
+    if starting_room:
+        return starting_room, starting_room.x_coord, starting_room.y_coord, starting_room.z_coord
+    # Default fallback to (0, 0, 0) if room not found
+    return None, 0, 0, 0
+
+def validate_character_location(character):
+    """Validate character location and reset to starting village if invalid"""
+    # Check if character has coordinates
+    if character.x_coord is None or character.y_coord is None or character.z_coord is None:
+        # Set to starting village
+        room, x, y, z = get_starting_village_location()
+        character.x_coord = x
+        character.y_coord = y
+        character.z_coord = z
+        if room:
+            character.current_room_id = room.id
+        db.session.commit()
+        return True
+    
+    # Check if room exists at character's coordinates
+    room = Room.query.filter_by(
+        x_coord=character.x_coord,
+        y_coord=character.y_coord,
+        z_coord=character.z_coord
+    ).first()
+    
+    if not room:
+        # Room doesn't exist, move to starting village
+        room, x, y, z = get_starting_village_location()
+        character.x_coord = x
+        character.y_coord = y
+        character.z_coord = z
+        if room:
+            character.current_room_id = room.id
+        db.session.commit()
+        return True
+    
+    # Update current_room_id to match coordinates
+    if character.current_room_id != room.id:
+        character.current_room_id = room.id
+        db.session.commit()
+    
+    return False
+
 @game_bp.route('/')
 @login_required
 def index():
@@ -34,6 +81,18 @@ def play_character(character_id):
         id=character_id, 
         player_id=current_user.id
     ).first_or_404()
+    
+    print(f"[PLAY CHARACTER] Loading character {character.name} (ID: {character_id})")
+    print(f"[PLAY CHARACTER] Initial coordinates: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+    print(f"[PLAY CHARACTER] Current room ID: {character.current_room_id}")
+    
+    # Validate character location (will reset to starting village if invalid)
+    was_reset = validate_character_location(character)
+    if was_reset:
+        flash('Your location was invalid and you have been moved to the Starting Village.', 'info')
+        print(f"[PLAY CHARACTER] Character location was reset")
+    
+    print(f"[PLAY CHARACTER] Final coordinates: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
     
     # Update last played timestamp
     from datetime import datetime
@@ -98,16 +157,26 @@ def create_character():
         # Calculate derived stats based on attributes
         character.calculate_derived_stats()
         
-        # Set starting location (we'll create this room later)
-        starting_room = Room.query.filter_by(room_id='room_001').first()
+        # Set starting location to Starting Village
+        starting_room, x, y, z = get_starting_village_location()
+        print(f"[CREATE CHARACTER] Starting village location: ({x}, {y}, {z}), room_id: {starting_room.id if starting_room else 'None'}")
+        
+        character.x_coord = x
+        character.y_coord = y
+        character.z_coord = z
         if starting_room:
             character.current_room_id = starting_room.id
-        else:
-            # If no starting room exists, create a basic one or leave current_room_id as None
-            character.current_room_id = None
+        
+        print(f"[CREATE CHARACTER] Character {name} created with coordinates: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
         
         db.session.add(character)
         db.session.commit()
+        
+        print(f"[CREATE CHARACTER] Character {name} committed to database")
+        
+        # Verify the coordinates were saved
+        db.session.refresh(character)
+        print(f"[CREATE CHARACTER] Verified coordinates after commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
         
         flash(f'Character {name} created successfully!', 'success')
         return redirect(url_for('game.index'))
@@ -195,3 +264,60 @@ def get_recent_chat():
         'success': True,
         'messages': messages
     })
+
+@game_bp.route('/api/minimap/<int:character_id>', methods=['GET'])
+@login_required
+def get_minimap_data(character_id):
+    """Get nearby rooms for minimap display"""
+    character = Character.query.filter_by(
+        id=character_id, 
+        player_id=current_user.id
+    ).first_or_404()
+    
+    print(f"[MINIMAP API] Getting minimap for character {character.name} (ID: {character_id})")
+    print(f"[MINIMAP API] Character coordinates from DB: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+    print(f"[MINIMAP API] Character current_room_id: {character.current_room_id}")
+    
+    # Get character's current position
+    char_x = character.x_coord or 0
+    char_y = character.y_coord or 0
+    char_z = character.z_coord or 0
+    
+    print(f"[MINIMAP API] Using coordinates: ({char_x}, {char_y}, {char_z})")
+    
+    # Get nearby rooms (5 units in each direction)
+    nearby_range = 5
+    nearby_rooms = Room.query.filter(
+        Room.x_coord.between(char_x - nearby_range, char_x + nearby_range),
+        Room.y_coord.between(char_y - nearby_range, char_y + nearby_range),
+        Room.z_coord == char_z
+    ).all()
+    
+    print(f"[MINIMAP API] Found {len(nearby_rooms)} nearby rooms")
+    
+    # Format room data for minimap
+    rooms_data = []
+    for room in nearby_rooms:
+        rooms_data.append({
+            'id': room.id,
+            'room_id': room.room_id,
+            'name': room.name,
+            'x': room.x_coord,
+            'y': room.y_coord,
+            'z': room.z_coord,
+            'exits': room.exits or {}
+        })
+    
+    response_data = {
+        'success': True,
+        'rooms': rooms_data,
+        'player_position': {
+            'x': char_x,
+            'y': char_y,
+            'z': char_z
+        }
+    }
+    
+    print(f"[MINIMAP API] Returning player position: ({char_x}, {char_y}, {char_z})")
+    
+    return jsonify(response_data)

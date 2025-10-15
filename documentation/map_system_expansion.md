@@ -1,7 +1,7 @@
 # Map/Room System Expansion Summary
 
 ## Overview
-This document summarizes the expansion of the Mudra MUD map and room system with full 3D cartesian coordinate support.
+This document summarizes the expansion of the Mudra map and room system with full 3D cartesian coordinate support.
 
 ## Changes Made
 

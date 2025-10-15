@@ -104,7 +104,7 @@ def main():
     args = parser.parse_args()
     
     print("\n" + "="*80)
-    print("MUDRA MUD - Room Database Cleanup Utility")
+    print("MUDRA - Room Database Cleanup Utility")
     print("="*80)
     
     cleanup_orphaned_rooms(auto_confirm=args.yes)

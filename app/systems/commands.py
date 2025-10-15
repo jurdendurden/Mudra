@@ -57,11 +57,56 @@ class CommandProcessor:
         # Find command handler
         if command in self.commands:
             try:
-                return self.commands[command](character, args)
+                # For directional commands, pass the direction as the first argument
+                if command in ['north', 'n', 'south', 's', 'east', 'e', 'west', 'w', 'up', 'u', 'down', 'd']:
+                    print(f"[PROCESS_COMMAND] Processing directional command: {command}")
+                    result = self.commands[command](character, command, args)
+                    print(f"[PROCESS_COMMAND] Got result with keys: {result.keys() if result else 'None'}")
+                    print(f"[PROCESS_COMMAND] Result action: {result.get('action', 'NOT SET') if result else 'NO RESULT'}")
+                    return result
+                else:
+                    return self.commands[command](character, args)
             except Exception as e:
+                print(f"[PROCESS_COMMAND ERROR] {str(e)}")
+                import traceback
+                traceback.print_exc()
                 return {'error': f'Command error: {str(e)}'}
         else:
             return {'error': f'Unknown command: {command}. Type "help" for available commands.'}
+    
+    def _format_room_description(self, room, character, include_items_and_chars=True):
+        """Format a room description with exits, items, and characters
+        
+        Args:
+            room: The room to describe
+            character: The character viewing the room
+            include_items_and_chars: Whether to include items and characters in the description
+        
+        Returns:
+            str: Formatted room description
+        """
+        # Build base description
+        description = f"<b><u>{room.name}</u></b>\n{room.description}"
+        
+        # Add exits
+        exits = room.get_available_exits()
+        if exits:
+            description += f"\n\n<b>Obvious exits: [</b> {', '.join(exits)} <b>]</b>"
+        
+        if include_items_and_chars:
+            # Add characters in room
+            other_chars = [char for char in room.get_characters_in_room() if char.id != character.id]
+            if other_chars:
+                char_names = [char.name for char in other_chars]
+                description += f"\n\n<b>Also here:</b> {', '.join(char_names)}"
+            
+            # Add items in room
+            room_items = room.get_items_in_room()
+            if room_items:
+                item_names = [item.name for item in room_items]
+                description += f"\n\n<b>Items:</b> {', '.join(item_names)}"
+        
+        return description
     
     def cmd_look(self, character, args):
         """Look at room or object"""
@@ -71,30 +116,11 @@ class CommandProcessor:
         room = character.current_room
         
         if not args:
-            # Look at room
-            result = {
-                'message': f"<b>{room.name}</b>\n{room.description}",
+            # Look at room - use helper method
+            return {
+                'message': self._format_room_description(room, character, include_items_and_chars=True),
                 'room_description': True
             }
-            
-            # Add exits
-            exits = room.get_available_exits()
-            if exits:
-                result['message'] += f"\n\n<b>Exits:</b> {', '.join(exits)}"
-            
-            # Add characters in room
-            other_chars = [char for char in room.get_characters_in_room() if char.id != character.id]
-            if other_chars:
-                char_names = [char.name for char in other_chars]
-                result['message'] += f"\n\n<b>Also here:</b> {', '.join(char_names)}"
-            
-            # Add items in room
-            room_items = room.get_items_in_room()
-            if room_items:
-                item_names = [item.name for item in room_items]
-                result['message'] += f"\n\n<b>Items:</b> {', '.join(item_names)}"
-            
-            return result
         else:
             # Look at specific object
             target = ' '.join(args)
@@ -245,12 +271,12 @@ class CommandProcessor:
         
         return {'message': f'You unequip {item.name}.'}
     
-    def cmd_move(self, character, args):
-        """Move in a direction"""
+    def cmd_move(self, character, direction_cmd, extra_args):
+        """Move in a direction (called by directional commands)"""
         if not character.current_room:
             return {'error': 'You are not in a room'}
         
-        # Get direction from command name
+        # Map short commands to full directions
         direction_map = {
             'north': 'north', 'n': 'north',
             'south': 'south', 's': 'south',
@@ -260,8 +286,52 @@ class CommandProcessor:
             'down': 'down', 'd': 'down'
         }
         
-        # This is a simplified version - we'll get the actual command from the caller
-        return {'error': 'Use the go command with a direction'}
+        direction = direction_map.get(direction_cmd.lower())
+        if not direction:
+            return {'error': 'Invalid direction'}
+        
+        room = character.current_room
+        
+        target_room_id = room.get_exit_room(direction)
+        if not target_room_id:
+            return {'error': f'You can\'t go {direction} from here.'}
+        
+        target_room = Room.query.filter_by(room_id=target_room_id).first()
+        if not target_room:
+            return {'error': 'Target room not found.'}
+        
+        # Move character
+        old_coords = (character.x_coord, character.y_coord, character.z_coord)
+        character.current_room_id = target_room.id
+        character.x_coord = target_room.x_coord
+        character.y_coord = target_room.y_coord
+        character.z_coord = target_room.z_coord
+        
+        print(f"[MOVE DEBUG] {character.name} moving from {old_coords} to ({target_room.x_coord}, {target_room.y_coord}, {target_room.z_coord})")
+        print(f"[MOVE DEBUG] Character coords before commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        
+        db.session.commit()
+        
+        print(f"[MOVE DEBUG] Character coords after commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        
+        # Verify the update persisted
+        db.session.refresh(character)
+        print(f"[MOVE DEBUG] Character coords after refresh: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        
+        # Get formatted room description (same as look command)
+        room_description = self._format_room_description(target_room, character, include_items_and_chars=True)
+        
+        result = {
+            'message': room_description,
+            'affects_room': True,
+            'action': 'move',
+            'room_message': f'{character.name} goes {direction}.'
+        }
+        
+        print(f"[CMD_MOVE] Returning result with action: {result.get('action')}")
+        print(f"[CMD_MOVE] Full result: {result}")
+        
+        return result
     
     def cmd_go(self, character, args):
         """Go in a direction"""
@@ -290,16 +360,14 @@ class CommandProcessor:
         
         db.session.commit()
         
+        # Get formatted room description (same as look command)
+        room_description = self._format_room_description(target_room, character, include_items_and_chars=True)
+        
         return {
-            'message': f'You go {direction} to {target_room.name}.',
+            'message': room_description,
             'affects_room': True,
             'action': 'move',
-            'room_message': f'{character.name} goes {direction}.',
-            'new_room': {
-                'id': target_room.id,
-                'name': target_room.name,
-                'description': target_room.description
-            }
+            'room_message': f'{character.name} goes {direction}.'
         }
     
     def cmd_say(self, character, args):
@@ -381,7 +449,10 @@ class CommandProcessor:
         help_text = """
 <b>Available Commands:</b>
 <u>Movement:</u>
-  north/n, south/s, east/e, west/w, up/u, down/d, go <direction>
+  north/n, south/s, east/e, west/w, up/u, down/d
+  (You can also use: go <direction>)
+  <b>Tip:</b> Use numpad keys for quick movement!
+  (8=N, 2=S, 4=W, 6=E, 9=Up, 3=Down, 5=Look)
 <u>Interaction:</u>
   look/l, examine/ex <object>, get/take <item>, drop <item>
 <u>Equipment:</u>

@@ -82,6 +82,11 @@ def register_game_events(socketio):
         processor = CommandProcessor()
         result = processor.process_command(character, command)
         
+        print(f"[SOCKET] Command: {command}")
+        print(f"[SOCKET] Result keys: {result.keys() if result else 'None'}")
+        print(f"[SOCKET] Result action: {result.get('action', 'NOT SET') if result else 'NO RESULT'}")
+        print(f"[SOCKET] Full result: {result}")
+        
         # Emit result to client
         emit('command_result', {
             'command': command,

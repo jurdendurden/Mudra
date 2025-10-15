@@ -11,28 +11,19 @@ class CommandProcessor:
     def __init__(self):
         self.commands = {
             'look': self.cmd_look,
-            'l': self.cmd_look,
             'examine': self.cmd_examine,
-            'ex': self.cmd_examine,
             'inventory': self.cmd_inventory,
-            'i': self.cmd_inventory,
             'get': self.cmd_get,
             'take': self.cmd_get,
             'drop': self.cmd_drop,
             'equip': self.cmd_equip,
             'unequip': self.cmd_unequip,
             'north': self.cmd_move,
-            'n': self.cmd_move,
             'south': self.cmd_move,
-            's': self.cmd_move,
             'east': self.cmd_move,
-            'e': self.cmd_move,
             'west': self.cmd_move,
-            'w': self.cmd_move,
             'up': self.cmd_move,
-            'u': self.cmd_move,
             'down': self.cmd_move,
-            'd': self.cmd_move,
             'go': self.cmd_go,
             'say': self.cmd_say,
             'emote': self.cmd_emote,
@@ -46,24 +37,52 @@ class CommandProcessor:
     
     def process_command(self, character, command_text):
         """Process a command and return the result"""
-        # Parse command
-        parts = command_text.split()
+        import re
+        # Regex to split command and arguments, supporting quoted strings
+        pattern = r'"([^"]*)"|\'([^\']*)\'|([^ ]+)'
+        matches = re.findall(pattern, command_text)
+        parts = []
+        for m in matches:
+            if m[0]:
+                parts.append(m[0])
+            elif m[1]:
+                parts.append(m[1])
+            elif m[2]:
+                parts.append(m[2])
         if not parts:
             return {'error': 'Empty command'}
-        
+
         command = parts[0].lower()
         args = parts[1:] if len(parts) > 1 else []
-        
-        # Find command handler
+
+        # Compute unparsed_args: skip the first match in command_text
+        # Find the first match (the command) in the original string
+        match_iter = re.finditer(pattern, command_text)
+        try:
+            first_match = next(match_iter)
+            end_idx = first_match.end()
+            unparsed_args = command_text[end_idx:].lstrip()
+        except StopIteration:
+            unparsed_args = ''
+
+        # First pass: exact match
         if command in self.commands:
             try:
-                return self.commands[command](character, args)
+                return self.commands[command](character, args, unparsed_args)
             except Exception as e:
                 return {'error': f'Command error: {str(e)}'}
-        else:
-            return {'error': f'Unknown command: {command}. Type "help" for available commands.'}
+
+        # Second pass: startswith match (in insertion order)
+        for cmd_name in self.commands:
+            if cmd_name.startswith(command):
+                try:
+                    return self.commands[cmd_name](character, args, unparsed_args)
+                except Exception as e:
+                    return {'error': f'Command error: {str(e)}'}
+
+        return {'error': f'Unknown command: {command}. Type "help" for available commands.'}
     
-    def cmd_look(self, character, args):
+    def cmd_look(self, character, args, unparsed_args):
         """Look at room or object"""
         if not character.current_room:
             return {'error': 'You are not in a room'}
@@ -100,7 +119,7 @@ class CommandProcessor:
             target = ' '.join(args)
             return self._look_at_object(character, target)
     
-    def cmd_examine(self, character, args):
+    def cmd_examine(self, character, args, unparsed_args):
         """Examine an object in detail"""
         if not args:
             return {'error': 'Examine what?'}
@@ -108,7 +127,7 @@ class CommandProcessor:
         target = ' '.join(args)
         return self._examine_object(character, target)
     
-    def cmd_inventory(self, character, args):
+    def cmd_inventory(self, character, args, unparsed_args):
         """Show character inventory"""
         items = character.inventory.all()
         
@@ -122,7 +141,7 @@ class CommandProcessor:
         
         return {'message': message}
     
-    def cmd_get(self, character, args):
+    def cmd_get(self, character, args, unparsed_args):
         """Get/take an item from the room"""
         if not args:
             return {'error': 'Get what?'}
@@ -156,7 +175,7 @@ class CommandProcessor:
             'room_message': f'{character.name} picks up {item.name}.'
         }
     
-    def cmd_drop(self, character, args):
+    def cmd_drop(self, character, args, unparsed_args):
         """Drop an item in the room"""
         if not args:
             return {'error': 'Drop what?'}
@@ -193,7 +212,7 @@ class CommandProcessor:
             'room_message': f'{character.name} drops {item.name}.'
         }
     
-    def cmd_equip(self, character, args):
+    def cmd_equip(self, character, args, unparsed_args):
         """Equip an item"""
         if not args:
             return {'error': 'Equip what?'}
@@ -220,7 +239,7 @@ class CommandProcessor:
         
         return {'message': f'You equip {item.name}.'}
     
-    def cmd_unequip(self, character, args):
+    def cmd_unequip(self, character, args, unparsed_args):
         """Unequip an item"""
         if not args:
             return {'error': 'Unequip what?'}
@@ -245,7 +264,7 @@ class CommandProcessor:
         
         return {'message': f'You unequip {item.name}.'}
     
-    def cmd_move(self, character, args):
+    def cmd_move(self, character, args, unparsed_args):
         """Move in a direction"""
         if not character.current_room:
             return {'error': 'You are not in a room'}
@@ -263,7 +282,7 @@ class CommandProcessor:
         # This is a simplified version - we'll get the actual command from the caller
         return {'error': 'Use the go command with a direction'}
     
-    def cmd_go(self, character, args):
+    def cmd_go(self, character, args, unparsed_args):
         """Go in a direction"""
         if not args:
             return {'error': 'Go where?'}
@@ -274,7 +293,7 @@ class CommandProcessor:
         direction = args[0].lower()
         room = character.current_room
         
-        target_room_id = room.get_exit_room(direction)
+        target_room_id, exit_key = room.get_exit_room(direction)
         if not target_room_id:
             return {'error': f'You can\'t go {direction} from here.'}
         
@@ -291,10 +310,10 @@ class CommandProcessor:
         db.session.commit()
         
         return {
-            'message': f'You go {direction} to {target_room.name}.',
+            'message': f'You go {exit_key} to {target_room.name}.',
             'affects_room': True,
             'action': 'move',
-            'room_message': f'{character.name} goes {direction}.',
+            'room_message': f'{character.name} goes {exit_key}.',
             'new_room': {
                 'id': target_room.id,
                 'name': target_room.name,
@@ -302,12 +321,12 @@ class CommandProcessor:
             }
         }
     
-    def cmd_say(self, character, args):
+    def cmd_say(self, character, args, unparsed_args):
         """Say something"""
-        if not args:
+        if not unparsed_args or unparsed_args.isspace():
             return {'error': 'Say what?'}
         
-        message = ' '.join(args)
+        message = unparsed_args
         
         return {
             'message': f'You say, "{message}"',
@@ -316,12 +335,12 @@ class CommandProcessor:
             'room_message': f'{character.name} says, "{message}"'
         }
     
-    def cmd_emote(self, character, args):
+    def cmd_emote(self, character, args, unparsed_args):
         """Perform an emote"""
-        if not args:
+        if not unparsed_args or unparsed_args.isspace():
             return {'error': 'Emote what?'}
         
-        emote = ' '.join(args)
+        emote = unparsed_args
         
         return {
             'message': f'{character.name} {emote}',
@@ -330,7 +349,7 @@ class CommandProcessor:
             'room_message': f'{character.name} {emote}'
         }
     
-    def cmd_chat(self, character, args):
+    def cmd_chat(self, character, args, unparsed_args):
         """Send a chat message to all players"""
         if not args:
             return {'error': 'Chat what?'}
@@ -358,7 +377,7 @@ class CommandProcessor:
             'chat_message': chat_message.to_dict()
         }
     
-    def cmd_censor(self, character, args):
+    def cmd_censor(self, character, args, unparsed_args):
         """Toggle chat censorship on/off"""
         # Get the player associated with this character
         player = character.player
@@ -371,12 +390,12 @@ class CommandProcessor:
         status = "on" if player.censor_enabled else "off"
         return {'message': f'Chat censoring turned {status}.'}
     
-    def cmd_who(self, character, args):
+    def cmd_who(self, character, args, unparsed_args):
         """Show who is online"""
         # TODO: Implement online player list
         return {'message': 'Online players: (feature not implemented yet)'}
     
-    def cmd_help(self, character, args):
+    def cmd_help(self, character, args, unparsed_args):
         """Show help"""
         help_text = """
 <b>Available Commands:</b>
@@ -393,11 +412,11 @@ class CommandProcessor:
         """
         return {'message': help_text}
     
-    def cmd_quit(self, character, args):
+    def cmd_quit(self, character, args, unparsed_args):
         """Quit the game"""
         return {'message': 'Goodbye!', 'quit': True}
     
-    def cmd_save(self, character, args):
+    def cmd_save(self, character, args, unparsed_args):
         """Save character"""
         db.session.commit()
         return {'message': 'Character saved.'}

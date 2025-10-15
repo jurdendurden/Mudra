@@ -66,8 +66,17 @@ class Room(db.Model):
     room_items = db.relationship('Item', backref='room', lazy='dynamic')
     
     def get_exit_room(self, direction):
-        """Get the room ID for a given exit direction"""
-        return self.exits.get(direction.lower())
+        """Get the room ID for a given exit direction.
+        First, try for an exact match. If not found, try for a key that startswith the direction (case-insensitive)."""
+        dir_lower = direction.lower()
+        # First, try exact match
+        if dir_lower in self.exits:
+            return self.exits[dir_lower]
+        # Second, try startswith match
+        for key in self.exits:
+            if key.startswith(dir_lower):
+                return self.exits[key], key
+        return None
     
     def add_exit(self, direction, room_id):
         """Add an exit to another room"""

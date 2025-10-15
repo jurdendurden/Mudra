@@ -7,6 +7,7 @@ class GameClient {
         this.commandHistory = [];
         this.historyIndex = -1;
         this.isConnected = false;
+        this.minimapUpdateInterval = null;
         
         this.initializeElements();
         this.setupEventListeners();
@@ -18,6 +19,18 @@ class GameClient {
         this.chatOutput = document.getElementById('chat-output');
         this.inventoryList = document.getElementById('inventory-list');
         this.minimap = document.getElementById('minimap');
+        this.minimapCtx = this.minimap ? this.minimap.getContext('2d') : null;
+        this.playerPosition = { x: 0, y: 0, z: 0 };
+        this.nearbyRooms = [];
+        
+        // Debug minimap initialization
+        if (this.minimap) {
+            console.log('Minimap canvas found:', this.minimap);
+            console.log('Canvas dimensions:', this.minimap.width, 'x', this.minimap.height);
+            console.log('Canvas context:', this.minimapCtx);
+        } else {
+            console.error('Minimap canvas not found!');
+        }
     }
     
     setupEventListeners() {
@@ -30,6 +43,9 @@ class GameClient {
         if (this.inventoryList) {
             this.inventoryList.addEventListener('click', (e) => this.handleInventoryClick(e));
         }
+        
+        // Numpad shortcuts for movement and look
+        document.addEventListener('keydown', (e) => this.handleNumpadShortcuts(e));
     }
     
     connect() {
@@ -50,6 +66,12 @@ class GameClient {
         this.socket.on('disconnect', () => {
             this.isConnected = false;
             this.addOutput('Disconnected from game server', 'error');
+            
+            // Clear minimap update interval on disconnect
+            if (this.minimapUpdateInterval) {
+                clearInterval(this.minimapUpdateInterval);
+                this.minimapUpdateInterval = null;
+            }
         });
         
         this.socket.on('connected', (data) => {
@@ -70,10 +92,58 @@ class GameClient {
             
             // Load recent chat messages
             this.loadRecentChatMessages();
+            
+            // Load and render minimap
+            this.loadMinimap();
+            
+            // Set up periodic minimap updates every 5 seconds
+            if (this.minimapUpdateInterval) {
+                clearInterval(this.minimapUpdateInterval);
+            }
+            this.minimapUpdateInterval = setInterval(() => {
+                console.log('⏰ Periodic minimap update triggered (every 5s)');
+                // Only refresh room data, NOT player position (position comes from socket only)
+                this.loadMinimap(false);
+            }, 5000);
+            console.log('Minimap auto-update started (every 5 seconds)');
         });
         
         this.socket.on('command_result', (data) => {
+            console.log('Command result received:', data);
+            console.log('Result action:', data.result ? data.result.action : 'no result');
+            console.log('Character position from server:', data.result?.character_position);
+            
             this.handleCommandResult(data);
+            
+            // Update player position immediately from server response
+            if (data.result && data.result.character_position) {
+                const newPos = data.result.character_position;
+                console.log(`📍 Updating position from server: (${newPos.x}, ${newPos.y}, ${newPos.z})`);
+                
+                const oldPos = { ...this.playerPosition };
+                this.playerPosition = newPos;
+                
+                console.log(`Position changed: (${oldPos.x}, ${oldPos.y}, ${oldPos.z}) → (${newPos.x}, ${newPos.y}, ${newPos.z})`);
+                
+                // Update coordinates display immediately
+                this.updateCoordinatesDisplay();
+                
+                // Force immediate minimap redraw with updated position (before API fetch)
+                if (this.nearbyRooms.length > 0) {
+                    console.log('⚡ Immediate minimap redraw with updated position');
+                    this.renderMinimap();
+                }
+            }
+            
+            // Reload minimap data from server after movement commands
+            if (data.result && data.result.action === 'move') {
+                console.log('✅ Movement detected! Fetching fresh room data from server...');
+                
+                // Load fresh room data but DON'T update position (we already have it from socket)
+                this.loadMinimap(false);
+            } else {
+                console.log('Not a movement command (action:', data.result ? data.result.action : 'none', ')');
+            }
         });
         
         this.socket.on('room_info', (data) => {
@@ -94,7 +164,8 @@ class GameClient {
             const command = this.commandInput.value.trim();
             if (command) {
                 this.sendCommand(command);
-                this.commandInput.value = '';
+                // Highlight the command text instead of clearing it
+                this.commandInput.select();
             }
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
@@ -132,6 +203,44 @@ class GameClient {
         }
     }
     
+    handleNumpadShortcuts(e) {
+        // Don't trigger if user is typing in a text input (except our command input)
+        const activeElement = document.activeElement;
+        if (activeElement && 
+            activeElement.tagName !== 'BODY' && 
+            activeElement.id !== 'command-input' &&
+            (activeElement.tagName === 'INPUT' || 
+             activeElement.tagName === 'TEXTAREA' || 
+             activeElement.contentEditable === 'true')) {
+            return;
+        }
+        
+        // Map numpad keys to commands
+        const numpadCommands = {
+            'Numpad8': 'north',    // 8 = North
+            'Numpad9': 'up',       // 9 = Up
+            'Numpad6': 'east',     // 6 = East
+            'Numpad3': 'down',     // 3 = Down
+            'Numpad2': 'south',    // 2 = South
+            'Numpad4': 'west',     // 4 = West
+            'Numpad5': 'look'      // 5 = Look
+        };
+        
+        // Check if a numpad key was pressed
+        if (numpadCommands[e.code]) {
+            e.preventDefault();
+            const command = numpadCommands[e.code];
+            
+            // Update command input to show what command is being executed
+            if (this.commandInput) {
+                this.commandInput.value = command;
+            }
+            
+            // Send the command
+            this.sendCommand(command);
+        }
+    }
+    
     sendCommand(command) {
         if (!this.isConnected) {
             this.addOutput('Not connected to game server', 'error');
@@ -166,11 +275,19 @@ class GameClient {
             this.addOutput(data.result.message, 'game');
         }
         
-        // Handle special results
-        if (data.result && data.result.new_room) {
-            this.updateRoomInfo({ room: data.result.new_room });
+        // For movement commands, update the room name in header
+        if (data.result && data.result.action === 'move') {
+            // Extract room name from the message (it's the first bold text)
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data.result.message;
+            const boldElement = tempDiv.querySelector('b');
+            if (boldElement) {
+                const roomElement = document.getElementById('current-room');
+                if (roomElement) {
+                    roomElement.textContent = boldElement.textContent;
+                }
+            }
         }
-        
         
         if (data.result && data.result.quit) {
             // Handle quit command
@@ -193,7 +310,7 @@ class GameClient {
             this.addOutput(data.room.description, 'room');
             
             if (data.room.exits && data.room.exits.length > 0) {
-                this.addOutput(`<b>Exits:</b> ${data.room.exits.join(', ')}`, 'room');
+                this.addOutput(`<b>Exits: </b> ${data.room.exits.join(', ')}`, 'room');
             }
         }
         
@@ -295,6 +412,8 @@ class GameClient {
         }
         
         this.commandInput.value = this.commandHistory[this.historyIndex];
+        // Select the text for easy editing/replacing
+        this.commandInput.select();
     }
     
     updateCharacterStats(stats) {
@@ -344,11 +463,268 @@ class GameClient {
             console.error('Failed to load recent chat messages:', error);
         }
     }
+    
+    async loadMinimap(updatePosition = true) {
+        if (!this.characterId) {
+            console.log('❌ Minimap: No character ID');
+            return;
+        }
+        if (!this.minimapCtx) {
+            console.log('❌ Minimap: No canvas context');
+            return;
+        }
+        
+        try {
+            // Add cache-busting parameter to ensure fresh data
+            const apiUrl = `/game/api/minimap/${this.characterId}?t=${Date.now()}`;
+            console.log(`🔄 Loading minimap from: ${apiUrl} (updatePosition: ${updatePosition})`);
+            const response = await fetch(apiUrl, {
+                cache: 'no-cache',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            });
+            const data = await response.json();
+            
+            console.log('📦 Minimap API response:', data);
+            
+            if (data.success) {
+                const oldPos = { ...this.playerPosition };
+                console.log(`✅ Minimap loaded: ${data.rooms.length} rooms, API player pos: (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
+                
+                // Update room data
+                this.nearbyRooms = data.rooms;
+                
+                // Only update position if requested (to avoid overwriting fresh socket data)
+                if (updatePosition) {
+                    // Check if position actually changed
+                    if (this.playerPosition.x !== data.player_position.x || 
+                        this.playerPosition.y !== data.player_position.y || 
+                        this.playerPosition.z !== data.player_position.z) {
+                        console.log(`🚶 Player position CHANGED from (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z}) to (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
+                    } else {
+                        console.log(`⏸️ Player position UNCHANGED at (${data.player_position.x}, ${data.player_position.y}, ${data.player_position.z})`);
+                    }
+                    
+                    this.playerPosition = data.player_position;
+                    
+                    console.log('🔢 Calling updateCoordinatesDisplay()...');
+                    this.updateCoordinatesDisplay();
+                } else {
+                    console.log(`🔒 Keeping current player position: (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z}) (not overwriting with API data)`);
+                }
+                
+                console.log('🎨 Calling renderMinimap()...');
+                this.renderMinimap();
+            } else {
+                console.error('❌ Minimap API returned error:', data);
+            }
+        } catch (error) {
+            console.error('❌ Failed to load minimap:', error);
+        }
+    }
+    
+    renderMinimap() {
+        if (!this.minimapCtx || !this.minimap) {
+            console.error('❌ Minimap render skipped: no context or canvas');
+            return;
+        }
+        
+        console.log(`🎨 === RENDERING MINIMAP START ===`);
+        console.log(`   Rooms: ${this.nearbyRooms.length}`);
+        console.log(`   Player Position: (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z})`);
+        
+        const ctx = this.minimapCtx;
+        const canvas = this.minimap;
+        
+        console.log(`   Canvas size: ${canvas.width}x${canvas.height}`);
+        
+        // Clear canvas completely
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        console.log(`   ✓ Canvas cleared`);
+        
+        // Fill background
+        ctx.fillStyle = '#1a252f';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        console.log(`   ✓ Background filled`);
+        
+        // Calculate scale and offset
+        const cellSize = 18; // Scaled down from 40px to 18px
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        console.log(`Minimap center: (${centerX}, ${centerY}), cellSize: ${cellSize}`);
+        
+        // Draw connection lines first (so they appear behind rooms)
+        this.nearbyRooms.forEach(room => {
+            if (room.exits) {
+                Object.entries(room.exits).forEach(([direction, targetRoomId]) => {
+                    // Skip up/down exits - they'll be shown with arrows
+                    if (direction === 'up' || direction === 'down') return;
+                    
+                    const targetRoom = this.nearbyRooms.find(r => r.room_id === targetRoomId);
+                    if (targetRoom) {
+                        this.drawMinimapConnection(ctx, room, targetRoom, centerX, centerY, cellSize);
+                    }
+                });
+            }
+        });
+        
+        // Draw room nodes
+        let playerRoomFound = false;
+        this.nearbyRooms.forEach(room => {
+            const isPlayerRoom = (room.x === this.playerPosition.x && 
+                                  room.y === this.playerPosition.y && 
+                                  room.z === this.playerPosition.z);
+            if (isPlayerRoom) {
+                playerRoomFound = true;
+                console.log(`🟢 Drawing player room at (${room.x}, ${room.y}, ${room.z}): ${room.name}`);
+            }
+            this.drawMinimapRoom(ctx, room, centerX, centerY, cellSize, isPlayerRoom);
+        });
+        
+        if (!playerRoomFound) {
+            console.warn(`⚠️ Player position (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z}) not found in nearby rooms!`);
+            console.warn(`   Nearby rooms:`, this.nearbyRooms.map(r => `(${r.x}, ${r.y}, ${r.z})`));
+        } else {
+            console.log(`   ✓ Player room rendered at (${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z})`);
+        }
+        
+        console.log(`🎨 === RENDERING MINIMAP COMPLETE ===`);
+    }
+    
+    drawMinimapConnection(ctx, room1, room2, centerX, centerY, cellSize) {
+        // Calculate positions relative to player
+        const x1 = centerX + (room1.x - this.playerPosition.x) * cellSize;
+        const y1 = centerY - (room1.y - this.playerPosition.y) * cellSize;
+        const x2 = centerX + (room2.x - this.playerPosition.x) * cellSize;
+        const y2 = centerY - (room2.y - this.playerPosition.y) * cellSize;
+        
+        // Calculate angle and distance
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const fullLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        
+        // Offset from center of rooms (7px for smaller rooms)
+        const lineOffset = 7;
+        const length = Math.max(fullLength - (lineOffset * 2), 1);
+        
+        // Calculate start point
+        const startX = x1 + Math.cos(angle) * lineOffset;
+        const startY = y1 + Math.sin(angle) * lineOffset;
+        
+        // Draw line
+        ctx.save();
+        ctx.strokeStyle = '#95a5a6';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(startX + Math.cos(angle) * length, startY + Math.sin(angle) * length);
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    drawMinimapRoom(ctx, room, centerX, centerY, cellSize, isPlayerRoom) {
+        // Calculate position relative to player
+        const x = centerX + (room.x - this.playerPosition.x) * cellSize - (cellSize / 2);
+        const y = centerY - (room.y - this.playerPosition.y) * cellSize - (cellSize / 2);
+        
+        // Draw room rectangle
+        ctx.fillStyle = '#3498db';
+        ctx.strokeStyle = '#2980b9';
+        ctx.lineWidth = 1;
+        ctx.fillRect(x, y, cellSize, cellSize);
+        ctx.strokeRect(x, y, cellSize, cellSize);
+        
+        // Draw up arrow if room has up exit
+        if (room.exits && room.exits.up) {
+            ctx.fillStyle = '#22e6e6';
+            ctx.beginPath();
+            ctx.moveTo(x + cellSize - 2, y + 2);
+            ctx.lineTo(x + cellSize - 4, y + 5);
+            ctx.lineTo(x + cellSize - 6, y + 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        // Draw down arrow if room has down exit
+        if (room.exits && room.exits.down) {
+            ctx.fillStyle = '#22e6e6';
+            ctx.beginPath();
+            ctx.moveTo(x + 2, y + 5);
+            ctx.lineTo(x + 4, y + 2);
+            ctx.lineTo(x + 6, y + 5);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        // Draw player indicator (green dot)
+        if (isPlayerRoom) {
+            const dotRadius = 3;
+            ctx.fillStyle = '#00ff00';
+            ctx.beginPath();
+            ctx.arc(x + cellSize / 2, y + cellSize / 2, dotRadius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    updateCoordinatesDisplay() {
+        // Update character coordinates display in left panel
+        const xCoordElement = document.getElementById('char-x-coord');
+        const yCoordElement = document.getElementById('char-y-coord');
+        const zCoordElement = document.getElementById('char-z-coord');
+        
+        console.log('Updating coordinate display elements:', {
+            xElement: xCoordElement ? 'found' : 'NOT FOUND',
+            yElement: yCoordElement ? 'found' : 'NOT FOUND',
+            zElement: zCoordElement ? 'found' : 'NOT FOUND',
+            newPosition: `(${this.playerPosition.x}, ${this.playerPosition.y}, ${this.playerPosition.z})`
+        });
+        
+        if (xCoordElement) {
+            const oldValue = xCoordElement.textContent;
+            xCoordElement.textContent = this.playerPosition.x;
+            console.log(`  X coord updated: ${oldValue} -> ${this.playerPosition.x}`);
+        } else {
+            console.error('  ❌ X coord element not found!');
+        }
+        if (yCoordElement) {
+            const oldValue = yCoordElement.textContent;
+            yCoordElement.textContent = this.playerPosition.y;
+            console.log(`  Y coord updated: ${oldValue} -> ${this.playerPosition.y}`);
+        } else {
+            console.error('  ❌ Y coord element not found!');
+        }
+        if (zCoordElement) {
+            const oldValue = zCoordElement.textContent;
+            zCoordElement.textContent = this.playerPosition.z;
+            console.log(`  Z coord updated: ${oldValue} -> ${this.playerPosition.z}`);
+        } else {
+            console.error('  ❌ Z coord element not found!');
+        }
+        
+        // Also update coordinates in character modal if it exists
+        const modalXElement = document.getElementById('modal-char-x-coord');
+        const modalYElement = document.getElementById('modal-char-y-coord');
+        const modalZElement = document.getElementById('modal-char-z-coord');
+        
+        if (modalXElement) modalXElement.textContent = this.playerPosition.x;
+        if (modalYElement) modalYElement.textContent = this.playerPosition.y;
+        if (modalZElement) modalZElement.textContent = this.playerPosition.z;
+        
+        console.log(`✅ Coordinate display update complete`);
+    }
 }
 
 // Initialize game client when DOM is loaded
-function initializeGameClient() {
+function initializeGameClient(charId, charName) {
     window.gameClient = new GameClient();
+    // Set character ID and name from template
+    if (charId) {
+        window.gameClient.characterId = charId;
+        window.gameClient.characterName = charName;
+        console.log('GameClient initialized with character:', charId, charName);
+    }
     window.gameClient.connect();
 }
 

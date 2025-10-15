@@ -15,6 +15,7 @@ class Area(db.Model):
     level_range = db.Column(db.JSON, default={'min': 1, 'max': 10})
     entry_requirements = db.Column(db.JSON, default=dict)
     environmental_effects = db.Column(db.JSON, default=list)
+    climate = db.Column(db.String(20), default='temperate')  # arctic, cold, temperate, warm, tropical, desert
     
     # Connected areas
     connected_areas = db.Column(db.JSON, default=list)
@@ -52,7 +53,6 @@ class Room(db.Model):
     
     # Environmental properties
     lighting = db.Column(db.String(20), default='normal')  # dark, dim, normal, bright
-    temperature = db.Column(db.String(20), default='normal')  # freezing, cold, normal, warm, hot
     weather_effects = db.Column(db.JSON, default=list)
     
     # Room flags

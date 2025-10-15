@@ -1,4 +1,4 @@
-# Mudra MUD
+# Mudra
 
 A web-based Multi-User Dungeon (MUD) built with Flask and vanilla JavaScript, featuring a classless/levelless 
 progression system based on attributes, skills, and detailed item crafting/disassembly mechanics.
@@ -12,7 +12,7 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Command Parser**: Comprehensive command system for all game interactions
 - **3D World System**: Full cartesian coordinate system with vertical movement (up/down)
 - **Map Builder**: Visual tool for creating and managing game world
-- **Minimap**: Canvas-based real-time map display
+- **Live Minimap**: Canvas-based real-time map display showing nearby rooms, connections, and player position
 
 ### Character System
 - **4 Prime Attributes**: BODY, MIND, SPIRIT, KISMET
@@ -211,6 +211,21 @@ Features:
 - Room ID recycling (reuses deleted IDs)
 - Map export to JSON format
 - Real-time coordinate display
+
+### In-Game Minimap
+The game features a live minimap displayed on the right panel:
+
+Features:
+- **Real-time Updates**: Automatically updates when you move
+- **Periodic Refresh**: Updates every 5 seconds to show other players' movements
+- **Nearby Rooms**: Shows rooms within 5 units in all directions
+- **Connection Lines**: Visual display of room connections (North, South, East, West)
+- **Up/Down Indicators**: Cyan arrows show vertical exits
+- **Player Position**: Green dot indicates your current location
+- **Styled Like Map Builder**: Consistent visual design with the map builder tool
+- **Canvas-based Rendering**: Smooth, efficient rendering
+
+The minimap provides spatial awareness and helps with navigation through complex areas. It stays synchronized with the game state through both immediate movement updates and periodic background refreshes.
 
 ### Coordinate System
 The game uses a 3D cartesian coordinate system:

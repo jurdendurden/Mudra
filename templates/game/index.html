@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}{{ character.name }} - Mudra MUD{% endblock %}
+{% block title %}{{ character.name }} - Mudra{% endblock %}
+
+{% block user_menu_items %}
+{% if character.is_admin %}
+<li><a class="dropdown-item" href="#" onclick="openAdminPanel(); return false;"><i class="fas fa-cog me-2"></i>Admin Panel</a></li>
+<li><hr class="dropdown-divider"></li>
+{% endif %}
+{% endblock %}
 
 {% block head %}
 <style>
@@ -88,6 +95,7 @@
     }
     
     #minimap {
+        display: block;
         width: 100%;
         height: 200px;
         background: #1a252f;
@@ -97,6 +105,41 @@
     
     .character-panel {
         margin-bottom: 20px;
+    }
+    
+    .character-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #3498db;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+    
+    .character-race {
+        font-size: 14px;
+        color: #bdc3c7;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
+    .character-coords {
+        font-size: 12px;
+        color: #95a5a6;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #4a5f7a;
+        text-align: center;
+    }
+    
+    .character-coords .coord-label {
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    .character-coords .coord-values {
+        color: #3498db;
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
     }
     
     .attribute-section {
@@ -115,6 +158,55 @@
         font-size: 12px;
     }
     
+    /* Progress Bar Styles */
+    .stat-bar {
+        margin-bottom: 12px;
+    }
+    
+    .stat-bar-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        font-size: 12px;
+        color: #ecf0f1;
+    }
+    
+    .stat-bar-container {
+        width: 100%;
+        height: 10px;
+        background: #1a252f;
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 2px;        
+        overflow: hidden;
+        position: relative;
+        border-color: black;
+            }
+    
+    .stat-bar-fill {
+        height: 100%;
+        transition: width 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+    
+    .stat-bar-fill.hp {
+        background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+    }
+    
+    .stat-bar-fill.mana {
+        background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+    }
+    
+    .stat-bar-fill.movement {
+        background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+    }
+    
     .chat-window {
         height: 300px;
         background: #1a252f;
@@ -123,33 +215,6 @@
         padding: 10px;
         overflow-y: auto;
         margin-bottom: 10px;
-    }
-    
-    
-    .inventory-panel {
-        background: #1a252f;
-        border: 1px solid #4a5f7a;
-        border-radius: 5px;
-        padding: 10px;
-        max-height: 400px;
-        overflow-y: auto;
-    }
-    
-    .inventory-item {
-        padding: 5px;
-        margin-bottom: 5px;
-        background: #2c3e50;
-        border-radius: 3px;
-        cursor: pointer;
-        font-size: 12px;
-    }
-    
-    .inventory-item:hover {
-        background: #3498db;
-    }
-    
-    .inventory-item.equipped {
-        border-left: 3px solid #e74c3c;
     }
     
     /* Character Modal Styles */
@@ -459,107 +524,62 @@
 
 {% block content %}
 <div id="game-container">
-    <header id="game-header">
-        <div class="row">
-            <div class="col-md-4">
-                <strong>{{ character.name }}</strong> | 
-                HP: <span id="current-hp">{{ character.current_hp }}</span>/<span id="max-hp">{{ character.max_hp }}</span> | 
-                Mana: <span id="current-mana">{{ character.current_mana }}</span>/<span id="max-mana">{{ character.max_mana }}</span>
-                <button onclick="openCharacterModal()" style="margin-left: 10px; padding: 2px 6px; font-size: 12px;">C</button>
-            </div>
-            <div class="col-md-4 text-center">
-                <span id="current-room">{{ character.current_room.name if character.current_room else 'Unknown' }}</span>
-            </div>
-            <div class="col-md-4 text-end">
-                Trial Points: <span id="trial-points">{{ character.trial_points }}</span> | 
-                Progress Points: <span id="progress-points">{{ character.progress_points }}</span>
-                {% if character.is_admin %}
-                <button onclick="openAdminPanel()" class="btn btn-danger btn-sm ms-2" title="Admin Panel">
-                    <i class="fas fa-cog"></i> Admin
-                </button>
-                {% endif %}
-            </div>
-        </div>
+    <header id="game-header" style="display: none;">
+        <!-- Header hidden - character name is in left panel, room name shown via look command -->
     </header>
     
     <main id="game-main">
         <aside id="left-panel">
-            <div id="minimap-container">
-                <h6>Minimap</h6>
-                <canvas id="minimap"></canvas>
-            </div>
-            
             <div class="character-panel">
-                <h6>Attributes</h6>
-                <div class="attribute-section">
-                    <h6>BODY</h6>
-                    <div class="sub-attribute">
-                        <span>Strength:</span>
-                        <span id="strength">{{ character.get_attribute_value('body', 'strength') }}</span>
-                    </div>
-                    <div class="sub-attribute">
-                        <span>Durability:</span>
-                        <span id="durability">{{ character.get_attribute_value('body', 'durability') }}</span>
-                    </div>
-                    <div class="sub-attribute">
-                        <span>Endurance:</span>
-                        <span id="endurance">{{ character.get_attribute_value('body', 'endurance') }}</span>
-                    </div>
-                    <div class="sub-attribute">
-                        <span>Vitality:</span>
-                        <span id="vitality">{{ character.get_attribute_value('body', 'vitality') }}</span>
-                    </div>
-                </div>
+                <div class="character-name">{{ character.name }}</div>
+                <div class="character-race">{{ character.race or 'Unknown Race' }}</div>
                 
+                <h6>Character Stats</h6>
                 <div class="attribute-section">
-                    <h6>MIND</h6>
-                    <div class="sub-attribute">
-                        <span>Intellect:</span>
-                        <span id="intellect">{{ character.get_attribute_value('mind', 'intellect') }}</span>
+                    <!-- HP Bar -->
+                    <div class="stat-bar">
+                        <div class="stat-bar-label">
+                            <span>HP</span>
+                            <span><span id="current-hp">{{ character.current_hp }}</span>/<span id="max-hp">{{ character.max_hp }}</span></span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-fill hp" id="hp-bar" style="width: {{ (character.current_hp / character.max_hp * 100) if character.max_hp > 0 else 0 }}%;">
+                            </div>
+                        </div>
                     </div>
-                    <div class="sub-attribute">
-                        <span>Cognition:</span>
-                        <span id="cognition">{{ character.get_attribute_value('mind', 'cognition') }}</span>
+                    
+                    <!-- Mana Bar -->
+                    <div class="stat-bar">
+                        <div class="stat-bar-label">
+                            <span>Mana</span>
+                            <span><span id="current-mana">{{ character.current_mana }}</span>/<span id="max-mana">{{ character.max_mana }}</span></span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-fill mana" id="mana-bar" style="width: {{ (character.current_mana / character.max_mana * 100) if character.max_mana > 0 else 0 }}%;">
+                            </div>
+                        </div>
                     </div>
-                    <div class="sub-attribute">
-                        <span>Willpower:</span>
-                        <span id="willpower">{{ character.get_attribute_value('mind', 'willpower') }}</span>
+                    
+                    <!-- Movement Bar -->
+                    <div class="stat-bar">
+                        <div class="stat-bar-label">
+                            <span>Movement</span>
+                            <span><span id="current-movement">{{ character.current_movement }}</span>/<span id="max-movement">{{ character.max_movement }}</span></span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-fill movement" id="movement-bar" style="width: {{ (character.current_movement / character.max_movement * 100) if character.max_movement > 0 else 0 }}%;">
+                            </div>
+                        </div>
                     </div>
-                    <div class="sub-attribute">
-                        <span>Psionics:</span>
-                        <span id="psionics">{{ character.get_attribute_value('mind', 'psionics') }}</span>
-                    </div>
-                </div>
-                
-                <div class="attribute-section">
-                    <h6>SPIRIT</h6>
-                    <div class="sub-attribute">
-                        <span>Mystical:</span>
-                        <span id="mystical">{{ character.get_attribute_value('spirit', 'mystical') }}</span>
-                    </div>
-                    <div class="sub-attribute">
-                        <span>Magical:</span>
-                        <span id="magical">{{ character.get_attribute_value('spirit', 'magical') }}</span>
-                    </div>
-                    <div class="sub-attribute">
-                        <span>Metaphysical:</span>
-                        <span id="metaphysical">{{ character.get_attribute_value('spirit', 'metaphysical') }}</span>
-                    </div>
-                    <div class="sub-attribute">
-                        <span>Percipience:</span>
-                        <span id="percipience">{{ character.get_attribute_value('spirit', 'percipience') }}</span>
-                    </div>
-                </div>
-                
-                <div class="attribute-section">
-                    <h6>KISMET</h6>
-                    <div class="sub-attribute">
-                        <span>Luck:</span>
-                        <span id="luck">{{ character.get_attribute_value('kismet', 'luck') }}</span>
-                    </div>
-                    <div class="sub-attribute">
-                        <span>Charisma:</span>
-                        <span id="charisma">{{ character.get_attribute_value('kismet', 'charisma') }}</span>
+                    
+                    <!-- Character Coordinates -->
+                    <div class="character-coords">
+                        <div class="coord-label">Position</div>
+                        <div class="coord-values">
+                            <span id="char-x-coord">{{ character.x_coord or 0 }}</span>,
+                            <span id="char-y-coord">{{ character.y_coord or 0 }}</span>,
+                            <span id="char-z-coord">{{ character.z_coord or 0 }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -568,7 +588,7 @@
         <section id="center-content">
             <div id="output-window">
                 <div class="welcome-message">
-                    <h4>Welcome to Mudra MUD!</h4>
+                    <h4>Welcome to Mudra!</h4>
                     <p>You are {{ character.name }}.</p>
                     <p>Type <strong>help</strong> for available commands.</p>
                     <hr>
@@ -581,27 +601,16 @@
         </section>
         
         <aside id="right-panel">
+            <div id="minimap-container">
+                <h6>Minimap</h6>
+                <canvas id="minimap" width="280" height="200"></canvas>
+            </div>
+            
             <div class="chat-window">
                 <div id="chat-output">
                     <div class="chat-message system">
                         <span class="timestamp">[System]</span> Connected to chat
                     </div>
-                </div>
-            </div>
-            
-            
-            <div class="inventory-panel">
-                <h6>Inventory</h6>
-                <div id="inventory-list">
-                    {% for item in character.inventory %}
-                    <div class="inventory-item {% if item.equipped_character_id == character.id %}equipped{% endif %}" 
-                         data-item-id="{{ item.id }}">
-                        {{ item.name }}
-                        {% if item.equipped_character_id == character.id %}
-                        <small class="text-success">(equipped)</small>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
         </aside>
@@ -905,12 +914,12 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Ensure the function exists before calling it
         if (typeof initializeGameClient === 'function') {
-            initializeGameClient();
+            initializeGameClient(characterId, characterName);
         } else {
             // If function doesn't exist, wait a bit and try again
             setTimeout(function() {
                 if (typeof initializeGameClient === 'function') {
-                    initializeGameClient();
+                    initializeGameClient(characterId, characterName);
                 } else {
                     console.error('initializeGameClient function not found');
                 }

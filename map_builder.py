@@ -45,7 +45,8 @@ def get_rooms():
         'x': room.x_coord,
         'y': room.y_coord,
         'z': room.z_coord,
-        'exits': room.exits
+        'exits': room.exits,
+        'lighting': room.lighting
     } for room in rooms])
 
 @app.route('/api/areas')
@@ -82,7 +83,8 @@ def create_room():
         x_coord=data.get('x', 0),
         y_coord=data.get('y', 0),
         z_coord=data.get('z', 0),
-        exits=data.get('exits', {})
+        exits=data.get('exits', {}),
+        lighting=data.get('lighting', 'normal')
     )
     
     db.session.add(room)
@@ -97,7 +99,8 @@ def create_room():
         'x': room.x_coord,
         'y': room.y_coord,
         'z': room.z_coord,
-        'exits': room.exits
+        'exits': room.exits,
+        'lighting': room.lighting
     })
 
 @app.route('/api/rooms/<int:room_id>', methods=['PUT'])
@@ -128,6 +131,7 @@ def update_room(room_id):
     room.y_coord = data.get('y', room.y_coord)
     room.z_coord = data.get('z', room.z_coord)
     room.exits = data.get('exits', room.exits)
+    room.lighting = data.get('lighting', room.lighting)
     
     db.session.commit()
     
@@ -140,7 +144,8 @@ def update_room(room_id):
         'x': room.x_coord,
         'y': room.y_coord,
         'z': room.z_coord,
-        'exits': room.exits
+        'exits': room.exits,
+        'lighting': room.lighting
     })
 
 @app.route('/api/rooms/<int:room_id>', methods=['DELETE'])

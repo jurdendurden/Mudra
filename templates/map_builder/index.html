@@ -428,6 +428,12 @@
                         </label>
                     </div>
                     <div class="form-check form-switch me-4">
+                        <input class="form-check-input" type="checkbox" id="autoRoomToggle" onchange="toggleAutoRoom()" disabled>
+                        <label class="form-check-label text-white" for="autoRoomToggle" id="autoRoomLabel" style="opacity: 0.5;">
+                            <i class="fas fa-walking"></i> Auto Room
+                        </label>
+                    </div>
+                    <div class="form-check form-switch me-4">
                         <input class="form-check-input" type="checkbox" id="showCoordinatesToggle" onchange="toggleCoordinateLabels()">
                         <label class="form-check-label text-white" for="showCoordinatesToggle">
                             <i class="fas fa-hashtag"></i> Show X/Y
@@ -644,6 +650,9 @@
         let undoHistory = [];
         const MAX_UNDO_STEPS = 3;
         
+        // Auto Room mode
+        let autoRoomMode = false;
+        
         // Initialize the map builder
         document.addEventListener('DOMContentLoaded', function() {
             roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
@@ -788,6 +797,188 @@
             // Only update if gridlines are currently enabled
             if (toggle.checked) {
                 toggleGridlines();
+            }
+        }
+        
+        // Toggle Auto Room mode
+        function toggleAutoRoom() {
+            const toggle = document.getElementById('autoRoomToggle');
+            autoRoomMode = toggle.checked;
+            
+            if (autoRoomMode) {
+                console.log('========================================');
+                console.log('Auto Room mode ENABLED');
+                console.log('Use numpad keys to create rooms:');
+                console.log('  8 = North, 2 = South');
+                console.log('  6 = East, 4 = West');
+                console.log('  9 = NE, 7 = NW, 3 = SE, 1 = SW');
+                console.log('  + = Up, - = Down');
+                console.log('Selected room:', selectedRoom ? selectedRoom.room_id : 'none');
+                console.log('========================================');
+            } else {
+                console.log('Auto Room mode DISABLED');
+            }
+        }
+        
+        // Update Auto Room toggle state based on selection
+        function updateAutoRoomToggle() {
+            const toggle = document.getElementById('autoRoomToggle');
+            const label = document.getElementById('autoRoomLabel');
+            
+            // Enable only if exactly one room is selected and not in multi-select
+            const canEnable = selectedRoom && multiSelectedRooms.length <= 1;
+            
+            toggle.disabled = !canEnable;
+            label.style.opacity = canEnable ? '1' : '0.5';
+            
+            // Turn off auto room mode if conditions are no longer met
+            if (!canEnable && autoRoomMode) {
+                toggle.checked = false;
+                autoRoomMode = false;
+            }
+        }
+        
+        // Create a room in the given direction using Auto Room mode
+        async function createAutoRoom(direction) {
+            if (!selectedRoom) return;
+            
+            const newX = selectedRoom.x + direction.x;
+            const newY = selectedRoom.y + direction.y;
+            const newZ = (selectedRoom.z || 0) + direction.z;
+            
+            // Check if room already exists at target location
+            const existingRoom = rooms.find(r => 
+                r.x === newX && r.y === newY && (r.z || 0) === newZ
+            );
+            
+            if (existingRoom) {
+                console.log(`❌ Room already exists at (${newX}, ${newY}, ${newZ}). Cannot create.`);
+                console.log(`   Existing room: ${existingRoom.room_id} - ${existingRoom.name}`);
+                
+                // Briefly flash the existing room
+                const nodes = document.querySelectorAll('.room-node');
+                nodes.forEach(n => {
+                    if (n.innerHTML.includes(existingRoom.name) && 
+                        n.style.left === `${existingRoom.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px` &&
+                        n.style.top === `${-existingRoom.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px`) {
+                        // Flash the node
+                        n.style.backgroundColor = '#e74c3c';
+                        n.style.transform = 'scale(1.2)';
+                        setTimeout(() => {
+                            n.style.backgroundColor = '';
+                            n.style.transform = '';
+                        }, 300);
+                    }
+                });
+                
+                return;
+            }
+            
+            // Generate new room ID
+            const nextRoomId = getNextRoomId();
+            
+            // Create room data
+            const roomData = {
+                room_id: nextRoomId,
+                name: `Room ${nextRoomId}`,
+                description: `A room ${direction.name} of ${selectedRoom.name}.`,
+                area_id: selectedRoom.area_id || null,
+                x: newX,
+                y: newY,
+                z: newZ,
+                exits: {},
+                lighting: selectedRoom.lighting || 'normal'
+            };
+            
+            // Determine the opposite direction for reciprocal exit
+            const oppositeDirections = {
+                'north': 'south',
+                'south': 'north',
+                'east': 'west',
+                'west': 'east',
+                'northeast': 'southwest',
+                'northwest': 'southeast',
+                'southeast': 'northwest',
+                'southwest': 'northeast',
+                'up': 'down',
+                'down': 'up'
+            };
+            
+            const oppositeDir = oppositeDirections[direction.name];
+            
+            // Add exit from new room back to current room
+            if (oppositeDir) {
+                roomData.exits[oppositeDir] = selectedRoom.room_id;
+            }
+            
+            try {
+                // Create the new room
+                const response = await fetch('/api/rooms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(roomData)
+                });
+                
+                if (response.ok) {
+                    const newRoom = await response.json();
+                    
+                    // Add exit from current room to new room
+                    const updatedExits = { ...(selectedRoom.exits || {}) };
+                    updatedExits[direction.name] = newRoom.room_id;
+                    
+                    // Update current room with new exit
+                    await fetch(`/api/rooms/${selectedRoom.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            room_id: selectedRoom.room_id,
+                            name: selectedRoom.name,
+                            description: selectedRoom.description,
+                            area_id: selectedRoom.area_id,
+                            x: selectedRoom.x,
+                            y: selectedRoom.y,
+                            z: selectedRoom.z || 0,
+                            exits: updatedExits,
+                            lighting: selectedRoom.lighting || 'normal'
+                        })
+                    });
+                    
+                    // Reload rooms and re-render
+                    await loadRooms();
+                    renderMap();
+                    
+                    // Select the newly created room to continue walking
+                    const freshNewRoom = rooms.find(r => r.room_id === newRoom.room_id);
+                    if (freshNewRoom) {
+                        selectedRoom = freshNewRoom;
+                        
+                        // Highlight the new room
+                        const nodes = document.querySelectorAll('.room-node');
+                        nodes.forEach(n => {
+                            n.classList.remove('selected');
+                            if (n.innerHTML.includes(freshNewRoom.name) && 
+                                n.style.left === `${freshNewRoom.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px` &&
+                                n.style.top === `${-freshNewRoom.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px`) {
+                                n.classList.add('selected');
+                            }
+                        });
+                        
+                        updateSelectionDisplay();
+                    }
+                    
+                    console.log(`✓ Created room ${newRoom.room_id} at (${newX}, ${newY}, ${newZ})`);
+                } else {
+                    const errorText = await response.text();
+                    console.error('❌ Error creating room:', errorText);
+                    alert('Error creating room: ' + errorText);
+                }
+            } catch (error) {
+                console.error('❌ Error creating auto room:', error);
+                alert('Error creating auto room: ' + error.message);
             }
         }
         
@@ -975,17 +1166,49 @@
                  // Add drag handlers for moving rooms (Ctrl+drag)
                  node.addEventListener('mousedown', (e) => handleRoomDragStart(e, room, node));
                  
-                 // Single click to select, double click to edit
-                 node.onclick = (e) => {
-                     if (!e.ctrlKey) {
-                         selectRoomVisual(room, node);
-                     }
-                 };
-                 node.ondblclick = (e) => {
-                     if (!e.ctrlKey) {
-                         openRoomEditor(room);
-                     }
-                 };
+                // Single click to select, double click to edit
+                node.onclick = (e) => {
+                    // Prevent event bubbling
+                    e.stopPropagation();
+                    
+                    // Ctrl+Click: Toggle room in/out of multi-selection
+                    if (e.ctrlKey) {
+                        const roomIndex = multiSelectedRooms.indexOf(room.id);
+                        if (roomIndex > -1) {
+                            // Remove from selection
+                            multiSelectedRooms.splice(roomIndex, 1);
+                            if (selectedRoom && selectedRoom.id === room.id) {
+                                // If this was the main selected room, pick another from multi-selection or clear
+                                selectedRoom = multiSelectedRooms.length > 0 
+                                    ? rooms.find(r => r.id === multiSelectedRooms[0]) 
+                                    : null;
+                            }
+                        } else {
+                            // Add to selection
+                            multiSelectedRooms.push(room.id);
+                            selectedRoom = room;
+                        }
+                        updateMultiSelection();
+                    }
+                    // Shift+Click: Add to multi-selection (don't remove others)
+                    else if (e.shiftKey) {
+                        if (!multiSelectedRooms.includes(room.id)) {
+                            multiSelectedRooms.push(room.id);
+                        }
+                        selectedRoom = room;
+                        updateMultiSelection();
+                    }
+                    // Normal click: Clear all selections and select only this room
+                    else {
+                        multiSelectedRooms = [];
+                        selectRoomVisual(room, node);
+                    }
+                };
+                node.ondblclick = (e) => {
+                    if (!e.ctrlKey && !e.shiftKey) {
+                        openRoomEditor(room);
+                    }
+                };
                 canvas.appendChild(node);
             });
             
@@ -1209,6 +1432,9 @@
             
             // Update selection display
             updateSelectionDisplay();
+            
+            // Update auto room toggle state
+            updateAutoRoomToggle();
         }
         
         // Select a room by ID (from dropdown or other source)
@@ -1239,6 +1465,9 @@
             
             // Update selection display
             updateSelectionDisplay();
+            
+            // Update auto room toggle state
+            updateAutoRoomToggle();
         }
         
         // Open room editor (double click)
@@ -1416,6 +1645,9 @@
             
             // Update selection display
             updateSelectionDisplay();
+            
+            // Update auto room toggle state
+            updateAutoRoomToggle();
             
             roomModal.show();
          }
@@ -1899,6 +2131,63 @@
                     deleteSingleSelectedRoom();
                 }
             }
+            
+            // Numpad handling for Auto Room mode
+            if (autoRoomMode) {
+                console.log('Auto Room Mode active - key pressed:', event.key, 'code:', event.code);
+                console.log('Selected room:', selectedRoom ? selectedRoom.room_id : 'none');
+                console.log('Multi-selected count:', multiSelectedRooms.length);
+            }
+            
+            if (autoRoomMode && selectedRoom && multiSelectedRooms.length <= 1) {
+                // Map numpad codes directly to directions
+                const numpadCodeMap = {
+                    'Numpad8': { x: 0, y: 1, z: 0, name: 'north' },
+                    'Numpad2': { x: 0, y: -1, z: 0, name: 'south' },
+                    'Numpad6': { x: 1, y: 0, z: 0, name: 'east' },
+                    'Numpad4': { x: -1, y: 0, z: 0, name: 'west' },
+                    'Numpad9': { x: 1, y: 1, z: 0, name: 'northeast' },
+                    'Numpad7': { x: -1, y: 1, z: 0, name: 'northwest' },
+                    'Numpad3': { x: 1, y: -1, z: 0, name: 'southeast' },
+                    'Numpad1': { x: -1, y: -1, z: 0, name: 'southwest' },
+                    'NumpadAdd': { x: 0, y: 0, z: 1, name: 'up' },
+                    'NumpadSubtract': { x: 0, y: 0, z: -1, name: 'down' }
+                };
+                
+                // Also accept regular number keys as fallback
+                const keyMap = {
+                    '8': { x: 0, y: 1, z: 0, name: 'north' },
+                    '2': { x: 0, y: -1, z: 0, name: 'south' },
+                    '6': { x: 1, y: 0, z: 0, name: 'east' },
+                    '4': { x: -1, y: 0, z: 0, name: 'west' },
+                    '9': { x: 1, y: 1, z: 0, name: 'northeast' },
+                    '7': { x: -1, y: 1, z: 0, name: 'northwest' },
+                    '3': { x: 1, y: -1, z: 0, name: 'southeast' },
+                    '1': { x: -1, y: -1, z: 0, name: 'southwest' },
+                    '+': { x: 0, y: 0, z: 1, name: 'up' },
+                    '-': { x: 0, y: 0, z: -1, name: 'down' }
+                };
+                
+                let direction = null;
+                
+                // Try event.code first (most reliable for numpad)
+                if (event.code && numpadCodeMap[event.code]) {
+                    direction = numpadCodeMap[event.code];
+                    console.log('Matched numpad code:', event.code, 'direction:', direction.name);
+                }
+                // Fallback to event.key
+                else if (keyMap[event.key]) {
+                    direction = keyMap[event.key];
+                    console.log('Matched key:', event.key, 'direction:', direction.name);
+                }
+                
+                if (direction) {
+                    event.preventDefault();
+                    console.log('Creating auto room in direction:', direction.name);
+                    createAutoRoom(direction);
+                    return;
+                }
+            }
         }
         
         // Delete single selected room
@@ -1919,6 +2208,7 @@
                     await loadRooms();
                     renderMap();
                     updateSelectionDisplay();
+                    updateAutoRoomToggle();
                 } else {
                     alert('Error deleting room');
                 }
@@ -2370,6 +2660,9 @@
             
             // Update selection display
             updateSelectionDisplay();
+            
+            // Update auto room toggle state
+            updateAutoRoomToggle();
         }
         
         // Clear multi selection
@@ -2494,11 +2787,17 @@
                 const room = rooms.find(r => r.id === roomId);
                 if (!room) continue;
                 
-                const newExits = {};
+                // Preserve existing exits
+                const newExits = { ...(room.exits || {}) };
                 const roomsToUpdate = [];
                 
                 // Check all six directions for adjacent rooms
                 for (const [direction, offset] of Object.entries(directionOffsets)) {
+                    // Skip if exit already exists in this direction
+                    if (newExits[direction]) {
+                        continue;
+                    }
+                    
                     const targetX = room.x + offset.x;
                     const targetY = room.y + offset.y;
                     const targetZ = (room.z || 0) + offset.z;
@@ -2509,17 +2808,19 @@
                     );
                     
                     if (targetRoom) {
-                        // Add exit to target room
+                        // Add exit to target room (only if it didn't exist)
                         newExits[direction] = targetRoom.room_id;
                         totalExitsAdded++;
                         
-                        // Also add reciprocal exit in target room
+                        // Also add reciprocal exit in target room (if it doesn't exist)
                         const oppositeDir = oppositeDirections[direction];
-                        roomsToUpdate.push({
-                            room: targetRoom,
-                            direction: oppositeDir,
-                            targetRoomId: room.room_id
-                        });
+                        if (!targetRoom.exits || !targetRoom.exits[oppositeDir]) {
+                            roomsToUpdate.push({
+                                room: targetRoom,
+                                direction: oppositeDir,
+                                targetRoomId: room.room_id
+                            });
+                        }
                     }
                 }
                 
@@ -2546,7 +2847,12 @@
                     for (const update of roomsToUpdate) {
                         const targetRoom = update.room;
                         const newTargetExits = { ...(targetRoom.exits || {}) };
-                        newTargetExits[update.direction] = update.targetRoomId;
+                        
+                        // Only add if it doesn't already exist
+                        if (!newTargetExits[update.direction]) {
+                            newTargetExits[update.direction] = update.targetRoomId;
+                            totalExitsAdded++;
+                        }
                         
                         try {
                             await fetch(`/api/rooms/${targetRoom.id}`, {
@@ -2578,7 +2884,11 @@
             renderMap();
             clearMultiSelection();
             
-            alert(`Auto-exit complete! Added ${totalExitsAdded} exit(s) to ${multiSelectedRooms.length} room(s).`);
+            if (totalExitsAdded > 0) {
+                alert(`Auto-exit complete! Added ${totalExitsAdded} new exit(s) to ${multiSelectedRooms.length} room(s). Existing exits were preserved.`);
+            } else {
+                alert(`Auto-exit complete! No new exits added - all adjacent exits already exist.`);
+            }
         }
         
         // Handle context menu (right-click)

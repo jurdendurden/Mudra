@@ -207,6 +207,10 @@ Features:
 - Room editing and deletion
 - Drag-and-drop room repositioning (Ctrl+drag)
 - Multi-select with drag selection (Shift+drag)
+- Individual room selection controls:
+  - **Click**: Select single room (clears other selections)
+  - **Ctrl+Click**: Toggle room in/out of selection group
+  - **Shift+Click**: Add room to selection group
 - Automatic reciprocal exit creation
 - Room ID recycling (reuses deleted IDs)
 - Map export to JSON format

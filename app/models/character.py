@@ -47,6 +47,9 @@ class Character(db.Model):
     # Admin flag
     is_admin = db.Column(db.Boolean, default=False)
     
+    # Avatar
+    avatar = db.Column(db.String(50), nullable=True)
+    
     # Skills and spells (JSON fields)
     skills = db.Column(db.JSON, default=dict)
     spells = db.Column(db.JSON, default=dict)

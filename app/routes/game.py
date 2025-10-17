@@ -4,7 +4,7 @@ from app import db
 from app.models.character import Character
 from app.models.room import Room
 from app.models.chat_message import ChatMessage
-from app.utils.race_loader import apply_racial_bonuses, get_racial_skills, get_racial_skill_bonuses
+from app.utils.race_loader import apply_racial_bonuses, get_racial_skills, get_racial_skill_bonuses, get_all_race_data
 
 game_bp = Blueprint('game', __name__)
 
@@ -102,6 +102,13 @@ def play_character(character_id):
     
     return render_template('game/index.html', character=character)
 
+@game_bp.route('/logout-character')
+@login_required
+def logout_character():
+    """Logout character and return to account screen"""
+    flash('Character logged out', 'info')
+    return redirect(url_for('game.index'))
+
 @game_bp.route('/create-character', methods=['GET', 'POST'])
 @login_required
 def create_character():
@@ -110,6 +117,7 @@ def create_character():
         name = request.form.get('name')
         race = request.form.get('race', 'Human')
         description = request.form.get('description', '')
+        avatar = request.form.get('avatar', '1.png')  # Default to first avatar
         attributes_json = request.form.get('attributes')
         
         # Validation
@@ -151,6 +159,7 @@ def create_character():
             name=name,
             race=race,
             description=description,
+            avatar=avatar,
             attributes=attributes,
             trial_points=0  # All points have been spent during creation
         )
@@ -192,7 +201,10 @@ def create_character():
         flash(f'Character {name} created successfully!', 'success')
         return redirect(url_for('game.index'))
     
-    return render_template('game/create_character.html')
+    # Get all race data for the template
+    race_data = get_all_race_data()
+    
+    return render_template('game/create_character.html', race_data=race_data)
 
 @game_bp.route('/delete-character/<int:character_id>', methods=['POST'])
 @login_required

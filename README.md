@@ -23,6 +23,7 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Trial Points**: Used for HP, mana, movement, and attribute increases
 - **Progress Points**: Used for learning and improving skills and spells
 - **No Level System**: Power based entirely on race + attributes + skills + gear
+- **Avatar Selection**: Choose from 500 unique character avatars during character creation
 
 ### Item System
 - **Comprehensive Item Types**: 101+ item types including weapons, armor, gems, tools, crafting materials, and more

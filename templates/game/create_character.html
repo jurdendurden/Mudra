@@ -11,55 +11,100 @@
     }
     
     .character-form {
-        background: white;
-        border-radius: 10px;
-        padding: 30px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        font-family: 'Crimson Text', serif;
     }
     
     .form-section {
-        margin-bottom: 30px;
-        padding: 20px;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        background: #f8f9fa;
+        margin-bottom: 35px;
+        padding: 25px;
+        border: 2px solid var(--medieval-border);
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-stone) 100%);
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
     }
     
     .section-title {
-        color: #2c3e50;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #3498db;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 20px;
+        margin-bottom: 25px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid var(--medieval-bronze);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    }
+    
+    .attributes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
     }
     
     .attribute-group {
-        margin-bottom: 25px;
+        margin-bottom: 0;
         padding: 15px;
-        background: white;
-        border-radius: 6px;
-        border-left: 4px solid #3498db;
+        background: linear-gradient(135deg, var(--medieval-charcoal) 0%, var(--medieval-stone) 100%);
+        border-radius: 8px;
+        border-left: 5px solid var(--medieval-accent);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        position: relative;
     }
     
     .attribute-group h6 {
-        color: #2c3e50;
-        margin-bottom: 15px;
-        font-weight: bold;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 18px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        cursor: help;
+        position: relative;
+    }
+    
+    .attribute-group h6:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--medieval-dark);
+        color: var(--medieval-text);
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        font-size: 13px;
+        font-weight: normal;
+        z-index: 1000;
+        font-family: 'Crimson Text', serif;
+        max-width: 300px;
+        white-space: normal;
+        text-align: center;
     }
     
     .sub-attribute {
         display: flex;
         align-items: center;
-        margin-bottom: 12px;
-        padding: 8px;
-        background: #f8f9fa;
-        border-radius: 4px;
+        margin-bottom: 15px;
+        padding: 12px;
+        background: var(--medieval-dark);
+        border-radius: 6px;
+        border: 1px solid var(--medieval-border);
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
     }
     
     .sub-attribute label {
-        min-width: 120px;
+        min-width: 140px;
         margin-bottom: 0;
-        font-weight: 500;
-        color: #495057;
+        font-weight: 600;
+        color: var(--medieval-text);
+        font-family: 'Crimson Text', serif;
     }
     
     .attribute-slider {
@@ -68,90 +113,376 @@
     }
     
     .attribute-value {
-        min-width: 40px;
+        min-width: 50px;
         text-align: center;
         font-weight: bold;
-        color: #2c3e50;
-        background: #e9ecef;
-        padding: 4px 8px;
-        border-radius: 4px;
+        color: var(--medieval-gold);
+        background: var(--medieval-charcoal);
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 2px solid var(--medieval-border);
+        font-family: 'Source Code Pro', monospace;
+        font-size: 14px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
     }
     
     .points-summary {
-        background: #e8f4fd;
-        border: 1px solid #bee5eb;
-        border-radius: 6px;
-        padding: 15px;
-        margin-bottom: 20px;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
         text-align: center;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
     
     .points-remaining {
-        font-size: 18px;
+        font-size: 24px;
         font-weight: bold;
-        color: #0c5460;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
     
     .points-total {
-        color: #6c757d;
-        font-size: 14px;
+        color: var(--medieval-text-dim);
+        font-size: 16px;
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
     }
     
     .race-description {
-        font-size: 13px;
-        color: #6c757d;
-        margin-top: 5px;
+        font-size: 14px;
+        color: var(--medieval-text-dim);
+        margin-top: 8px;
         font-style: italic;
+        font-family: 'Crimson Text', serif;
+        padding: 10px;
+        background: var(--medieval-dark);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-accent);
     }
     
     .form-actions {
         display: flex;
-        gap: 15px;
+        gap: 20px;
         justify-content: center;
-        margin-top: 30px;
+        margin-top: 40px;
     }
     
     .btn-action {
-        padding: 12px 30px;
-        border-radius: 6px;
+        padding: 15px 35px;
+        border-radius: 8px;
         font-weight: 600;
         text-decoration: none;
-        border: none;
+        border: 2px solid;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .btn-primary {
-        background: #3498db;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-accent) 0%, var(--medieval-bronze) 100%);
+        border-color: var(--medieval-accent);
+        color: var(--medieval-text);
     }
     
     .btn-primary:hover {
-        background: #2980b9;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-accent-light) 0%, var(--medieval-accent) 100%);
+        border-color: var(--medieval-accent-light);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-secondary {
-        background: #6c757d;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-iron) 0%, var(--medieval-border) 100%);
+        border-color: var(--medieval-border);
+        color: var(--medieval-text);
     }
     
     .btn-secondary:hover {
-        background: #5a6268;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-border-light) 0%, var(--medieval-iron) 100%);
+        border-color: var(--medieval-border-light);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-action:disabled {
-        background: #bdc3c7;
-        color: #7f8c8d;
+        background: var(--medieval-border);
+        border-color: var(--medieval-border);
+        color: var(--medieval-text-faded);
         cursor: not-allowed;
         transform: none;
+        box-shadow: none;
     }
     
     .validation-error {
-        color: #e74c3c;
-        font-size: 12px;
-        margin-top: 5px;
+        color: var(--medieval-danger);
+        font-size: 13px;
+        margin-top: 8px;
+        font-family: 'Crimson Text', serif;
+        font-weight: 600;
+    }
+    
+    /* Racial Information Styles */
+    .racial-info {
+        margin-top: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 8px;
+        box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+    }
+    
+    .racial-info h6 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 8px;
+    }
+    
+    .racial-stats, .racial-skills, .skill-bonuses, .special-abilities {
+        margin-bottom: 20px;
+    }
+    
+    .racial-content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 15px;
+    }
+    
+    .racial-left-column {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .racial-right-column {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .racial-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .attribute-column {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .attribute-modifier {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 12px;
+        margin-bottom: 6px;
+        background: var(--medieval-stone);
+        border-radius: 4px;
+        border-left: 3px solid var(--medieval-border);
+        font-family: 'Crimson Text', serif;
+        font-size: 14px;
+    }
+    
+    .attribute-modifier.positive {
+        border-left-color: var(--medieval-success);
+    }
+    
+    .attribute-modifier.negative {
+        border-left-color: var(--medieval-danger);
+    }
+    
+    .attribute-modifier.neutral {
+        border-left-color: var(--medieval-border);
+    }
+    
+    .modifier-value {
+        font-family: 'Source Code Pro', monospace;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .modifier-value.positive {
+        color: var(--medieval-success);
+    }
+    
+    .modifier-value.negative {
+        color: var(--medieval-danger);
+    }
+    
+    .modifier-value.neutral {
+        color: var(--medieval-text-dim);
+    }
+    
+    .skill-item, .bonus-item, .ability-item {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        background: var(--medieval-stone);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-accent);
+        font-family: 'Crimson Text', serif;
+        font-size: 14px;
+        color: var(--medieval-text);
+    }
+    
+    .special-abilities {
+        margin-top: 15px;
+    }
+    
+    .special-abilities .ability-item {
+        margin-bottom: 0;
+    }
+    
+    .special-abilities-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .bonus-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .bonus-value {
+        font-family: 'Source Code Pro', monospace;
+        font-weight: bold;
+        color: var(--medieval-gold);
+    }
+    
+    .ability-name {
+        font-weight: 600;
+        color: var(--medieval-gold);
+        margin-bottom: 4px;
+    }
+    
+    .ability-description {
+        font-size: 13px;
+        color: var(--medieval-text-dim);
+        font-style: italic;
+    }
+    
+    /* Avatar Selection Styles */
+    .avatar-selection {
+        margin-top: 15px;
+    }
+    
+    .avatar-navigation {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .btn-nav {
+        background: linear-gradient(135deg, var(--medieval-accent) 0%, var(--medieval-bronze) 100%);
+        border: 2px solid var(--medieval-accent);
+        color: var(--medieval-text);
+        padding: 12px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .btn-nav:hover {
+        background: linear-gradient(135deg, var(--medieval-accent-light) 0%, var(--medieval-accent) 100%);
+        border-color: var(--medieval-accent-light);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    
+    .btn-nav.btn-prev-fast, .btn-nav.btn-next-fast {
+        background: linear-gradient(135deg, var(--medieval-danger) 0%, var(--medieval-blood) 100%);
+        border-color: var(--medieval-danger);
+        font-size: 16px;
+        padding: 10px 14px;
+    }
+    
+    .btn-nav.btn-prev-fast:hover, .btn-nav.btn-next-fast:hover {
+        background: linear-gradient(135deg, var(--medieval-crimson) 0%, var(--medieval-danger) 100%);
+        border-color: var(--medieval-crimson);
+    }
+    
+    .btn-nav.btn-prev-medium, .btn-nav.btn-next-medium {
+        background: linear-gradient(135deg, var(--medieval-success) 0%, var(--medieval-moss) 100%);
+        border-color: var(--medieval-success);
+        font-size: 16px;
+        padding: 10px 14px;
+    }
+    
+    .btn-nav.btn-prev-medium:hover, .btn-nav.btn-next-medium:hover {
+        background: linear-gradient(135deg, var(--medieval-moss) 0%, var(--medieval-success) 100%);
+        border-color: var(--medieval-moss);
+    }
+    
+    .avatar-display {
+        text-align: center;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 3px solid var(--medieval-border);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+    }
+    
+    .avatar-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        margin-bottom: 10px;
+    }
+    
+    .avatar-number {
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    
+    .avatar-controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+    
+    .btn-random {
+        background: linear-gradient(135deg, var(--medieval-success) 0%, var(--medieval-moss) 100%);
+        border: 2px solid var(--medieval-success);
+        color: var(--medieval-text);
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .btn-random:hover {
+        background: linear-gradient(135deg, var(--medieval-moss) 0%, var(--medieval-success) 100%);
+        border-color: var(--medieval-moss);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
 </style>
 {% endblock %}
@@ -159,7 +490,7 @@
 {% block content %}
 <div class="creation-container">
     <div class="character-form">
-        <h2 class="text-center mb-4">Create Your Character</h2>
+        <h2 class="text-center mb-4 font-cinzel" style="color: var(--medieval-gold); font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Create Your Character</h2>
         
         <form id="character-form" method="POST">
             <!-- Basic Information Section -->
@@ -200,6 +531,39 @@
                     <div class="race-description" id="race-description">
                         Humans are adaptable and ambitious, with no inherent strengths or weaknesses.
                     </div>
+                    
+                    <!-- Racial Information Display -->
+                    <div id="racial-info" class="racial-info" style="display: none;">
+                        <h6>Racial Attributes, Skills, and Skill Bonuses</h6>
+                        
+                        <div class="racial-content-grid">
+                            <!-- Left side: Skills and Skill Bonuses -->
+                            <div class="racial-left-column">
+                                <!-- Racial Skills -->
+                                <div class="racial-skills">
+                                    <h6>Racial Skills</h6>
+                                    <div id="racial-skills-list"></div>
+                                </div>
+                                
+                                <!-- Skill Bonuses -->
+                                <div class="skill-bonuses">
+                                    <h6>Skill Bonuses</h6>
+                                    <div id="skill-bonuses-list"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right side: Attribute Modifiers -->
+                            <div class="racial-right-column">
+                                <div id="racial-attributes"></div>
+                                
+                                <!-- Special Abilities -->
+                                <div class="special-abilities">
+                                    <h6>Special Abilities</h6>
+                                    <div id="special-abilities-list" class="special-abilities-grid"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="mb-3">
@@ -207,31 +571,45 @@
                     <textarea class="form-control" id="description" name="description" rows="3" 
                               placeholder="Describe your character's appearance, background, or personality..."></textarea>
                 </div>
+                
+                <div class="mb-3">
+                    <label for="avatar" class="form-label">Avatar</label>
+                    <div class="avatar-selection">
+                        <div class="avatar-navigation">
+                            <button type="button" class="btn-nav btn-prev-fast" id="prev-avatar-fast" title="Previous 100"><<<</button>
+                            <button type="button" class="btn-nav btn-prev-medium" id="prev-avatar-medium" title="Previous 10"><<</button>
+                            <button type="button" class="btn-nav btn-prev" id="prev-avatar">←</button>
+                            <div class="avatar-display">
+                                <img id="avatar-preview" src="/static/assets/avatars/1.png" alt="Avatar Preview" class="avatar-image">
+                                <div class="avatar-number" id="avatar-number">1</div>
+                            </div>
+                            <button type="button" class="btn-nav btn-next" id="next-avatar">→</button>
+                            <button type="button" class="btn-nav btn-next-medium" id="next-avatar-medium" title="Next 10">>></button>
+                            <button type="button" class="btn-nav btn-next-fast" id="next-avatar-fast" title="Next 100">>>></button>
+                        </div>
+                        <div class="avatar-controls">
+                            <button type="button" class="btn-random" id="random-avatar">🎲 Random</button>
+                        </div>
+                        <input type="hidden" id="avatar" name="avatar" value="1.png">
+                        <div class="form-text">Use the arrows to browse available avatars, or click Random for a surprise!</div>
+                    </div>
+                </div>
             </div>
             
             <!-- Attributes Section -->
             <div class="form-section">
                 <h4 class="section-title">Attribute Distribution</h4>
                 
-                <div class="alert alert-info">
-                    <h6>Character System</h6>
-                    <p>Your character uses a <strong>classless progression system</strong> based on attributes:</p>
-                    <ul class="mb-0">
-                        <li><strong>BODY:</strong> Physical capabilities (strength, durability, endurance, vitality)</li>
-                        <li><strong>MIND:</strong> Mental capabilities (intellect, cognition, willpower, psionics)</li>
-                        <li><strong>SPIRIT:</strong> Magical capabilities (mystical, magical, metaphysical, percipience)</li>
-                        <li><strong>KISMET:</strong> Luck and social capabilities (luck, charisma)</li>
-                    </ul>
-                </div>
-                
                 <div class="points-summary">
                     <div class="points-remaining" id="points-remaining">20</div>
                     <div class="points-total">Trial Points Remaining (of 20 total)</div>
                 </div>
                 
-                <!-- BODY Attributes -->
-                <div class="attribute-group">
-                    <h6>BODY - Physical Capabilities</h6>
+                <!-- Attributes Grid -->
+                <div class="attributes-grid">
+                    <!-- BODY Attributes -->
+                    <div class="attribute-group">
+                        <h6 data-tooltip="Physical capabilities: strength, durability, endurance, vitality">BODY - Physical Capabilities</h6>
                     
                     <div class="sub-attribute">
                         <label title="Physical power and muscle strength. Affects melee damage, carrying capacity, and physical tasks.">Strength:</label>
@@ -260,11 +638,11 @@
                                data-prime="body" data-sub="vitality">
                         <div class="attribute-value" id="body-vitality">0</div>
                     </div>
-                </div>
-                
-                <!-- MIND Attributes -->
-                <div class="attribute-group">
-                    <h6>MIND - Mental Capabilities</h6>
+                    </div>
+                    
+                    <!-- MIND Attributes -->
+                    <div class="attribute-group">
+                        <h6 data-tooltip="Mental capabilities: intellect, cognition, willpower, psionics">MIND - Mental Capabilities</h6>
                     
                     <div class="sub-attribute">
                         <label title="Raw intelligence and reasoning ability. Affects learning speed, memory capacity, and complex problem solving.">Intellect:</label>
@@ -293,11 +671,11 @@
                                data-prime="mind" data-sub="psionics">
                         <div class="attribute-value" id="mind-psionics">0</div>
                     </div>
-                </div>
-                
-                <!-- SPIRIT Attributes -->
-                <div class="attribute-group">
-                    <h6>SPIRIT - Magical Capabilities</h6>
+                    </div>
+                    
+                    <!-- SPIRIT Attributes -->
+                    <div class="attribute-group">
+                        <h6 data-tooltip="Magical capabilities: mystical, magical, metaphysical, percipience">SPIRIT - Magical Capabilities</h6>
                     
                     <div class="sub-attribute">
                         <label title="Divine and spiritual magical power. Affects healing spells, divine magic, and connection to higher powers.">Mystical:</label>
@@ -326,11 +704,11 @@
                                data-prime="spirit" data-sub="percipience">
                         <div class="attribute-value" id="spirit-percipience">0</div>
                     </div>
-                </div>
-                
-                <!-- KISMET Attributes -->
-                <div class="attribute-group">
-                    <h6>KISMET - Luck and Social</h6>
+                    </div>
+                    
+                    <!-- KISMET Attributes -->
+                    <div class="attribute-group">
+                        <h6 data-tooltip="Luck and social capabilities: luck, charisma">KISMET - Luck and Social</h6>
                     
                     <div class="sub-attribute">
                         <label title="Fortune and chance in all endeavors. Affects critical hits, random events, loot quality, and favorable outcomes.">Luck:</label>
@@ -344,6 +722,7 @@
                         <input type="range" class="form-range attribute-slider" min="0" max="20" value="0" 
                                data-prime="kismet" data-sub="charisma">
                         <div class="attribute-value" id="kismet-charisma">0</div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -364,29 +743,32 @@
 </div>
 
 <script>
-    // Race descriptions
-    const raceDescriptions = {
-        'Human': 'Humans are adaptable and ambitious, with no inherent strengths or weaknesses.',
-        'Dwarf': 'Dwarves are hardy and strong, with natural resistance to magic and poison.',
-        'Elf': 'Elves are graceful and long-lived, with keen senses and natural magic affinity.',
-        'Halfling': 'Halflings are nimble and lucky, with natural stealth and courage.',
-        'Gnome': 'Gnomes are clever and curious, with natural magic resistance and illusion affinity.',
-        'Half-Elf': 'Half-Elves combine human adaptability with elven grace and magic.',
-        'Half-Orc': 'Half-Orcs are strong and resilient, with natural intimidation and endurance.',
-        'Tiefling': 'Tieflings have infernal heritage, with natural magic resistance and fire affinity.',
-        'Goblin': 'Goblins are small and cunning, with natural stealth and agility.',
-        'Orc': 'Orcs are powerful and aggressive, with natural strength and intimidation.',
-        'Hobgoblin': 'Hobgoblins are disciplined and militaristic, with natural leadership and strategy.',
-        'Lizardfolk': 'Lizardfolk are reptilian and adaptive, with natural armor and swimming.',
-        'Kobold': 'Kobolds are small and clever, with natural trap-making and pack tactics.',
-        'Aasimar': 'Aasimars have celestial heritage, with natural healing and divine magic.',
-        'Centaur': 'Centaurs are half-human, half-horse, with natural speed and strength.',
-        'Aarakocra': 'Aarakocras are bird-like, with natural flight and keen vision.',
-        'Minotaur': 'Minotaurs are bull-like, with natural strength and maze navigation.',
-        'Tabaxi': 'Tabaxis are cat-like, with natural agility and curiosity.',
-        'Tortle': 'Tortles are turtle-like, with natural armor and swimming.',
-        'Sprite': 'Sprites are tiny and magical, with natural invisibility and nature magic.',
-        'Nymph': 'Nymphs are nature spirits, with natural beauty and nature magic.'
+    // Race data from server
+    const raceData = {{ race_data | tojson }};
+    
+    // Attribute category names for display
+    const attributeCategories = {
+        'body': 'BODY',
+        'mind': 'MIND', 
+        'spirit': 'SPIRIT',
+        'kismet': 'KISMET'
+    };
+    
+    const attributeNames = {
+        'strength': 'Strength',
+        'durability': 'Durability',
+        'endurance': 'Endurance',
+        'vitality': 'Vitality',
+        'intellect': 'Intellect',
+        'cognition': 'Cognition',
+        'willpower': 'Willpower',
+        'psionics': 'Psionics',
+        'mystical': 'Mystical',
+        'magical': 'Magical',
+        'metaphysical': 'Metaphysical',
+        'percipience': 'Percipience',
+        'luck': 'Luck',
+        'charisma': 'Charisma'
     };
     
     // Character creation state
@@ -399,13 +781,17 @@
         kismet: { luck: 0, charisma: 0 }
     };
     
+    // Avatar selection state
+    let currentAvatarNumber = 1;
+    const maxAvatars = 500; // Confirmed: 1.png through 500.png
+    
     document.addEventListener('DOMContentLoaded', function() {
         // Race selection handler
         const raceSelect = document.getElementById('race');
         const raceDescription = document.getElementById('race-description');
         
         raceSelect.addEventListener('change', function() {
-            raceDescription.textContent = raceDescriptions[this.value] || '';
+            updateRaceInfo(this.value);
         });
         
         // Attribute slider handlers
@@ -430,6 +816,64 @@
             // Set hidden attributes field
             document.getElementById('attributes-input').value = JSON.stringify(attributes);
         });
+        
+        // Initialize race info for default selection
+        updateRaceInfo(raceSelect.value);
+        
+        // Avatar navigation handlers
+        const prevBtn = document.getElementById('prev-avatar');
+        const nextBtn = document.getElementById('next-avatar');
+        const prevMediumBtn = document.getElementById('prev-avatar-medium');
+        const nextMediumBtn = document.getElementById('next-avatar-medium');
+        const prevFastBtn = document.getElementById('prev-avatar-fast');
+        const nextFastBtn = document.getElementById('next-avatar-fast');
+        const avatarPreview = document.getElementById('avatar-preview');
+        const avatarNumber = document.getElementById('avatar-number');
+        const avatarInput = document.getElementById('avatar');
+        
+        prevBtn.addEventListener('click', function() {
+            currentAvatarNumber = currentAvatarNumber > 1 ? currentAvatarNumber - 1 : maxAvatars;
+            updateAvatarDisplay();
+        });
+        
+        nextBtn.addEventListener('click', function() {
+            currentAvatarNumber = currentAvatarNumber < maxAvatars ? currentAvatarNumber + 1 : 1;
+            updateAvatarDisplay();
+        });
+        
+        prevMediumBtn.addEventListener('click', function() {
+            currentAvatarNumber = currentAvatarNumber > 10 ? currentAvatarNumber - 10 : maxAvatars - (10 - currentAvatarNumber);
+            updateAvatarDisplay();
+        });
+        
+        nextMediumBtn.addEventListener('click', function() {
+            currentAvatarNumber = currentAvatarNumber <= maxAvatars - 10 ? currentAvatarNumber + 10 : currentAvatarNumber + 10 - maxAvatars;
+            updateAvatarDisplay();
+        });
+        
+        prevFastBtn.addEventListener('click', function() {
+            currentAvatarNumber = currentAvatarNumber > 100 ? currentAvatarNumber - 100 : maxAvatars - (100 - currentAvatarNumber);
+            updateAvatarDisplay();
+        });
+        
+        nextFastBtn.addEventListener('click', function() {
+            currentAvatarNumber = currentAvatarNumber <= maxAvatars - 100 ? currentAvatarNumber + 100 : currentAvatarNumber + 100 - maxAvatars;
+            updateAvatarDisplay();
+        });
+        
+        // Random avatar button handler
+        const randomBtn = document.getElementById('random-avatar');
+        randomBtn.addEventListener('click', function() {
+            currentAvatarNumber = Math.floor(Math.random() * maxAvatars) + 1;
+            updateAvatarDisplay();
+        });
+        
+        function updateAvatarDisplay() {
+            const avatarFilename = `${currentAvatarNumber}.png`;
+            avatarPreview.src = `/static/assets/avatars/${avatarFilename}`;
+            avatarNumber.textContent = currentAvatarNumber;
+            avatarInput.value = avatarFilename;
+        }
     });
     
     function updateAttribute(slider) {
@@ -477,6 +921,203 @@
         } else {
             createBtn.disabled = true;
         }
+    }
+    
+    function updateRaceInfo(raceName) {
+        const raceInfo = raceData[raceName];
+        if (!raceInfo) return;
+        
+        // Update description
+        const raceDescription = document.getElementById('race-description');
+        raceDescription.textContent = raceInfo.description || '';
+        
+        // Show racial info section
+        const racialInfoDiv = document.getElementById('racial-info');
+        racialInfoDiv.style.display = 'block';
+        
+        // Update racial attributes
+        updateRacialAttributes(raceInfo.ability_modifiers || {});
+        
+        // Update racial skills
+        updateRacialSkills(raceInfo.racial_skills || []);
+        
+        // Update skill bonuses
+        updateSkillBonuses(raceInfo.skill_bonuses || {});
+        
+        // Update special abilities
+        updateSpecialAbilities(raceInfo.special_abilities || []);
+    }
+    
+    function updateRacialAttributes(abilityModifiers) {
+        const container = document.getElementById('racial-attributes');
+        container.innerHTML = '';
+        
+        // Check if there are any modifiers at all
+        let hasModifiers = false;
+        Object.values(abilityModifiers).forEach(attributes => {
+            Object.values(attributes).forEach(modifier => {
+                if (modifier !== 0) hasModifiers = true;
+            });
+        });
+        
+        if (!hasModifiers) {
+            container.innerHTML = '<div class="skill-item">No attribute modifiers</div>';
+            return;
+        }
+        
+        // Create the grid container
+        const gridContainer = document.createElement('div');
+        gridContainer.className = 'racial-stats';
+        
+        // Create left column (BODY, KISMET)
+        const leftColumn = document.createElement('div');
+        leftColumn.className = 'attribute-column';
+        
+        // Create right column (MIND, SPIRIT)
+        const rightColumn = document.createElement('div');
+        rightColumn.className = 'attribute-column';
+        
+        // Define column assignments
+        const leftCategories = ['body', 'kismet'];
+        const rightCategories = ['mind', 'spirit'];
+        
+        // Helper function to create category div
+        function createCategoryDiv(category, modifiedAttributes) {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'attribute-category';
+            
+            const categoryName = document.createElement('div');
+            categoryName.className = 'category-name';
+            categoryName.textContent = attributeCategories[category] || category.toUpperCase();
+            categoryName.style.fontWeight = 'bold';
+            categoryName.style.color = 'var(--medieval-gold)';
+            categoryName.style.marginBottom = '8px';
+            categoryName.style.fontFamily = 'Cinzel, serif';
+            categoryDiv.appendChild(categoryName);
+            
+            modifiedAttributes.forEach(([attrName, modifier]) => {
+                const modifierDiv = document.createElement('div');
+                modifierDiv.className = 'attribute-modifier';
+                
+                const modifierClass = modifier > 0 ? 'positive' : 'negative';
+                modifierDiv.classList.add(modifierClass);
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = attributeNames[attrName] || attrName;
+                modifierDiv.appendChild(nameSpan);
+                
+                const valueSpan = document.createElement('span');
+                valueSpan.className = `modifier-value ${modifierClass}`;
+                valueSpan.textContent = modifier > 0 ? `+${modifier}` : modifier.toString();
+                modifierDiv.appendChild(valueSpan);
+                
+                categoryDiv.appendChild(modifierDiv);
+            });
+            
+            return categoryDiv;
+        }
+        
+        // Process left column categories
+        leftCategories.forEach(category => {
+            if (!abilityModifiers[category]) return;
+            
+            const modifiedAttributes = Object.entries(abilityModifiers[category]).filter(([attrName, modifier]) => modifier !== 0);
+            if (modifiedAttributes.length === 0) return;
+            
+            const categoryDiv = createCategoryDiv(category, modifiedAttributes);
+            leftColumn.appendChild(categoryDiv);
+        });
+        
+        // Process right column categories
+        rightCategories.forEach(category => {
+            if (!abilityModifiers[category]) return;
+            
+            const modifiedAttributes = Object.entries(abilityModifiers[category]).filter(([attrName, modifier]) => modifier !== 0);
+            if (modifiedAttributes.length === 0) return;
+            
+            const categoryDiv = createCategoryDiv(category, modifiedAttributes);
+            rightColumn.appendChild(categoryDiv);
+        });
+        
+        // Add columns to grid container
+        gridContainer.appendChild(leftColumn);
+        gridContainer.appendChild(rightColumn);
+        
+        // Add grid container to main container
+        container.appendChild(gridContainer);
+    }
+    
+    function updateRacialSkills(racialSkills) {
+        const container = document.getElementById('racial-skills-list');
+        container.innerHTML = '';
+        
+        if (racialSkills.length === 0) {
+            container.innerHTML = '<div class="skill-item">No racial skills</div>';
+            return;
+        }
+        
+        racialSkills.forEach(skill => {
+            const skillDiv = document.createElement('div');
+            skillDiv.className = 'skill-item';
+            skillDiv.textContent = skill.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            container.appendChild(skillDiv);
+        });
+    }
+    
+    function updateSkillBonuses(skillBonuses) {
+        const container = document.getElementById('skill-bonuses-list');
+        container.innerHTML = '';
+        
+        // Filter out skills with no bonuses (0 or undefined)
+        const activeBonuses = Object.entries(skillBonuses).filter(([skill, bonus]) => bonus && bonus !== 0);
+        
+        if (activeBonuses.length === 0) {
+            container.innerHTML = '<div class="bonus-item">No skill bonuses</div>';
+            return;
+        }
+        
+        activeBonuses.forEach(([skill, bonus]) => {
+            const bonusDiv = document.createElement('div');
+            bonusDiv.className = 'bonus-item';
+            
+            const skillSpan = document.createElement('span');
+            skillSpan.textContent = skill.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            bonusDiv.appendChild(skillSpan);
+            
+            const bonusSpan = document.createElement('span');
+            bonusSpan.className = 'bonus-value';
+            bonusSpan.textContent = `+${bonus}`;
+            bonusDiv.appendChild(bonusSpan);
+            
+            container.appendChild(bonusDiv);
+        });
+    }
+    
+    function updateSpecialAbilities(specialAbilities) {
+        const container = document.getElementById('special-abilities-list');
+        container.innerHTML = '';
+        
+        if (specialAbilities.length === 0) {
+            container.innerHTML = '<div class="ability-item">No special abilities</div>';
+            return;
+        }
+        
+        specialAbilities.forEach(ability => {
+            const abilityDiv = document.createElement('div');
+            abilityDiv.className = 'ability-item';
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'ability-name';
+            nameDiv.textContent = ability.name || 'Unknown Ability';
+            abilityDiv.appendChild(nameDiv);
+            
+            const descDiv = document.createElement('div');
+            descDiv.className = 'ability-description';
+            descDiv.textContent = ability.description || 'No description available';
+            abilityDiv.appendChild(descDiv);
+            
+            container.appendChild(abilityDiv);
+        });
     }
 </script>
 {% endblock %}

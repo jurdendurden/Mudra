@@ -11,157 +11,244 @@
     }
     
     .account-header {
-        background: linear-gradient(135deg, #2c3e50, #34495e);
-        color: white;
-        padding: 30px;
-        border-radius: 10px;
-        margin-bottom: 30px;
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        color: var(--medieval-text);
+        padding: 40px;
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
+        margin-bottom: 35px;
         text-align: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        font-family: 'Crimson Text', serif;
     }
     
     .account-stats {
         display: flex;
         justify-content: space-around;
-        margin-top: 20px;
+        margin-top: 25px;
     }
     
     .stat-item {
         text-align: center;
+        padding: 15px;
+        background: var(--medieval-dark);
+        border-radius: 8px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .stat-value {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
-        color: #3498db;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
     
     .stat-label {
-        font-size: 14px;
-        opacity: 0.8;
+        font-size: 16px;
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
+        margin-top: 5px;
     }
     
     .characters-section {
-        background: #2c3e50;
-        color: white;
-        border-radius: 10px;
-        padding: 30px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        color: var(--medieval-text);
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
+        padding: 35px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .characters-section h2 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 24px;
+        margin-bottom: 25px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 10px;
     }
     
     .characters-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+        margin-bottom: 35px;
     }
     
     .character-card {
-        border: 2px solid #434950;
-        border-radius: 8px;
-        padding: 20px;
+        border: 3px solid var(--medieval-border);
+        border-radius: 10px;
+        padding: 15px;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: #2c3e50;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        color: var(--medieval-text);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        height: fit-content;
     }
     
     .character-card:hover {
-        border-color: #3498db;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        border-color: var(--medieval-accent);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
     }
     
     .character-card.selected {
-        border-color: #00ff00;
-        background: #2c3e50;
-        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        border-color: var(--medieval-gold);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+        box-shadow: 0 8px 20px rgba(218, 165, 32, 0.4);
+    }
+    
+    .character-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        margin-top: 8px;
     }
     
     .character-name {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
-        color: #d0d3d6;
-        margin-bottom: 10px;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        flex: 1;
+    }
+    
+    .character-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        flex-shrink: 0;
     }
     
     .character-info {
         font-size: 14px;
-        color: #6c757d;
-        margin-bottom: 5px;
+        color: var(--medieval-text-dim);
+        margin-bottom: 4px;
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .character-info strong {
+        color: var(--medieval-text);
+        font-weight: 600;
     }
     
     .character-description {
         font-size: 13px;
-        color: #8e9aaf;
+        color: var(--medieval-text-faded);
         font-style: italic;
-        margin-top: 10px;
+        margin-top: 8px;
+        font-family: 'Crimson Text', serif;
+        padding: 8px;
+        background: var(--medieval-dark);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-accent);
     }
     
     .action-buttons {
         display: flex;
-        gap: 15px;
+        gap: 20px;
         justify-content: center;
-        margin-top: 30px;
+        margin-top: 35px;
     }
     
     .btn-action {
-        padding: 12px 30px;
-        border-radius: 6px;
+        padding: 15px 35px;
+        border-radius: 8px;
         font-weight: 600;
         text-decoration: none;
-        border: none;
+        border: 2px solid;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .btn-primary {
-        background: #3498db;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-accent) 0%, var(--medieval-bronze) 100%);
+        border-color: var(--medieval-accent);
+        color: var(--medieval-text);
     }
     
     .btn-primary:hover {
-        background: #2980b9;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-accent-light) 0%, var(--medieval-accent) 100%);
+        border-color: var(--medieval-accent-light);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-success {
-        background: #27ae60;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-success) 0%, var(--medieval-moss) 100%);
+        border-color: var(--medieval-success);
+        color: var(--medieval-text);
     }
     
     .btn-success:hover {
-        background: #219a52;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-moss) 0%, var(--medieval-success) 100%);
+        border-color: var(--medieval-moss);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-danger {
-        background: #e74c3c;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-danger) 0%, var(--medieval-blood) 100%);
+        border-color: var(--medieval-danger);
+        color: var(--medieval-text);
     }
     
     .btn-danger:hover {
-        background: #c0392b;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-crimson) 0%, var(--medieval-danger) 100%);
+        border-color: var(--medieval-crimson);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-action:disabled {
-        background: #bdc3c7;
-        color: #7f8c8d;
+        background: var(--medieval-border);
+        border-color: var(--medieval-border);
+        color: var(--medieval-text-faded);
         cursor: not-allowed;
         transform: none;
+        box-shadow: none;
     }
     
     .no-characters {
         text-align: center;
-        color: #6c757d;
-        padding: 40px;
-        font-size: 16px;
+        color: var(--medieval-text-dim);
+        padding: 50px;
+        font-size: 18px;
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
+    }
+    
+    .no-characters h3 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     .welcome-message {
-        font-size: 18px;
-        margin-bottom: 20px;
+        font-size: 20px;
+        margin-bottom: 25px;
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
+        color: var(--medieval-text-dim);
     }
 </style>
 {% endblock %}
@@ -169,7 +256,7 @@
 {% block content %}
 <div class="account-container">
     <div class="account-header">
-        <h1>Welcome back, {{ current_user.username }}!</h1>
+        <h1 style="color: var(--medieval-gold); font-family: 'Cinzel', serif; font-weight: 600; font-size: 32px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Welcome back, {{ current_user.username }}!</h1>
         <p class="welcome-message">Manage your characters and continue your adventures</p>
         
         <div class="account-stats">
@@ -195,7 +282,10 @@
         <div class="characters-grid">
             {% for character in characters %}
             <div class="character-card" data-character-id="{{ character.id }}">
-                <div class="character-name">{{ character.name }}</div>
+                <div class="character-header">
+                    <div class="character-name">{{ character.name }}</div>
+                    <img src="/static/assets/avatars/{{ character.avatar or '1.png' }}" alt="{{ character.name }}" class="character-avatar">
+                </div>
                 <div class="character-info">
                     <strong>Race:</strong> {{ character.race or 'Unknown' }}
                 </div>

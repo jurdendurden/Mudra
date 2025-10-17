@@ -87,6 +87,17 @@ def get_all_races():
     return loader.get_all_races()
 
 
+def get_all_race_data():
+    """
+    Get all race data.
+    
+    Returns:
+        dict: Dictionary of race names to race data
+    """
+    loader = get_race_loader()
+    return loader.get_all_race_data()
+
+
 def get_racial_ability_modifiers(race_name):
     """
     Get ability score modifiers for a race.

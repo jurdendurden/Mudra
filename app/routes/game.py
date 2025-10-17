@@ -4,6 +4,7 @@ from app import db
 from app.models.character import Character
 from app.models.room import Room
 from app.models.chat_message import ChatMessage
+from app.utils.race_loader import apply_racial_bonuses, get_racial_skills, get_racial_skill_bonuses
 
 game_bp = Blueprint('game', __name__)
 
@@ -154,7 +155,17 @@ def create_character():
             trial_points=0  # All points have been spent during creation
         )
         
-        # Calculate derived stats based on attributes
+        # Apply racial bonuses to attributes
+        apply_racial_bonuses(character, race)
+        
+        # Initialize racial skills
+        racial_skills = get_racial_skills(race)
+        if not character.skills:
+            character.skills = {}
+        for skill in racial_skills:
+            character.skills[skill] = 1  # Starting level
+        
+        # Calculate derived stats based on attributes (including racial modifiers)
         character.calculate_derived_stats()
         
         # Set starting location to Starting Village

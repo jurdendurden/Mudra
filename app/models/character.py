@@ -1,6 +1,10 @@
 from app import db
 from datetime import datetime
 import json
+from app.utils.race_loader import (
+    get_race_data, get_wearable_slots, get_racial_skill_bonuses,
+    get_special_abilities, get_resistances, can_wear_slot
+)
 
 class Character(db.Model):
     """Character model with classless progression system"""
@@ -140,6 +144,49 @@ class Character(db.Model):
             self.current_movement = self.max_movement
         else:
             self.current_movement = min(self.current_movement, self.max_movement)
+    
+    def get_race_data(self):
+        """Get full race data for this character"""
+        if not self.race:
+            return None
+        return get_race_data(self.race)
+    
+    def get_wearable_slots(self):
+        """Get available equipment slots for this character's race"""
+        if not self.race:
+            return []
+        return get_wearable_slots(self.race)
+    
+    def can_wear_slot(self, slot_name):
+        """Check if this character can wear items in a specific slot"""
+        if not self.race:
+            return True  # Default to allowing all slots
+        return can_wear_slot(self.race, slot_name)
+    
+    def get_racial_skill_bonuses(self):
+        """Get skill bonuses from race"""
+        if not self.race:
+            return {}
+        return get_racial_skill_bonuses(self.race)
+    
+    def get_effective_skill_level(self, skill_name):
+        """Get effective skill level including racial bonuses"""
+        base_level = self.skills.get(skill_name, 0) if self.skills else 0
+        racial_bonuses = self.get_racial_skill_bonuses()
+        racial_bonus = racial_bonuses.get(skill_name, 0)
+        return base_level + racial_bonus
+    
+    def get_special_abilities(self):
+        """Get special abilities from race"""
+        if not self.race:
+            return []
+        return get_special_abilities(self.race)
+    
+    def get_resistances(self):
+        """Get damage/effect resistances from race"""
+        if not self.race:
+            return {}
+        return get_resistances(self.race)
     
     def __repr__(self):
         return f'<Character {self.name}>'

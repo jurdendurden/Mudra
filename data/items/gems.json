@@ -1,0 +1,249 @@
+{
+  "flawless_ruby": {
+    "template_id": "flawless_ruby",
+    "name": "Flawless Ruby",
+    "description": "A perfectly cut ruby that pulses with inner fire. When socketed into a weapon, it adds flames to each strike. In armor, it protects against fire.",
+    "item_type": 85,
+    "base_type": "gem.socket.ruby",
+    "subtype": "ruby",
+    "weight": 0.1,
+    "value": 500,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "fire",
+      "damage_min": 5,
+      "damage_max": 12,
+      "damage_reduction": {
+        "fire": 8
+      }
+    }
+  },
+  "perfect_diamond": {
+    "template_id": "perfect_diamond",
+    "name": "Perfect Diamond",
+    "description": "A flawless diamond that radiates pure white light. It channels holy energy and provides protection against darkness and necromantic forces.",
+    "item_type": 85,
+    "base_type": "gem.socket.diamond",
+    "subtype": "diamond",
+    "weight": 0.1,
+    "value": 800,
+    "quality_tier": "epic",
+    "item_flags": ["magic", "glow"],
+    "item_flags_2": ["epic"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "holy",
+      "damage_min": 6,
+      "damage_max": 15,
+      "armor_bonus": 5,
+      "damage_reduction": {
+        "negative": 12
+      }
+    }
+  },
+  "ancient_amethyst": {
+    "template_id": "ancient_amethyst",
+    "name": "Ancient Amethyst",
+    "description": "A deep purple amethyst that hums with arcane power. It enhances magical abilities and channels pure mystical energy.",
+    "item_type": 85,
+    "base_type": "gem.socket.amethyst",
+    "subtype": "amethyst",
+    "weight": 0.1,
+    "value": 600,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "energy",
+      "damage_min": 4,
+      "damage_max": 10,
+      "mystical": 5,
+      "damage_reduction": {
+        "energy": 6
+      }
+    }
+  },
+  "polished_sapphire": {
+    "template_id": "polished_sapphire",
+    "name": "Polished Sapphire",
+    "description": "A brilliant blue sapphire that feels cold to the touch. Channels frost magic.",
+    "item_type": 85,
+    "base_type": "gem.socket.sapphire",
+    "subtype": "sapphire",
+    "weight": 0.1,
+    "value": 500,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "cold",
+      "damage_min": 4,
+      "damage_max": 11,
+      "damage_reduction": {
+        "cold": 8
+      }
+    }
+  },
+  "cut_emerald": {
+    "template_id": "cut_emerald",
+    "name": "Cut Emerald",
+    "description": "A vibrant green emerald associated with nature and poison.",
+    "item_type": 85,
+    "base_type": "gem.socket.emerald",
+    "subtype": "emerald",
+    "weight": 0.1,
+    "value": 450,
+    "quality_tier": "rare",
+    "item_flags": ["magic"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "poison",
+      "damage_min": 3,
+      "damage_max": 8,
+      "constitution": 2,
+      "damage_reduction": {
+        "poison": 7
+      }
+    }
+  },
+  "brilliant_topaz": {
+    "template_id": "brilliant_topaz",
+    "name": "Brilliant Topaz",
+    "description": "A golden topaz crackling with electrical energy.",
+    "item_type": 85,
+    "base_type": "gem.socket.topaz",
+    "subtype": "topaz",
+    "weight": 0.1,
+    "value": 480,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "lightning",
+      "damage_min": 3,
+      "damage_max": 14,
+      "damage_reduction": {
+        "lightning": 7
+      }
+    }
+  },
+  "dark_onyx": {
+    "template_id": "dark_onyx",
+    "name": "Dark Onyx",
+    "description": "A black onyx that seems to absorb light. Channels negative energy.",
+    "item_type": 85,
+    "base_type": "gem.socket.onyx",
+    "subtype": "onyx",
+    "weight": 0.1,
+    "value": 520,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "dark"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "negative",
+      "damage_min": 4,
+      "damage_max": 10,
+      "will": 2,
+      "damage_reduction": {
+        "holy": 7
+      }
+    }
+  },
+  "lustrous_pearl": {
+    "template_id": "lustrous_pearl",
+    "name": "Lustrous Pearl",
+    "description": "A perfect pearl from the deep ocean. Channels water magic.",
+    "item_type": 85,
+    "base_type": "gem.socket.pearl",
+    "subtype": "pearl",
+    "weight": 0.05,
+    "value": 400,
+    "quality_tier": "uncommon",
+    "item_flags": ["magic"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "damage_type": "water",
+      "damage_min": 3,
+      "damage_max": 9,
+      "damage_reduction": {
+        "fire": 4,
+        "lightning": 4
+      }
+    }
+  },
+  "raw_gem": {
+    "template_id": "raw_gem",
+    "name": "Raw Gem",
+    "description": "An uncut gemstone. Could be valuable if properly cut and polished.",
+    "item_type": 32,
+    "base_type": "gem.raw",
+    "subtype": "uncut",
+    "weight": 0.2,
+    "value": 50,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "components_required": [
+      {"type": "ore.gem_vein", "quantity": 1}
+    ]
+  },
+  "rune_of_power": {
+    "template_id": "rune_of_power",
+    "name": "Rune of Power",
+    "description": "An ancient rune carved with power-enhancing symbols. Can be socketed into weapons and armor.",
+    "item_type": 86,
+    "base_type": "rune.socket.power",
+    "subtype": "rune",
+    "weight": 0.1,
+    "value": 600,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "strength": 3,
+      "damage_bonus": 5,
+      "armor_bonus": 3
+    }
+  },
+  "rune_of_warding": {
+    "template_id": "rune_of_warding",
+    "name": "Rune of Warding",
+    "description": "A protective rune that wards against magical attacks.",
+    "item_type": 86,
+    "base_type": "rune.socket.warding",
+    "subtype": "rune",
+    "weight": 0.1,
+    "value": 550,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "will": 2,
+      "mystical": 2,
+      "damage_reduction": {
+        "energy": 10,
+        "holy": 5,
+        "negative": 5
+      }
+    }
+  },
+  "rune_of_swiftness": {
+    "template_id": "rune_of_swiftness",
+    "name": "Rune of Swiftness",
+    "description": "A rune that enhances speed and agility.",
+    "item_type": 86,
+    "base_type": "rune.socket.swiftness",
+    "subtype": "rune",
+    "weight": 0.1,
+    "value": 580,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "agility": 4,
+      "attack_speed_bonus": 0.9
+    }
+  }
+}
+

@@ -1,0 +1,89 @@
+{
+  "name": "Minotaur",
+  "description": "Minotaurs are bull-like humanoids, with natural strength and maze navigation. Born of labyrinths.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 4,
+      "durability": 3,
+      "endurance": 2,
+      "vitality": 2
+    },
+    "mind": {
+      "intellect": -1,
+      "cognition": 2,
+      "willpower": 1,
+      "psionics": -1
+    },
+    "spirit": {
+      "mystical": -1,
+      "magical": -1,
+      "metaphysical": 0,
+      "percipience": 1
+    },
+    "kismet": {
+      "luck": 0,
+      "charisma": -1
+    }
+  },
+  
+  "racial_skills": [
+    "melee_combat",
+    "navigation",
+    "intimidation"
+  ],
+  
+  "skill_bonuses": {
+    "melee_combat": 12,
+    "navigation": 15,
+    "intimidation": 10,
+    "charging": 12,
+    "goring": 10
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Horns",
+      "description": "Natural weapon dealing 1d6+strength damage"
+    },
+    {
+      "name": "Goring Rush",
+      "description": "Can charge and attack with horns for extra damage"
+    },
+    {
+      "name": "Labyrinthine Recall",
+      "description": "Perfect memory of paths traveled, +15 to navigation"
+    },
+    {
+      "name": "Powerful Build",
+      "description": "Count as one size larger for carrying capacity"
+    }
+  ],
+  
+  "languages": ["Common", "Minotaur"],
+  "bonus_languages": ["Abyssal", "Giant", "Orc"]
+}
+

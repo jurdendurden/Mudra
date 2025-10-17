@@ -1,0 +1,89 @@
+{
+  "name": "Orc",
+  "description": "Orcs are powerful and aggressive, with natural strength and intimidation. Born warriors.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 5,
+      "durability": 3,
+      "endurance": 4,
+      "vitality": 2
+    },
+    "mind": {
+      "intellect": -3,
+      "cognition": -2,
+      "willpower": 1,
+      "psionics": -3
+    },
+    "spirit": {
+      "mystical": -3,
+      "magical": -3,
+      "metaphysical": -2,
+      "percipience": -1
+    },
+    "kismet": {
+      "luck": 0,
+      "charisma": -3
+    }
+  },
+  
+  "racial_skills": [
+    "intimidation",
+    "melee_combat",
+    "survival"
+  ],
+  
+  "skill_bonuses": {
+    "intimidation": 15,
+    "melee_combat": 12,
+    "survival": 8,
+    "weapon_mastery": 12,
+    "endurance": 10
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Darkvision",
+      "description": "Can see in darkness up to 60 feet"
+    },
+    {
+      "name": "Aggressive",
+      "description": "Can move toward enemies as a bonus action"
+    },
+    {
+      "name": "Powerful Build",
+      "description": "Count as one size larger for carrying capacity"
+    },
+    {
+      "name": "Savage Fury",
+      "description": "Deal extra damage when below 50% HP"
+    }
+  ],
+  
+  "languages": ["Common", "Orc"],
+  "bonus_languages": ["Giant", "Goblin", "Abyssal"]
+}
+

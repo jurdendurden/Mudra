@@ -1,0 +1,154 @@
+{
+  "iron_skillet": {
+    "template_id": "iron_skillet",
+    "name": "Iron Skillet",
+    "description": "A heavy cast iron skillet for frying food over a fire or stove.",
+    "item_type": 94,
+    "base_type": "cooking.utensil.skillet",
+    "subtype": "skillet",
+    "weight": 3.0,
+    "value": 40,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 500,
+    "equipment_stats": {
+      "cooking_bonus": 5,
+      "utensil_type": "frying"
+    }
+  },
+  "copper_sauce_pan": {
+    "template_id": "copper_sauce_pan",
+    "name": "Copper Sauce Pan",
+    "description": "A copper pan with a long handle, perfect for making sauces and stews.",
+    "item_type": 95,
+    "base_type": "cooking.utensil.sauce_pan",
+    "subtype": "sauce_pan",
+    "weight": 2.0,
+    "value": 60,
+    "quality_tier": "good",
+    "material": "copper",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 400,
+    "equipment_stats": {
+      "cooking_bonus": 6,
+      "utensil_type": "sauce"
+    }
+  },
+  "baking_pan": {
+    "template_id": "baking_pan",
+    "name": "Baking Pan",
+    "description": "A flat iron pan for baking bread and pastries.",
+    "item_type": 96,
+    "base_type": "cooking.utensil.baking_pan",
+    "subtype": "baking_pan",
+    "weight": 2.5,
+    "value": 35,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 450,
+    "equipment_stats": {
+      "cooking_bonus": 5,
+      "utensil_type": "baking"
+    }
+  },
+  "iron_griddle": {
+    "template_id": "iron_griddle",
+    "name": "Iron Griddle",
+    "description": "A flat iron griddle for cooking pancakes and flatbreads.",
+    "item_type": 97,
+    "base_type": "cooking.utensil.griddle",
+    "subtype": "griddle",
+    "weight": 4.0,
+    "value": 45,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "max_durability": 600,
+    "equipment_stats": {
+      "cooking_bonus": 4,
+      "utensil_type": "griddle"
+    }
+  },
+  "iron_stew_pot": {
+    "template_id": "iron_stew_pot",
+    "name": "Iron Stew Pot",
+    "description": "A large pot for making stews and soups.",
+    "item_type": 98,
+    "base_type": "cooking.utensil.stew_pot",
+    "subtype": "stew_pot",
+    "weight": 5.0,
+    "value": 50,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "max_durability": 500,
+    "equipment_stats": {
+      "cooking_bonus": 8,
+      "utensil_type": "stew"
+    }
+  },
+  "copper_still": {
+    "template_id": "copper_still",
+    "name": "Copper Still",
+    "description": "A distillation apparatus for making spirits and liquor.",
+    "item_type": 99,
+    "base_type": "cooking.utensil.still",
+    "subtype": "still",
+    "weight": 15.0,
+    "value": 250,
+    "quality_tier": "good",
+    "material": "copper",
+    "wear_flags": ["take"],
+    "max_durability": 1000,
+    "equipment_stats": {
+      "brewing_bonus": 15,
+      "distillation": true
+    }
+  },
+  "wooden_spoon": {
+    "template_id": "wooden_spoon",
+    "name": "Wooden Spoon",
+    "description": "A simple wooden spoon for cooking and eating.",
+    "item_type": 87,
+    "base_type": "cooking.utensil.spoon",
+    "subtype": "utensil",
+    "weight": 0.1,
+    "value": 2,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 50
+  },
+  "iron_ladle": {
+    "template_id": "iron_ladle",
+    "name": "Iron Ladle",
+    "description": "A long-handled ladle for serving soups and stews.",
+    "item_type": 87,
+    "base_type": "cooking.utensil.ladle",
+    "subtype": "utensil",
+    "weight": 0.5,
+    "value": 8,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 200
+  },
+  "glass_flask": {
+    "template_id": "glass_flask",
+    "name": "Glass Flask",
+    "description": "A small glass flask for storing potions or liquids.",
+    "item_type": 62,
+    "base_type": "container.flask",
+    "subtype": "flask",
+    "weight": 0.2,
+    "value": 10,
+    "quality_tier": "common",
+    "material": "glass",
+    "wear_flags": ["take"],
+    "container_capacity": 1,
+    "max_durability": 20
+  }
+}
+

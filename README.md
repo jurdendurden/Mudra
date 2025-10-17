@@ -15,18 +15,29 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Live Minimap**: Canvas-based real-time map display showing nearby rooms, connections, and player position
 
 ### Character System
+- **21 Playable Races**: Each with unique ability modifiers, skills, and special abilities
+- **Racial Traits**: Ability bonuses, skill affinities, special abilities, and resistances
+- **Race-Specific Equipment Slots**: Some races have unique slots (tails) or restrictions (Centaurs can't wear leg armor)
 - **4 Prime Attributes**: BODY, MIND, SPIRIT, KISMET
-- **16 Sub-Attributes**: Detailed progression system with unlock requirements
+- **14 Sub-Attributes**: Detailed progression system with unlock requirements
 - **Trial Points**: Used for HP, mana, movement, and attribute increases
 - **Progress Points**: Used for learning and improving skills and spells
-- **No Level System**: Power based entirely on attributes + skills + gear
+- **No Level System**: Power based entirely on race + attributes + skills + gear
 
 ### Item System
-- **Deep Inheritance**: Complex item hierarchy with components and recipes
-- **Crafting System**: Create items from raw materials with skill requirements
-- **Disassembly**: Break down items to recover components
-- **Quality System**: Items have quality tiers affecting their properties
-- **Equipment Slots**: Weapons, armor, accessories, and tools
+- **Comprehensive Item Types**: 101+ item types including weapons, armor, gems, tools, crafting materials, and more
+- **Socket System**: Items can have gem/rune sockets for customization and power
+- **Enchanting System**: Apply magical enchantments with various effects (damage types, resistances, stat bonuses)
+- **Material System**: Items crafted from different materials (mithril, dragonhide, etc.) with unique properties
+- **Damage Types**: 18 distinct damage types (physical, elemental, magical) with weapon and spell support
+- **Weapon Properties**: Attack speeds, damage ranges, and weapon-specific damage types
+- **Quality Tiers**: 10 quality levels from Junk to Mythic affecting item power
+- **Durability System**: Items degrade with use and can be repaired
+- **Weight & Encumbrance**: Realistic weight system with container weight reduction
+- **Crafting System**: Create items from raw materials with skill requirements and quality modifiers
+- **Disassembly**: Break down items to recover components (including socketed gems)
+- **Item Flags**: Over 50 flags for special properties (magical, cursed, unique, quest items, etc.)
+- **Equipment Slots**: 21 different equipment slots for complete character customization
 
 ### Skills & Spells
 - **5 Skill Categories**: Combat, Crafting, Utility, Magic, Social
@@ -144,9 +155,15 @@ Each room has:
 - `drop <item>` - Drop an item
 - `inventory/i` - View your inventory
 
-### Equipment
+### Equipment & Items
 - `equip <item>` - Equip an item
 - `unequip <item>` - Unequip an item
+- `socket <item> <gem>` - Socket a gem into an item (planned)
+- `unsocket <item> <socket_num>` - Remove a gem from a socket (planned)
+- `enchant <item> <enchantment>` - Apply an enchantment to an item (planned)
+- `repair <item>` - Repair a damaged item (planned)
+- `craft <recipe>` - Craft an item from components (planned)
+- `disassemble <item>` - Break down an item for components (planned)
 
 ### Social
 - `say <message>` - Say something to the room
@@ -159,6 +176,230 @@ Each room has:
 - `help` - Show available commands
 - `save` - Save your character
 - `quit` - Exit the game
+
+## Race System Deep Dive
+
+### 21 Playable Races
+
+The game features a comprehensive race system with 21 distinct races, each with unique traits:
+
+**Common Races**
+- **Human** - Versatile and adaptable, bonus trial point, faster skill learning
+- **Dwarf** - Hardy crafters with smithing/mining bonuses, poison/magic resistance
+- **Elf** - Graceful spellcasters with archery and magic bonuses
+- **Halfling** - Lucky rogues with stealth bonuses and brave trait
+- **Gnome** - Clever tinkerers with illusion magic and 15% magic resistance
+
+**Mixed Heritage**
+- **Half-Elf** - Diplomatic and versatile, combines human and elven traits
+- **Half-Orc** - Strong warriors with relentless endurance
+
+**Uncommon Races**
+- **Tiefling** - Infernal magic users, 20% fire resistance, tail equipment slot
+- **Goblin** - Cunning trappers with stealth and pack tactics
+- **Orc** - Savage warriors with aggressive combat bonuses
+- **Hobgoblin** - Disciplined soldiers with tactical genius
+- **Lizardfolk** - Reptilian hunters with natural armor and tail slot
+- **Kobold** - Dragon-blooded pack fighters with trap expertise
+- **Aasimar** - Celestial healers with divine magic and radiant resistance
+
+**Exotic Races**
+- **Centaur** - Swift cavalry (40 ft speed), cannot wear leg/feet armor
+- **Aarakocra** - Bird-like with flight (50 ft), keen sight bonuses
+- **Minotaur** - Bull-like with perfect maze navigation and charge attacks
+- **Tabaxi** - Cat-like explorers with feline agility and tail slot
+
+**Fey Races**
+- **Tortle** - Turtle-like with +4 natural armor, shell defense
+- **Sprite** - Tiny fey with flight and at-will invisibility
+- **Nymph** - Nature spirits with powerful charm abilities
+
+### Racial Features
+
+**Ability Modifiers**
+- Applied automatically during character creation
+- Add to player-allocated trial points
+- Range from -5 to +5 per attribute
+- Cover all 14 sub-attributes
+
+**Racial Skills**
+- Each race starts with 2-4 racial skills at level 1
+- Example: Dwarves start with smithing, mining, stoneworking, appraise
+
+**Skill Bonuses**
+- Permanent bonuses to specific skills
+- Major affinity: +10-15 bonus
+- Minor affinity: +5-8 bonus
+- Effective skill = base level + racial bonus
+
+**Special Abilities**
+- 2-5 unique abilities per race
+- Combat abilities (charge, pack tactics, savage attacks)
+- Vision abilities (darkvision, low-light vision, keen sight)
+- Magical abilities (innate spells, resistances)
+- Utility abilities (stonecunning, labyrinthine recall)
+
+**Equipment Slot Variations**
+- Standard races: 18 equipment slots
+- Races with tails (Tiefling, Tabaxi, etc.): +1 tail slot
+- Centaurs: Cannot wear leg/feet armor (equine body)
+- Tortle: Cannot wear chest armor (natural shell)
+- Sprite: Limited slots due to tiny size
+
+**Resistances**
+- Elemental resistances (fire, cold, poison, etc.)
+- Magical resistances (charm, sleep, magic)
+- Effect resistances (fear, radiant, necrotic)
+- Values are percentages (10% = 10% damage reduction)
+
+### Race Documentation
+
+See `data/races/README.md` and `documentation/race_system.md` for complete information including:
+- All 21 race definitions with full stats
+- Ability modifier tables
+- Skill bonus lists
+- Special ability descriptions
+- Equipment slot configurations
+- API usage and integration examples
+
+## Item System Deep Dive
+
+### Item Type Categories
+
+The game features 101+ distinct item types organized into categories:
+
+**Weapons & Combat**
+- Weapons (swords, axes, daggers, bows, etc.)
+- Armor (chest, legs, head, hands, feet, etc.)
+- Shields
+- Ammunition (arrows, bolts)
+
+**Magical Items**
+- Scrolls (one-time spell casts)
+- Wands and Staffs (multi-charge spells)
+- Potions and Pills (consumable effects)
+
+**Gems & Sockets**
+- 12 gem types (ruby, sapphire, diamond, etc.)
+- Each gem provides different bonuses
+- Socketable gems add damage types or resistances
+- Runes provide special effects
+
+**Crafting & Materials**
+- Raw materials (ores, wood, leather)
+- Refined components (ingots, planks, strips)
+- Essences and reagents
+- Crafting tools (hammers, saws, looms)
+
+**Containers & Storage**
+- Backpacks and bags
+- Sheaths and quivers
+- Containers with weight reduction
+
+**Utility Items**
+- Keys and locks
+- Maps and navigation tools
+- Musical instruments
+- Food and drink
+
+### Damage Type System
+
+18 damage types affect combat and spell interactions:
+
+**Physical**: Slashing, Piercing, Bludgeoning, Physical  
+**Elemental**: Fire, Cold, Lightning, Water, Air, Earth, Acid  
+**Magical**: Light, Negative, Holy, Energy, Psychic, Sonic, Poison
+
+Each weapon type has a primary damage type (daggers = piercing, swords = slashing), and enchantments/gems can add secondary damage types.
+
+### Socket & Enchanting System
+
+**Sockets**
+- Items can have 0-3 sockets
+- Socket types: Gem, Rune, Enchant
+- Gems add stats, damage types, and resistances
+- Quality affects gem bonuses
+
+**Enchantments**
+- Weapon enchantments: Flaming, Frost, Vampiric, Vorpal, etc.
+- Armor enchantments: Protection, Fire Resistance, Fortitude, etc.
+- Limited enchantment slots per item
+- Requires enchanting skill and materials
+
+### Material Properties
+
+Items crafted from different materials have unique characteristics:
+
+**Metals**: Iron, Steel, Mithril, Adamantine, Darksteel
+- Affect weight and durability
+- Mithril = lightweight, high durability
+- Adamantine = extremely durable
+
+**Woods**: Oak, Pine, Ironwood, Yew, Ebony
+- Used in weapon handles, bows, shields
+- Ironwood provides enhanced durability
+
+**Fabrics**: Leather, Silk, Dragonhide, Scales
+- For light armor and clothing
+- Dragonhide = exceptional resistance
+
+### Quality Tiers
+
+Items range from Junk to Mythic quality:
+
+1. Junk (worthless)
+2. Poor (-20% stats)
+3. Common (baseline)
+4. Good (+10%)
+5. Uncommon (+20%)
+6. Rare (+40%)
+7. Epic (+60%)
+8. Legendary (+100%)
+9. Artifact (+150%)
+10. Mythic (+200%)
+
+Quality affects damage, armor, durability, and value.
+
+### Equipment Slots
+
+21 equipment slots for complete customization:
+
+- Head, Chest, Arms, Hands, Legs, Feet
+- Neck, Shoulders, Waist
+- Fingers (2), Wrists (2), Ears (2)
+- Wielded weapons (main hand, off-hand)
+- Held items, Shields
+- Sheath, Quiver
+- Floating items (magical)
+
+### Crafting System
+
+**Requirements**
+- Specific skill and level
+- Required components
+- Crafting tools
+
+**Quality Factors**
+- Crafter skill level
+- Component quality
+- Tool bonuses
+- Critical success chance
+
+**Output**
+- Quality modifier: 0.5 - 1.5
+- Crafter signature on item
+- Socket count (sometimes bonus sockets)
+- Enchantability
+
+### Item Documentation
+
+See `documentation/item_system.md` for complete technical documentation including:
+- All item types and their uses
+- Complete gem bonus tables
+- Enchantment definitions and requirements
+- Material property charts
+- Damage type interactions
+- Code examples and API usage
 
 ## Development
 
@@ -285,18 +526,34 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [x] Simple room navigation
 
 ### Phase 2: Character System ✅
-- [x] Attribute system implementation
+- [x] Attribute system implementation (14 sub-attributes)
 - [x] Trial/progress point mechanics
 - [x] Character creation UI
 - [x] Attribute spending interface
+- [x] Race system with 21 playable races
+- [x] Racial ability modifiers and bonuses
+- [x] Racial skills and skill bonuses
+- [x] Race-specific equipment slots
+- [x] Special racial abilities and resistances
 
-### Phase 3: Item System (In Progress)
-- [x] Base item class hierarchy
+### Phase 3: Item System ✅
+- [x] Base item class hierarchy with 101+ item types
 - [x] Item templates from JSON
 - [x] Inventory management
-- [ ] Basic equipment system
-- [ ] Crafting system
-- [ ] Disassembly mechanics
+- [x] Comprehensive equipment system with 21 slots
+- [x] Socket system (gems and runes)
+- [x] Enchanting system with damage types
+- [x] Material system with weight/durability modifiers
+- [x] Weapon damage types and attack speeds
+- [x] Quality tier system (10 tiers)
+- [x] Durability and repair mechanics
+- [x] Weight and encumbrance system
+- [x] Crafting system framework
+- [x] Disassembly mechanics with component recovery
+- [x] Item flags system (50+ flags)
+- [ ] Full crafting UI integration
+- [ ] Equipment display in character sheet
+- [ ] Socket/enchant commands
 
 ### Phase 3.5: Chat System ✅
 - [x] Chat command implementation

@@ -1,0 +1,108 @@
+{
+  "common_shirt": {
+    "template_id": "common_shirt",
+    "name": "Common Shirt",
+    "description": "A simple linen shirt worn by common folk.",
+    "item_type": 11,
+    "base_type": "clothing.shirt",
+    "subtype": "clothing",
+    "weight": 0.3,
+    "value": 8,
+    "quality_tier": "common",
+    "material": "linen",
+    "wear_flags": ["take", "chest"],
+    "armor_class": 0,
+    "max_durability": 40,
+    "enchantable": false
+  },
+  "common_pants": {
+    "template_id": "common_pants",
+    "name": "Common Pants",
+    "description": "Simple cloth trousers suitable for everyday wear.",
+    "item_type": 11,
+    "base_type": "clothing.pants",
+    "subtype": "clothing",
+    "weight": 0.4,
+    "value": 10,
+    "quality_tier": "common",
+    "material": "cotton",
+    "wear_flags": ["take", "legs"],
+    "armor_class": 0,
+    "max_durability": 45,
+    "enchantable": false
+  },
+  "silk_robe": {
+    "template_id": "silk_robe",
+    "name": "Silk Robe",
+    "description": "An elegant silk robe worn by mages and scholars.",
+    "item_type": 11,
+    "base_type": "clothing.robe",
+    "subtype": "clothing",
+    "weight": 1.0,
+    "value": 200,
+    "quality_tier": "good",
+    "material": "silk",
+    "wear_flags": ["take", "chest", "shoulders"],
+    "armor_class": 1,
+    "max_durability": 60,
+    "enchantable": true,
+    "max_enchantments": 2,
+    "requirements": {
+      "mystical": 8
+    }
+  },
+  "wool_cloak": {
+    "template_id": "wool_cloak",
+    "name": "Wool Cloak",
+    "description": "A warm wool cloak for protection against the cold.",
+    "item_type": 11,
+    "base_type": "clothing.cloak",
+    "subtype": "clothing",
+    "weight": 1.5,
+    "value": 30,
+    "quality_tier": "common",
+    "material": "wool",
+    "wear_flags": ["take", "shoulders"],
+    "armor_class": 1,
+    "damage_reduction": {
+      "cold": 5
+    },
+    "max_durability": 50,
+    "enchantable": true,
+    "max_enchantments": 1
+  },
+  "noble_hat": {
+    "template_id": "noble_hat",
+    "name": "Noble's Hat",
+    "description": "An ornate hat worn by nobility and the wealthy.",
+    "item_type": 11,
+    "base_type": "clothing.hat",
+    "subtype": "clothing",
+    "weight": 0.2,
+    "value": 80,
+    "quality_tier": "good",
+    "material": "silk",
+    "wear_flags": ["take", "head"],
+    "armor_class": 0,
+    "max_durability": 35,
+    "enchantable": false
+  },
+  "leather_belt": {
+    "template_id": "leather_belt",
+    "name": "Leather Belt",
+    "description": "A sturdy leather belt with a metal buckle.",
+    "item_type": 11,
+    "base_type": "clothing.belt",
+    "subtype": "clothing",
+    "weight": 0.3,
+    "value": 15,
+    "quality_tier": "common",
+    "material": "leather",
+    "wear_flags": ["take", "waist"],
+    "armor_class": 0,
+    "max_durability": 80,
+    "enchantable": true,
+    "max_enchantments": 1
+  }
+}
+

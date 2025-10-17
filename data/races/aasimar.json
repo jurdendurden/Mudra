@@ -1,0 +1,94 @@
+{
+  "name": "Aasimar",
+  "description": "Aasimars have celestial heritage, with natural healing and divine magic. Touched by the heavens.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 0,
+      "durability": 1,
+      "endurance": 0,
+      "vitality": 2
+    },
+    "mind": {
+      "intellect": 1,
+      "cognition": 1,
+      "willpower": 3,
+      "psionics": 1
+    },
+    "spirit": {
+      "mystical": 3,
+      "magical": 2,
+      "metaphysical": 2,
+      "percipience": 2
+    },
+    "kismet": {
+      "luck": 1,
+      "charisma": 3
+    }
+  },
+  
+  "racial_skills": [
+    "healing",
+    "divine_magic",
+    "diplomacy"
+  ],
+  
+  "skill_bonuses": {
+    "healing": 12,
+    "divine_magic": 15,
+    "diplomacy": 8,
+    "light_magic": 10,
+    "radiant_resistance": 15
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Darkvision",
+      "description": "Can see in darkness up to 60 feet"
+    },
+    {
+      "name": "Celestial Resistance",
+      "description": "+15% resistance to radiant and necrotic damage"
+    },
+    {
+      "name": "Healing Hands",
+      "description": "Can heal others with touch once per day"
+    },
+    {
+      "name": "Light Bearer",
+      "description": "Can cast light spell at will"
+    }
+  ],
+  
+  "resistances": {
+    "radiant": 15,
+    "necrotic": 15
+  },
+  
+  "languages": ["Common", "Celestial"],
+  "bonus_languages": ["Draconic", "Dwarvish", "Elvish", "Infernal"]
+}
+

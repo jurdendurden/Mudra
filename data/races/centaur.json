@@ -1,0 +1,87 @@
+{
+  "name": "Centaur",
+  "description": "Centaurs are half-human, half-horse, with natural speed and strength. Noble wanderers of the plains.",
+  "size": "medium",
+  "base_speed": 40,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 3,
+      "durability": 2,
+      "endurance": 4,
+      "vitality": 2
+    },
+    "mind": {
+      "intellect": 0,
+      "cognition": 1,
+      "willpower": 1,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 0,
+      "magical": 0,
+      "metaphysical": 0,
+      "percipience": 2
+    },
+    "kismet": {
+      "luck": 0,
+      "charisma": 1
+    }
+  },
+  
+  "racial_skills": [
+    "survival",
+    "nature_lore",
+    "archery"
+  ],
+  
+  "skill_bonuses": {
+    "survival": 10,
+    "nature_lore": 8,
+    "archery": 10,
+    "charging": 15,
+    "trampling": 10
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Charge",
+      "description": "Can charge and deal extra damage with melee attacks"
+    },
+    {
+      "name": "Hooves",
+      "description": "Natural weapon dealing 1d6+strength damage"
+    },
+    {
+      "name": "Equine Build",
+      "description": "Cannot wear leg or feet armor"
+    },
+    {
+      "name": "Fast Movement",
+      "description": "Base speed of 40 feet"
+    }
+  ],
+  
+  "languages": ["Common", "Sylvan"],
+  "bonus_languages": ["Elvish", "Gnomish"]
+}
+

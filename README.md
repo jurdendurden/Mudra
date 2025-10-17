@@ -24,6 +24,7 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Progress Points**: Used for learning and improving skills and spells
 - **No Level System**: Power based entirely on race + attributes + skills + gear
 - **Avatar Selection**: Choose from 500 unique character avatars during character creation
+- **Account Points System**: Earn points based on achievements (1 point per achievement tier)
 
 ### Item System
 - **Comprehensive Item Types**: 101+ item types including weapons, armor, gems, tools, crafting materials, and more
@@ -136,7 +137,7 @@ Each room has:
 - Room flags (is_safe, is_indoors, is_water, is_air)
 
 ### Database Models
-- **Player**: User accounts and authentication
+- **Player**: User accounts and authentication with account points tracking
 - **Character**: Character data, attributes, and progression
 - **Item**: Item instances and templates
 - **Room**: Game world locations
@@ -562,6 +563,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [x] Real-time chat display
 - [x] Chat history loading
 - [x] Chat censorship system
+
+### Phase 3.6: Account Points System ✅
+- [x] Account points field added to Player model
+- [x] Achievement-based point calculation (1 point per tier)
+- [x] Database migration for account_points field
+- [x] Account screen UI updated with points display
+- [x] Automatic point updates based on achievements
 
 ### Phase 4: Combat System (Planned)
 - [ ] Combat engine

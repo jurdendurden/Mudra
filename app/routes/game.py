@@ -70,9 +70,30 @@ def index():
             time_diff = char.last_played - char.created_at
             total_hours += time_diff.total_seconds() / 3600
     
+    # Calculate achievements completed
+    achievements_completed = 0
+    
+    # Hours played achievements
+    hours_thresholds = [5, 10, 25, 100, 300, 1000, 2500, 5000]
+    for threshold in hours_thresholds:
+        if total_hours >= threshold:
+            achievements_completed += 1
+    
+    # Characters created achievements
+    character_thresholds = [5, 10, 25, 50, 100, 250, 500]
+    for threshold in character_thresholds:
+        if len(characters) >= threshold:
+            achievements_completed += 1
+    
+    # Update account points based on achievements
+    current_user.update_account_points()
+    db.session.commit()
+    
     return render_template('game/account.html', 
                          characters=characters, 
-                         total_hours=total_hours)
+                         total_hours=total_hours,
+                         achievements_completed=achievements_completed,
+                         account_points=current_user.account_points)
 
 @game_bp.route('/play/<int:character_id>')
 @login_required

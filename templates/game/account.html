@@ -250,6 +250,136 @@
         font-style: italic;
         color: var(--medieval-text-dim);
     }
+    
+    /* Tab System Styles */
+    .tab-container {
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .tab-nav {
+        display: flex;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border-bottom: 2px solid var(--medieval-border);
+        border-radius: 9px 9px 0 0;
+    }
+    
+    .tab-button {
+        flex: 1;
+        padding: 15px 20px;
+        background: transparent;
+        border: none;
+        color: var(--medieval-text-dim);
+        font-family: 'Cinzel', serif;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .tab-button:hover {
+        color: var(--medieval-text);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+    }
+    
+    .tab-button.active {
+        color: var(--medieval-gold);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+        border-bottom-color: var(--medieval-bronze);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    
+    .tab-content {
+        padding: 35px;
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    /* Achievements Styles */
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .achievement-category {
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .achievement-category h6 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 8px;
+    }
+    
+    .achievement-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        background: var(--medieval-stone);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-border);
+        transition: all 0.3s ease;
+    }
+    
+    .achievement-item.completed {
+        border-left-color: var(--medieval-success);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-moss) 20%);
+    }
+    
+    .achievement-item.current {
+        border-left-color: var(--medieval-accent);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-bronze) 20%);
+    }
+    
+    .achievement-name {
+        font-weight: 600;
+        color: var(--medieval-text);
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .achievement-progress {
+        font-size: 14px;
+        color: var(--medieval-text-dim);
+        font-family: 'Source Code Pro', monospace;
+    }
+    
+    .achievement-icon {
+        font-size: 16px;
+        margin-right: 8px;
+    }
+    
+    .achievement-item.completed .achievement-icon {
+        color: var(--medieval-success);
+    }
+    
+    .achievement-item.current .achievement-icon {
+        color: var(--medieval-accent);
+    }
+    
+    .achievement-item:not(.completed):not(.current) .achievement-icon {
+        color: var(--medieval-text-faded);
+    }
 </style>
 {% endblock %}
 
@@ -269,63 +399,119 @@
                 <div class="stat-label">Hours Played</div>
             </div>
             <div class="stat-item">
+                <div class="stat-value">{{ achievements_completed }}</div>
+                <div class="stat-label">Achievements</div>
+            </div>
+            <div class="stat-item">
                 <div class="stat-value">{{ current_user.created_at.strftime('%Y-%m-%d') }}</div>
                 <div class="stat-label">Account Created</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ account_points }}</div>
+                <div class="stat-label">Account Points</div>
             </div>
         </div>
     </div>
     
-    <div class="characters-section">
-        <h2>Your Characters</h2>
+    <div class="tab-container">
+        <div class="tab-nav">
+            <button class="tab-button active" data-tab="characters">Characters</button>
+            <button class="tab-button" data-tab="achievements">Achievements</button>
+        </div>
         
-        {% if characters %}
-        <div class="characters-grid">
-            {% for character in characters %}
-            <div class="character-card" data-character-id="{{ character.id }}">
-                <div class="character-header">
-                    <div class="character-name">{{ character.name }}</div>
-                    <img src="/static/assets/avatars/{{ character.avatar or '1.png' }}" alt="{{ character.name }}" class="character-avatar">
+        <!-- Characters Tab -->
+        <div class="tab-content active" id="characters-tab">
+            <h2>Your Characters</h2>
+            
+            {% if characters %}
+            <div class="characters-grid">
+                {% for character in characters %}
+                <div class="character-card" data-character-id="{{ character.id }}">
+                    <div class="character-header">
+                        <div class="character-name">{{ character.name }}</div>
+                        <img src="/static/assets/avatars/{{ character.avatar or '1.png' }}" alt="{{ character.name }}" class="character-avatar">
+                    </div>
+                    <div class="character-info">
+                        <strong>Race:</strong> {{ character.race or 'Unknown' }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Created:</strong> {{ character.created_at.strftime('%Y-%m-%d') }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Last Played:</strong> {{ character.last_played.strftime('%Y-%m-%d %H:%M') if character.last_played else 'Never' }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Trial Points:</strong> {{ character.trial_points }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Progress Points:</strong> {{ character.progress_points }}
+                    </div>
+                    {% if character.description %}
+                    <div class="character-description">{{ character.description }}</div>
+                    {% endif %}
                 </div>
-                <div class="character-info">
-                    <strong>Race:</strong> {{ character.race or 'Unknown' }}
-                </div>
-                <div class="character-info">
-                    <strong>Created:</strong> {{ character.created_at.strftime('%Y-%m-%d') }}
-                </div>
-                <div class="character-info">
-                    <strong>Last Played:</strong> {{ character.last_played.strftime('%Y-%m-%d %H:%M') if character.last_played else 'Never' }}
-                </div>
-                <div class="character-info">
-                    <strong>Trial Points:</strong> {{ character.trial_points }}
-                </div>
-                <div class="character-info">
-                    <strong>Progress Points:</strong> {{ character.progress_points }}
-                </div>
-                {% if character.description %}
-                <div class="character-description">{{ character.description }}</div>
-                {% endif %}
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <div class="no-characters">
+                <h3>No Characters Yet</h3>
+                <p>Create your first character to begin your adventure!</p>
+            </div>
+            {% endif %}
+            
+            <div class="action-buttons">
+                <a href="{{ url_for('game.create_character') }}" class="btn-action btn-primary">
+                    Create Character
+                </a>
+                
+                <button id="load-character-btn" class="btn-action btn-success" disabled>
+                    Load Character
+                </button>
+                
+                <button id="delete-character-btn" class="btn-action btn-danger" disabled>
+                    Delete Character
+                </button>
+            </div>
         </div>
-        {% else %}
-        <div class="no-characters">
-            <h3>No Characters Yet</h3>
-            <p>Create your first character to begin your adventure!</p>
-        </div>
-        {% endif %}
         
-        <div class="action-buttons">
-            <a href="{{ url_for('game.create_character') }}" class="btn-action btn-primary">
-                Create Character
-            </a>
+        <!-- Achievements Tab -->
+        <div class="tab-content" id="achievements-tab">
+            <h2>Achievements</h2>
+            <p class="welcome-message">Track your progress and unlock rewards as you play!</p>
             
-            <button id="load-character-btn" class="btn-action btn-success" disabled>
-                Load Character
-            </button>
-            
-            <button id="delete-character-btn" class="btn-action btn-danger" disabled>
-                Delete Character
-            </button>
+            <div class="achievements-grid">
+                <!-- Hours Played Achievements -->
+                <div class="achievement-category">
+                    <h6><i class="fas fa-clock achievement-icon"></i>Hours Played</h6>
+                    {% for threshold in [5, 10, 25, 100, 300, 1000, 2500, 5000] %}
+                    <div class="achievement-item {% if total_hours >= threshold %}completed{% elif total_hours >= threshold * 0.8 %}current{% endif %}">
+                        <div>
+                            <span class="achievement-icon">
+                                {% if total_hours >= threshold %}✓{% else %}○{% endif %}
+                            </span>
+                            <span class="achievement-name">{{ threshold }} Hours</span>
+                        </div>
+                        <div class="achievement-progress">{{ "%.1f"|format(total_hours) }}/{{ threshold }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Characters Created Achievements -->
+                <div class="achievement-category">
+                    <h6><i class="fas fa-users achievement-icon"></i>Characters Created</h6>
+                    {% for threshold in [5, 10, 25, 50, 100, 250, 500] %}
+                    <div class="achievement-item {% if characters|length >= threshold %}completed{% elif characters|length >= threshold * 0.8 %}current{% endif %}">
+                        <div>
+                            <span class="achievement-icon">
+                                {% if characters|length >= threshold %}✓{% else %}○{% endif %}
+                            </span>
+                            <span class="achievement-name">{{ threshold }} Characters</span>
+                        </div>
+                        <div class="achievement-progress">{{ characters|length }}/{{ threshold }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -335,6 +521,23 @@
     
     // Character selection
     document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+                
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                this.classList.add('active');
+                document.getElementById(targetTab + '-tab').classList.add('active');
+            });
+        });
         const characterCards = document.querySelectorAll('.character-card');
         const loadBtn = document.getElementById('load-character-btn');
         const deleteBtn = document.getElementById('delete-character-btn');

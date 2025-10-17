@@ -24,7 +24,9 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Progress Points**: Used for learning and improving skills and spells
 - **No Level System**: Power based entirely on race + attributes + skills + gear
 - **Avatar Selection**: Choose from 500 unique character avatars during character creation
-- **Account Points System**: Earn points based on achievements (1 point per achievement tier)
+- **Account Points System**: Earn points based on achievements (triangular progression - tier number = points)
+- **Character Slot Limits**: Non-admin accounts start with 3 character slots, purchasable up to 20
+- **Shop System**: Spend account points to purchase additional character slots
 
 ### Item System
 - **Comprehensive Item Types**: 101+ item types including weapons, armor, gems, tools, crafting materials, and more
@@ -137,7 +139,7 @@ Each room has:
 - Room flags (is_safe, is_indoors, is_water, is_air)
 
 ### Database Models
-- **Player**: User accounts and authentication with account points tracking
+- **Player**: User accounts and authentication with account points tracking and character slot limits
 - **Character**: Character data, attributes, and progression
 - **Item**: Item instances and templates
 - **Room**: Game world locations
@@ -566,10 +568,19 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ### Phase 3.6: Account Points System ✅
 - [x] Account points field added to Player model
-- [x] Achievement-based point calculation (1 point per tier)
+- [x] Achievement-based point calculation (triangular progression - tier number = points)
 - [x] Database migration for account_points field
 - [x] Account screen UI updated with points display
 - [x] Automatic point updates based on achievements
+
+### Phase 3.7: Character Slot Limits & Shop System ✅
+- [x] Character slot limits (3 for non-admin, 20 max)
+- [x] Character slots field added to Player model
+- [x] Database migration for character_slots field
+- [x] Character creation enforces slot limits
+- [x] Shop tab added to account screen
+- [x] Character slot purchase system (10 points + 10 per slot)
+- [x] Shop UI with purchase buttons and cost display
 
 ### Phase 4: Combat System (Planned)
 - [ ] Combat engine

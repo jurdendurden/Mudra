@@ -380,6 +380,105 @@
     .achievement-item:not(.completed):not(.current) .achievement-icon {
         color: var(--medieval-text-faded);
     }
+    
+    /* Shop Styles */
+    .shop-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .shop-item {
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .shop-item-info {
+        flex: 1;
+    }
+    
+    .shop-item-name {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 20px;
+        margin-bottom: 8px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    
+    .shop-item-description {
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .shop-item-cost {
+        color: var(--medieval-accent);
+        font-family: 'Source Code Pro', monospace;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .shop-item-button {
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 2px solid;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .shop-item-button.enabled {
+        background: linear-gradient(135deg, var(--medieval-accent) 0%, var(--medieval-bronze) 100%);
+        border-color: var(--medieval-accent);
+        color: var(--medieval-text);
+    }
+    
+    .shop-item-button.enabled:hover {
+        background: linear-gradient(135deg, var(--medieval-accent-light) 0%, var(--medieval-accent) 100%);
+        border-color: var(--medieval-accent-light);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    
+    .shop-item-button.disabled {
+        background: var(--medieval-border);
+        border-color: var(--medieval-border);
+        color: var(--medieval-text-faded);
+        cursor: not-allowed;
+    }
+    
+    .character-limit-info {
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+    
+    .character-limit-text {
+        color: var(--medieval-text);
+        font-family: 'Crimson Text', serif;
+        font-size: 16px;
+    }
+    
+    .character-limit-text strong {
+        color: var(--medieval-gold);
+        font-weight: 600;
+    }
 </style>
 {% endblock %}
 
@@ -417,6 +516,7 @@
         <div class="tab-nav">
             <button class="tab-button active" data-tab="characters">Characters</button>
             <button class="tab-button" data-tab="achievements">Achievements</button>
+            <button class="tab-button" data-tab="shop">Shop</button>
         </div>
         
         <!-- Characters Tab -->
@@ -460,9 +560,15 @@
             {% endif %}
             
             <div class="action-buttons">
-                <a href="{{ url_for('game.create_character') }}" class="btn-action btn-primary">
-                    Create Character
-                </a>
+                {% if characters|length < max_characters %}
+                    <a href="{{ url_for('game.create_character') }}" class="btn-action btn-primary">
+                        Create Character
+                    </a>
+                {% else %}
+                    <button class="btn-action btn-primary" disabled>
+                        Character Limit Reached
+                    </button>
+                {% endif %}
                 
                 <button id="load-character-btn" class="btn-action btn-success" disabled>
                     Load Character
@@ -510,6 +616,62 @@
                         <div class="achievement-progress">{{ characters|length }}/{{ threshold }}</div>
                     </div>
                     {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Shop Tab -->
+        <div class="tab-content" id="shop-tab">
+            <h2>Shop</h2>
+            <p class="welcome-message">Spend your account points to unlock new features!</p>
+            
+            <div class="character-limit-info">
+                <div class="character-limit-text">
+                    You can currently have <strong>{{ characters|length }}</strong> out of <strong>{{ max_characters }}</strong> characters.
+                    {% if characters|length >= max_characters %}
+                        <br>Purchase additional character slots to create more characters.
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="shop-grid">
+                <!-- Character Slot Purchase -->
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">Additional Character Slot</div>
+                        <div class="shop-item-description">
+                            Increase your maximum character limit by 1. 
+                            {% if next_slot_cost %}
+                                Current slots: {{ max_characters }}, Next slot costs {{ next_slot_cost }} points.
+                            {% else %}
+                                You have reached the maximum of 20 character slots.
+                            {% endif %}
+                        </div>
+                        <div class="shop-item-cost">
+                            {% if next_slot_cost %}
+                                {{ next_slot_cost }} Account Points
+                            {% else %}
+                                Maximum Reached
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        {% if next_slot_cost and account_points >= next_slot_cost %}
+                            <form method="POST" action="{{ url_for('game.purchase_character_slot') }}" style="display: inline;">
+                                <button type="submit" class="shop-item-button enabled">
+                                    Purchase Slot
+                                </button>
+                            </form>
+                        {% elif next_slot_cost %}
+                            <button class="shop-item-button disabled" disabled>
+                                Need {{ next_slot_cost - account_points }} more points
+                            </button>
+                        {% else %}
+                            <button class="shop-item-button disabled" disabled>
+                                Maximum Reached
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

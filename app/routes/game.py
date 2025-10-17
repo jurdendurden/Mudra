@@ -93,7 +93,9 @@ def index():
                          characters=characters, 
                          total_hours=total_hours,
                          achievements_completed=achievements_completed,
-                         account_points=current_user.account_points)
+                         account_points=current_user.account_points,
+                         max_characters=current_user.get_max_characters(),
+                         next_slot_cost=current_user.get_next_slot_cost())
 
 @game_bp.route('/play/<int:character_id>')
 @login_required
@@ -134,6 +136,11 @@ def logout_character():
 @login_required
 def create_character():
     """Character creation"""
+    # Check character slot limit
+    if not current_user.can_create_character():
+        flash(f'Character limit reached. You can have up to {current_user.get_max_characters()} characters.', 'error')
+        return redirect(url_for('game.index'))
+    
     if request.method == 'POST':
         name = request.form.get('name')
         race = request.form.get('race', 'Human')
@@ -226,6 +233,20 @@ def create_character():
     race_data = get_all_race_data()
     
     return render_template('game/create_character.html', race_data=race_data)
+
+@game_bp.route('/shop/purchase-slot', methods=['POST'])
+@login_required
+def purchase_character_slot():
+    """Purchase an additional character slot"""
+    success, message = current_user.purchase_character_slot()
+    
+    if success:
+        db.session.commit()
+        flash(message, 'success')
+    else:
+        flash(message, 'error')
+    
+    return redirect(url_for('game.index'))
 
 @game_bp.route('/delete-character/<int:character_id>', methods=['POST'])
 @login_required

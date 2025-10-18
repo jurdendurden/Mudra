@@ -831,8 +831,14 @@
                  if (this.value) {
                     const selectedOptions = Array.from(this.selectedOptions);
                     const selectedRoomIds = selectedOptions.map(option => parseInt(option.value));
+                    multiSelectedRooms = selectedRoomIds;
+                    selectedRoom = rooms.find(r => r.id === selectedRoomIds[0]) || null;
+                    displayClearSelectedRooms();
                     selectRoomsByIds(selectedRoomIds);
                  } else {
+                    multiSelectedRooms = [];
+                    selectedRoom = null;
+                    displayClearSelectedRooms();
                     selectRoomsByIds([]);
                  }
              };
@@ -1167,13 +1173,13 @@
         function updateSelectionDisplay() {
             const coordDisplay = document.getElementById('coord-display');
             if (!coordDisplay) return;
-            
+
             // Get current coordinates from display or use defaults
             const currentText = coordDisplay.textContent;
             const coordMatch = currentText.match(/X: (-?\d+), Y: (-?\d+), Z: (-?\d+)/);
-            
+
             let displayText = coordMatch ? coordMatch[0] : 'X: 0, Y: 0, Z: 0';
-            
+
             // Add selection information
             if (multiSelectedRooms.length > 1) {
                 displayText += ` | ${multiSelectedRooms.length} Rooms Selected`;
@@ -1185,8 +1191,41 @@
             } else if (selectedRoom) {
                 displayText += ` | Selected: ${selectedRoom.name} (X: ${selectedRoom.x}, Y: ${selectedRoom.y}, Z: ${selectedRoom.z})`;
             }
-            
+
             coordDisplay.textContent = displayText;
+
+            // Update sidebar room list selection to match canvas selection
+            const roomList = document.getElementById('room-list');
+            if (roomList) {
+                // Remove 'selected' class from all options
+                for (let i = 0; i < roomList.options.length; i++) {
+                    roomList.options[i].classList.remove('selected');
+                    roomList.options[i].selected = false;
+                }
+
+                if (multiSelectedRooms.length > 0) {
+                    // Select all options whose value is in multiSelectedRooms
+                    for (let i = 0; i < roomList.options.length; i++) {
+                        if (multiSelectedRooms.includes(Number.parseInt(roomList.options[i].value))) {
+                            roomList.options[i].selected = true;
+                            roomList.options[i].classList.add('selected');
+                        }
+                    }
+                } else if (selectedRoom) {
+                    for (let i = 0; i < roomList.options.length; i++) {
+                        if (roomList.options[i].value == selectedRoom.id) {
+                            roomList.options[i].selected = true;
+                            roomList.options[i].classList.add('selected');
+                            break;
+                        }
+                    }
+                } else {
+                    // Default to placeholder
+                    if (roomList.options.length > 0) {
+                        roomList.options[0].selected = true;
+                    }
+                }
+            }
         }
         
         // Select a room visually (single click)
@@ -1200,9 +1239,7 @@
             selectedRoom = room;
             
             // Remove all selected classes
-            document.querySelectorAll('.room-node').forEach(n => {
-                n.classList.remove('selected');
-            });
+            displayClearSelectedRooms();
             
             // Add selected class to clicked node
             node.classList.add('selected');
@@ -1215,6 +1252,7 @@
             // Remove all selected classes
             document.querySelectorAll('.room-node').forEach(n => {
                 n.classList.remove('selected');
+                n.classList.remove('multi-selected');
             });
         }
 
@@ -1244,7 +1282,9 @@
                     node.style.left === `${room.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px` &&
                     node.style.top === `${-room.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px`) {
                     node.classList.add('selected');
-                    
+                    if(!multiSelectedRooms.includes(room.id)) {
+                        multiSelectedRooms.push(room.id);
+                    }
                     // Scroll node into view
                     node.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
                 }
@@ -2358,9 +2398,11 @@
                     // Update visual selection
                     updateMultiSelection();
                 }
-                
-                // Remove selection box
-                selectionBox.style.display = 'none';
+
+                if(selectionBox != null) {
+                    // Remove selection box
+                    selectionBox.style.display = 'none';
+                }
             }
         }
         

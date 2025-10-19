@@ -1,0 +1,105 @@
+{
+  "enchanted_backpack": {
+    "template_id": "enchanted_backpack",
+    "name": "Enchanted Backpack",
+    "description": "A magical backpack that seems larger on the inside. It reduces the weight of items stored within and can hold far more than its size suggests.",
+    "item_type": 15,
+    "base_type": "container.backpack",
+    "subtype": "backpack",
+    "weight": 2.5,
+    "value": 800,
+    "quality_tier": "uncommon",
+    "material": "leather",
+    "item_flags": ["magic"],
+    "wear_flags": ["take", "shoulders"],
+    "container_capacity": 100,
+    "container_weight_capacity": 200.0,
+    "weight_reduction": 0.3,
+    "max_durability": 100,
+    "enchantable": false,
+    "equipment_stats": {
+      "capacity": 100,
+      "weight_reduction": 0.3
+    }
+  },
+  "leather_satchel": {
+    "template_id": "leather_satchel",
+    "name": "Leather Satchel",
+    "description": "A simple leather bag for carrying small items and supplies.",
+    "item_type": 15,
+    "base_type": "container.bag",
+    "subtype": "satchel",
+    "weight": 1.0,
+    "value": 30,
+    "quality_tier": "common",
+    "material": "leather",
+    "wear_flags": ["take", "waist"],
+    "container_capacity": 20,
+    "container_weight_capacity": 30.0,
+    "weight_reduction": 0.0,
+    "max_durability": 60,
+    "enchantable": true,
+    "equipment_stats": {
+      "capacity": 20
+    }
+  },
+  "wooden_chest": {
+    "template_id": "wooden_chest",
+    "name": "Wooden Chest",
+    "description": "A sturdy wooden chest with iron fittings. Good for storage but too heavy to carry when full.",
+    "item_type": 15,
+    "base_type": "container.chest",
+    "subtype": "storage",
+    "weight": 15.0,
+    "value": 80,
+    "quality_tier": "common",
+    "material": "oak",
+    "item_flags": [],
+    "wear_flags": ["take"],
+    "container_capacity": 200,
+    "container_weight_capacity": 500.0,
+    "weight_reduction": 0.0,
+    "max_durability": 150,
+    "enchantable": false
+  },
+  "quiver": {
+    "template_id": "quiver",
+    "name": "Leather Quiver",
+    "description": "A leather quiver designed to hold arrows or bolts.",
+    "item_type": 76,
+    "base_type": "container.quiver",
+    "subtype": "arrow_quiver",
+    "weight": 0.5,
+    "value": 20,
+    "quality_tier": "common",
+    "material": "leather",
+    "wear_flags": ["take", "quiver"],
+    "container_capacity": 40,
+    "container_weight_capacity": 10.0,
+    "weight_reduction": 0.1,
+    "max_durability": 50,
+    "enchantable": true,
+    "equipment_stats": {
+      "capacity": 40
+    }
+  },
+  "weapon_sheath": {
+    "template_id": "weapon_sheath",
+    "name": "Weapon Sheath",
+    "description": "A leather sheath for safely carrying a bladed weapon.",
+    "item_type": 67,
+    "base_type": "container.sheath",
+    "subtype": "blade_sheath",
+    "weight": 0.3,
+    "value": 15,
+    "quality_tier": "common",
+    "material": "leather",
+    "wear_flags": ["take", "sheath"],
+    "container_capacity": 1,
+    "container_weight_capacity": 8.0,
+    "weight_reduction": 0.0,
+    "max_durability": 40,
+    "enchantable": false
+  }
+}
+

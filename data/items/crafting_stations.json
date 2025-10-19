@@ -1,0 +1,94 @@
+{
+  "iron_anvil": {
+    "template_id": "iron_anvil",
+    "name": "Iron Anvil",
+    "description": "A heavy iron anvil used for smithing. Essential for forging weapons and armor.",
+    "item_type": 50,
+    "base_type": "station.smithing.anvil",
+    "subtype": "anvil",
+    "weight": 150.0,
+    "value": 500,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "max_durability": 10000,
+    "equipment_stats": {
+      "smithing_bonus": 10,
+      "required_for_smithing": true
+    }
+  },
+  "weaving_loom": {
+    "template_id": "weaving_loom",
+    "name": "Weaving Loom",
+    "description": "A wooden loom for weaving cloth and creating fabric items.",
+    "item_type": 51,
+    "base_type": "station.tailoring.loom",
+    "subtype": "loom",
+    "weight": 80.0,
+    "value": 350,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "max_durability": 5000,
+    "equipment_stats": {
+      "tailoring_bonus": 8,
+      "required_for_tailoring": true
+    }
+  },
+  "alchemy_lab": {
+    "template_id": "alchemy_lab",
+    "name": "Alchemy Laboratory",
+    "description": "A complete alchemical laboratory with beakers, burners, and distillation equipment.",
+    "item_type": 46,
+    "base_type": "station.alchemy.lab",
+    "subtype": "alchemy_lab",
+    "weight": 45.0,
+    "value": 600,
+    "quality_tier": "good",
+    "material": "glass",
+    "item_flags": ["magic"],
+    "wear_flags": ["take"],
+    "max_durability": 2000,
+    "equipment_stats": {
+      "alchemy_bonus": 15,
+      "required_for_alchemy": true
+    }
+  },
+  "iron_stove": {
+    "template_id": "iron_stove",
+    "name": "Iron Stove",
+    "description": "A sturdy iron stove for cooking food.",
+    "item_type": 27,
+    "base_type": "station.cooking.stove",
+    "subtype": "stove",
+    "weight": 120.0,
+    "value": 400,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "max_durability": 8000,
+    "equipment_stats": {
+      "cooking_bonus": 10,
+      "required_for_cooking": true
+    }
+  },
+  "workbench": {
+    "template_id": "workbench",
+    "name": "Craftsman's Workbench",
+    "description": "A sturdy wooden workbench with built-in vises and tool storage. Used for general crafting.",
+    "item_type": 74,
+    "base_type": "station.general.workbench",
+    "subtype": "workbench",
+    "weight": 100.0,
+    "value": 300,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "max_durability": 6000,
+    "equipment_stats": {
+      "crafting_bonus": 5,
+      "general_crafting": true
+    }
+  }
+}
+

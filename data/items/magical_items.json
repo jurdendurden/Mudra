@@ -1,0 +1,189 @@
+{
+  "scroll_of_fireball": {
+    "template_id": "scroll_of_fireball",
+    "name": "Scroll of Fireball",
+    "description": "An ancient parchment inscribed with the incantation for Fireball. The runes glow with barely contained flames. Single use.",
+    "item_type": 2,
+    "base_type": "consumable.scroll.spell",
+    "subtype": "spell_scroll",
+    "weight": 0.2,
+    "value": 250,
+    "quality_tier": "uncommon",
+    "item_flags": ["magic"],
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "spell_cast",
+        "spell_id": "fireball",
+        "power": 50
+      }
+    ],
+    "requirements": {
+      "mystical": 8
+    }
+  },
+  "scroll_of_healing": {
+    "template_id": "scroll_of_healing",
+    "name": "Scroll of Healing",
+    "description": "A scroll containing a divine healing spell. Can be used by anyone.",
+    "item_type": 2,
+    "base_type": "consumable.scroll.spell",
+    "subtype": "spell_scroll",
+    "weight": 0.2,
+    "value": 180,
+    "quality_tier": "common",
+    "item_flags": ["magic"],
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "spell_cast",
+        "spell_id": "heal",
+        "power": 40
+      }
+    ],
+    "requirements": {
+      "mystical": 5
+    }
+  },
+  "wand_of_magic_missile": {
+    "template_id": "wand_of_magic_missile",
+    "name": "Wand of Magic Missile",
+    "description": "A slender wand that fires bolts of magical energy. Has limited charges that regenerate over time.",
+    "item_type": 3,
+    "base_type": "magical.wand.combat",
+    "subtype": "wand",
+    "weight": 0.5,
+    "value": 800,
+    "quality_tier": "uncommon",
+    "material": "oak",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 20,
+    "consumable_effects": [
+      {
+        "type": "spell_cast",
+        "spell_id": "magic_missile",
+        "power": 20
+      }
+    ],
+    "max_durability": 100,
+    "requirements": {
+      "mystical": 10
+    }
+  },
+  "wand_of_light": {
+    "template_id": "wand_of_light",
+    "name": "Wand of Light",
+    "description": "A wand that creates magical light when activated.",
+    "item_type": 3,
+    "base_type": "magical.wand.utility",
+    "subtype": "wand",
+    "weight": 0.4,
+    "value": 200,
+    "quality_tier": "common",
+    "material": "ash",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 50,
+    "consumable_effects": [
+      {
+        "type": "create_light",
+        "duration": 600
+      }
+    ],
+    "max_durability": 80,
+    "requirements": {
+      "mystical": 3
+    }
+  },
+  "staff_of_fire": {
+    "template_id": "staff_of_fire",
+    "name": "Staff of Fire",
+    "description": "A powerful staff carved from charred oak and topped with a ruby. Channels devastating fire magic.",
+    "item_type": 4,
+    "base_type": "magical.staff.elemental",
+    "subtype": "staff",
+    "weight": 3.5,
+    "value": 2500,
+    "quality_tier": "rare",
+    "material": "oak",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take", "hold", "two_handed"],
+    "socket_count": 1,
+    "socket_types": ["gem"],
+    "consumable_charges": 30,
+    "consumable_effects": [
+      {
+        "type": "spell_cast",
+        "spell_id": "fireball",
+        "power": 80
+      }
+    ],
+    "max_durability": 150,
+    "max_enchantments": 2,
+    "enchantable": true,
+    "requirements": {
+      "mystical": 15,
+      "cognition": 12
+    }
+  },
+  "staff_of_nature": {
+    "template_id": "staff_of_nature",
+    "name": "Staff of Nature",
+    "description": "A living staff that still grows leaves. Channels druidic nature magic.",
+    "item_type": 4,
+    "base_type": "magical.staff.nature",
+    "subtype": "staff",
+    "weight": 2.8,
+    "value": 2200,
+    "quality_tier": "rare",
+    "material": "ironwood",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take", "hold", "two_handed"],
+    "socket_count": 1,
+    "socket_types": ["gem"],
+    "consumable_charges": 30,
+    "consumable_effects": [
+      {
+        "type": "spell_cast",
+        "spell_id": "entangle",
+        "power": 70
+      }
+    ],
+    "max_durability": 140,
+    "max_enchantments": 2,
+    "enchantable": true,
+    "requirements": {
+      "mystical": 14,
+      "will": 10
+    }
+  },
+  "tome_of_knowledge": {
+    "template_id": "tome_of_knowledge",
+    "name": "Tome of Knowledge",
+    "description": "An ancient tome filled with arcane lore. Reading it grants temporary insight.",
+    "item_type": 91,
+    "base_type": "magical.tome.knowledge",
+    "subtype": "tome",
+    "weight": 2.0,
+    "value": 500,
+    "quality_tier": "uncommon",
+    "item_flags": ["magic"],
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 5,
+    "consumable_effects": [
+      {
+        "type": "buff_stat",
+        "stat": "cognition",
+        "amount": 5,
+        "duration": 3600
+      }
+    ],
+    "requirements": {
+      "cognition": 10
+    }
+  }
+}
+

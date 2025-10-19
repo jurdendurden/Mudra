@@ -1,0 +1,93 @@
+{
+  "name": "Halfling",
+  "description": "Halflings are nimble and lucky, with natural stealth and courage. Small but resourceful.",
+  "size": "small",
+  "base_speed": 25,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": -2,
+      "durability": 1,
+      "endurance": 2,
+      "vitality": 0
+    },
+    "mind": {
+      "intellect": 0,
+      "cognition": 1,
+      "willpower": 1,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 0,
+      "magical": 0,
+      "metaphysical": 0,
+      "percipience": 2
+    },
+    "kismet": {
+      "luck": 3,
+      "charisma": 2
+    }
+  },
+  
+  "racial_skills": [
+    "stealth",
+    "lockpicking",
+    "cooking"
+  ],
+  
+  "skill_bonuses": {
+    "stealth": 10,
+    "lockpicking": 8,
+    "cooking": 10,
+    "dodge": 8,
+    "hide": 10
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Lucky",
+      "description": "Can reroll critical failures once per day"
+    },
+    {
+      "name": "Brave",
+      "description": "+10% resistance to fear effects"
+    },
+    {
+      "name": "Nimble",
+      "description": "Can move through spaces of larger creatures"
+    },
+    {
+      "name": "Small Size",
+      "description": "+2 bonus to stealth and hide, -2 to intimidation"
+    }
+  ],
+  
+  "resistances": {
+    "fear": 10
+  },
+  
+  "languages": ["Common", "Halfling"],
+  "bonus_languages": ["Dwarvish", "Elvish", "Gnomish", "Goblin"]
+}
+

@@ -1,0 +1,81 @@
+{
+  "iron_arrow": {
+    "template_id": "iron_arrow",
+    "name": "Iron Arrow",
+    "description": "A standard arrow with an iron tip. Used with bows.",
+    "item_type": 47,
+    "base_type": "ammunition.arrow",
+    "subtype": "arrow",
+    "weight": 0.1,
+    "value": 2,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "weapon_type": 13,
+    "base_damage_min": 3,
+    "base_damage_max": 6,
+    "damage_types": ["piercing"],
+    "components_required": [
+      {"type": "component.arrow.shaft", "quantity": 1},
+      {"type": "component.arrow.head", "quantity": 1}
+    ]
+  },
+  "steel_arrow": {
+    "template_id": "steel_arrow",
+    "name": "Steel Arrow",
+    "description": "A high-quality arrow with a steel tip. Better penetration than iron.",
+    "item_type": 47,
+    "base_type": "ammunition.arrow",
+    "subtype": "arrow",
+    "weight": 0.12,
+    "value": 5,
+    "quality_tier": "good",
+    "material": "steel",
+    "wear_flags": ["take"],
+    "weapon_type": 13,
+    "base_damage_min": 4,
+    "base_damage_max": 8,
+    "damage_types": ["piercing"],
+    "components_required": [
+      {"type": "component.arrow.shaft", "quantity": 1},
+      {"type": "component.arrow.head_steel", "quantity": 1}
+    ]
+  },
+  "fire_arrow": {
+    "template_id": "fire_arrow",
+    "name": "Fire Arrow",
+    "description": "An arrow with a cloth-wrapped tip soaked in oil. Deals fire damage.",
+    "item_type": 47,
+    "base_type": "ammunition.arrow.special",
+    "subtype": "arrow",
+    "weight": 0.15,
+    "value": 15,
+    "quality_tier": "uncommon",
+    "material": "iron",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "weapon_type": 13,
+    "weapon_flags": ["flaming"],
+    "base_damage_min": 3,
+    "base_damage_max": 6,
+    "damage_types": ["piercing", "fire"]
+  },
+  "crossbow_bolt": {
+    "template_id": "crossbow_bolt",
+    "name": "Crossbow Bolt",
+    "description": "A heavy bolt for use with crossbows. Shorter and thicker than an arrow.",
+    "item_type": 47,
+    "base_type": "ammunition.bolt",
+    "subtype": "bolt",
+    "weight": 0.15,
+    "value": 3,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "weapon_type": 13,
+    "base_damage_min": 5,
+    "base_damage_max": 8,
+    "damage_types": ["piercing"]
+  }
+}
+

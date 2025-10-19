@@ -1,0 +1,92 @@
+{
+  "name": "Tortle",
+  "description": "Tortles are turtle-like humanoids, with natural armor and swimming. Patient and wise wanderers.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 2,
+      "durability": 4,
+      "endurance": 2,
+      "vitality": 3
+    },
+    "mind": {
+      "intellect": 0,
+      "cognition": 1,
+      "willpower": 3,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 0,
+      "magical": 0,
+      "metaphysical": 1,
+      "percipience": 1
+    },
+    "kismet": {
+      "luck": 0,
+      "charisma": 0
+    }
+  },
+  
+  "racial_skills": [
+    "survival",
+    "swimming",
+    "nature_lore"
+  ],
+  
+  "skill_bonuses": {
+    "survival": 10,
+    "swimming": 15,
+    "nature_lore": 8,
+    "natural_armor": 15,
+    "shell_defense": 20
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Natural Armor",
+      "description": "+4 base armor class from shell"
+    },
+    {
+      "name": "Shell Defense",
+      "description": "Can withdraw into shell for +4 AC but cannot move or attack"
+    },
+    {
+      "name": "Hold Breath",
+      "description": "Can hold breath for up to 1 hour"
+    },
+    {
+      "name": "Claws",
+      "description": "Natural weapons, bonus to climbing"
+    },
+    {
+      "name": "Survival Instinct",
+      "description": "+10 bonus to survival in natural environments"
+    }
+  ],
+  
+  "languages": ["Common", "Aquan"],
+  "bonus_languages": ["Draconic", "Primordial"]
+}
+

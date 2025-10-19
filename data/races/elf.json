@@ -1,0 +1,96 @@
+{
+  "name": "Elf",
+  "description": "Elves are graceful and long-lived, with keen senses and natural magic affinity. Masters of archery and magic.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": -1,
+      "durability": -1,
+      "endurance": 1,
+      "vitality": 0
+    },
+    "mind": {
+      "intellect": 2,
+      "cognition": 2,
+      "willpower": 1,
+      "psionics": 1
+    },
+    "spirit": {
+      "mystical": 2,
+      "magical": 2,
+      "metaphysical": 1,
+      "percipience": 3
+    },
+    "kismet": {
+      "luck": 1,
+      "charisma": 2
+    }
+  },
+  
+  "racial_skills": [
+    "archery",
+    "perception",
+    "nature_lore",
+    "enchanting"
+  ],
+  
+  "skill_bonuses": {
+    "archery": 10,
+    "perception": 10,
+    "nature_lore": 8,
+    "enchanting": 8,
+    "spellcraft": 5,
+    "stealth": 5
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Low-Light Vision",
+      "description": "Can see twice as far as humans in low light"
+    },
+    {
+      "name": "Keen Senses",
+      "description": "+10 bonus to perception and tracking"
+    },
+    {
+      "name": "Elven Magic",
+      "description": "+5% to all magical skill learning rates"
+    },
+    {
+      "name": "Fey Ancestry",
+      "description": "+10% resistance to charm and sleep effects"
+    }
+  ],
+  
+  "resistances": {
+    "charm": 10,
+    "sleep": 10
+  },
+  
+  "languages": ["Common", "Elvish"],
+  "bonus_languages": ["Celestial", "Draconic", "Gnomish", "Sylvan"]
+}
+

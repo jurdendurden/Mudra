@@ -1,0 +1,259 @@
+{
+  "trash_item": {
+    "template_id": "trash_item",
+    "name": "Pile of Trash",
+    "description": "Worthless garbage. Should probably be thrown away.",
+    "item_type": 13,
+    "base_type": "misc.trash",
+    "subtype": "trash",
+    "weight": 0.5,
+    "value": 0,
+    "quality_tier": "junk",
+    "wear_flags": ["take"]
+  },
+  "water_fountain": {
+    "template_id": "water_fountain",
+    "name": "Stone Fountain",
+    "description": "A decorative fountain with fresh flowing water. You can drink from it.",
+    "item_type": 25,
+    "base_type": "structure.fountain",
+    "subtype": "fountain",
+    "weight": 500.0,
+    "value": 2000,
+    "quality_tier": "good",
+    "material": "stone",
+    "wear_flags": ["take"],
+    "max_durability": 10000,
+    "equipment_stats": {
+      "water_source": true,
+      "infinite_water": true
+    }
+  },
+  "water_puddle": {
+    "template_id": "water_puddle",
+    "name": "Puddle of Water",
+    "description": "A small puddle of water on the ground.",
+    "item_type": 48,
+    "base_type": "environmental.puddle",
+    "subtype": "puddle",
+    "weight": 2.0,
+    "value": 0,
+    "quality_tier": "common",
+    "item_flags": ["nopurge"],
+    "wear_flags": []
+  },
+  "animal_tracks": {
+    "template_id": "animal_tracks",
+    "name": "Animal Tracks",
+    "description": "Fresh tracks from some kind of animal. A ranger could follow these.",
+    "item_type": 49,
+    "base_type": "environmental.tracks",
+    "subtype": "tracks",
+    "weight": 0.0,
+    "value": 0,
+    "quality_tier": "common",
+    "item_flags": ["invis"],
+    "wear_flags": [],
+    "equipment_stats": {
+      "track_age": 0,
+      "creature_type": "deer"
+    }
+  },
+  "campfire": {
+    "template_id": "campfire",
+    "name": "Campfire",
+    "description": "A crackling campfire providing warmth and light.",
+    "item_type": 52,
+    "base_type": "environmental.fire",
+    "subtype": "fire",
+    "weight": 0.0,
+    "value": 0,
+    "quality_tier": "common",
+    "item_flags": ["glow"],
+    "wear_flags": [],
+    "consumable_charges": 100,
+    "consumable_effects": [
+      {
+        "type": "create_light",
+        "radius": 4,
+        "duration": 3600
+      },
+      {
+        "type": "provide_warmth",
+        "amount": 10
+      }
+    ]
+  },
+  "wooden_building": {
+    "template_id": "wooden_building",
+    "name": "Wooden Building",
+    "description": "A small wooden structure that can serve as shelter.",
+    "item_type": 53,
+    "base_type": "structure.building.house",
+    "subtype": "building",
+    "weight": 5000.0,
+    "value": 10000,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "max_durability": 50000,
+    "equipment_stats": {
+      "shelter": true,
+      "capacity": 10
+    }
+  },
+  "oak_tree": {
+    "template_id": "oak_tree",
+    "name": "Oak Tree",
+    "description": "A mature oak tree. Can be harvested for wood.",
+    "item_type": 54,
+    "base_type": "environmental.tree.oak",
+    "subtype": "tree",
+    "weight": 10000.0,
+    "value": 500,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": [],
+    "max_durability": 1000,
+    "equipment_stats": {
+      "wood_yield": 50,
+      "tree_type": "oak"
+    }
+  },
+  "ship_helm": {
+    "template_id": "ship_helm",
+    "name": "Ship's Helm",
+    "description": "The steering wheel of a ship. Used to control the vessel's direction.",
+    "item_type": 57,
+    "base_type": "ship.helm",
+    "subtype": "ship_helm",
+    "weight": 40.0,
+    "value": 800,
+    "quality_tier": "good",
+    "material": "oak",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 2000,
+    "equipment_stats": {
+      "ship_control": true,
+      "steering_bonus": 10
+    }
+  },
+  "small_boat": {
+    "template_id": "small_boat",
+    "name": "Small Boat",
+    "description": "A small wooden rowboat for traveling on water.",
+    "item_type": 22,
+    "base_type": "vehicle.boat",
+    "subtype": "boat",
+    "weight": 150.0,
+    "value": 1000,
+    "quality_tier": "common",
+    "material": "oak",
+    "item_flags_2": ["buoyant"],
+    "wear_flags": ["take"],
+    "max_durability": 3000,
+    "equipment_stats": {
+      "water_travel": true,
+      "capacity": 4
+    }
+  },
+  "goblin_corpse": {
+    "template_id": "goblin_corpse",
+    "name": "Goblin Corpse",
+    "description": "The corpse of a slain goblin. Will decay if not preserved.",
+    "item_type": 23,
+    "base_type": "corpse.npc.goblin",
+    "subtype": "corpse_npc",
+    "weight": 40.0,
+    "value": 0,
+    "quality_tier": "poor",
+    "item_flags": ["rot_death"],
+    "wear_flags": ["take"],
+    "container_capacity": 10,
+    "container_weight_capacity": 20.0
+  },
+  "player_corpse": {
+    "template_id": "player_corpse",
+    "name": "Player Corpse",
+    "description": "The remains of a fallen adventurer. Their equipment may still be inside.",
+    "item_type": 24,
+    "base_type": "corpse.player",
+    "subtype": "corpse_pc",
+    "weight": 80.0,
+    "value": 0,
+    "quality_tier": "poor",
+    "item_flags": ["rot_death", "vis_death"],
+    "wear_flags": ["take"],
+    "container_capacity": 50,
+    "container_weight_capacity": 100.0
+  },
+  "blue_dye": {
+    "template_id": "blue_dye",
+    "name": "Blue Dye",
+    "description": "A vial of blue dye for coloring cloth and leather.",
+    "item_type": 16,
+    "base_type": "crafting.dye.blue",
+    "subtype": "dye",
+    "weight": 0.2,
+    "value": 20,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 5,
+    "equipment_stats": {
+      "dye_color": "blue"
+    }
+  },
+  "red_pigment": {
+    "template_id": "red_pigment",
+    "name": "Red Pigment",
+    "description": "A small container of red pigment for painting and dyeing.",
+    "item_type": 89,
+    "base_type": "crafting.pigment.red",
+    "subtype": "pigment",
+    "weight": 0.1,
+    "value": 15,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 10,
+    "equipment_stats": {
+      "pigment_color": "red"
+    }
+  },
+  "jewelry_ring": {
+    "template_id": "jewelry_ring",
+    "name": "Gold Ring",
+    "description": "A simple gold ring. Can be worn or enchanted.",
+    "item_type": 33,
+    "base_type": "jewelry.ring",
+    "subtype": "jewelry",
+    "weight": 0.05,
+    "value": 150,
+    "quality_tier": "good",
+    "material": "gold",
+    "wear_flags": ["take", "finger"],
+    "socket_count": 1,
+    "socket_types": ["gem"],
+    "max_durability": 200,
+    "max_enchantments": 2,
+    "enchantable": true
+  },
+  "jewelry_amulet": {
+    "template_id": "jewelry_amulet",
+    "name": "Silver Amulet",
+    "description": "An ornate silver amulet on a chain.",
+    "item_type": 33,
+    "base_type": "jewelry.amulet",
+    "subtype": "jewelry",
+    "weight": 0.1,
+    "value": 200,
+    "quality_tier": "good",
+    "material": "silver",
+    "wear_flags": ["take", "neck"],
+    "socket_count": 1,
+    "socket_types": ["gem"],
+    "max_durability": 150,
+    "max_enchantments": 2,
+    "enchantable": true
+  }
+}
+

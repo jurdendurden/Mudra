@@ -1,0 +1,233 @@
+{
+  "greater_health_potion": {
+    "template_id": "greater_health_potion",
+    "name": "Greater Health Potion",
+    "description": "A vibrant red potion that glows with restorative power. It restores a significant amount of health when consumed.",
+    "item_type": 10,
+    "base_type": "consumable.potion.health",
+    "subtype": "potion",
+    "weight": 0.5,
+    "value": 150,
+    "quality_tier": "good",
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "heal",
+        "amount": 75,
+        "duration": 0
+      }
+    ],
+    "components_required": [
+      {"type": "herb.healing_herb", "quantity": 5},
+      {"type": "essence.life", "quantity": 2},
+      {"type": "liquid.pure_water", "quantity": 1},
+      {"type": "container.glass_vial", "quantity": 1}
+    ],
+    "crafting_skill": "alchemy",
+    "crafting_difficulty": 10
+  },
+  "minor_health_potion": {
+    "template_id": "minor_health_potion",
+    "name": "Minor Health Potion",
+    "description": "A simple red potion that restores a small amount of health.",
+    "item_type": 10,
+    "base_type": "consumable.potion.health",
+    "subtype": "potion",
+    "weight": 0.4,
+    "value": 30,
+    "quality_tier": "common",
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "heal",
+        "amount": 25,
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "alchemy",
+    "crafting_difficulty": 1
+  },
+  "mana_potion": {
+    "template_id": "mana_potion",
+    "name": "Mana Potion",
+    "description": "A shimmering blue potion that restores magical energy.",
+    "item_type": 10,
+    "base_type": "consumable.potion.mana",
+    "subtype": "potion",
+    "weight": 0.4,
+    "value": 80,
+    "quality_tier": "common",
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "restore_mana",
+        "amount": 40,
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "alchemy",
+    "crafting_difficulty": 5
+  },
+  "healing_pill": {
+    "template_id": "healing_pill",
+    "name": "Healing Pill",
+    "description": "A small pill that can be swallowed quickly for instant healing.",
+    "item_type": 26,
+    "base_type": "consumable.pill.health",
+    "subtype": "pill",
+    "weight": 0.05,
+    "value": 40,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "heal",
+        "amount": 30,
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "alchemy",
+    "crafting_difficulty": 3
+  },
+  "bread_loaf": {
+    "template_id": "bread_loaf",
+    "name": "Bread Loaf",
+    "description": "A fresh loaf of bread with a golden crust. Provides sustenance.",
+    "item_type": 19,
+    "base_type": "consumable.food.bread",
+    "subtype": "bread",
+    "weight": 0.8,
+    "value": 5,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 3,
+    "consumable_effects": [
+      {
+        "type": "restore_hunger",
+        "amount": 30,
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "cooking",
+    "crafting_difficulty": 1
+  },
+  "cooked_meat": {
+    "template_id": "cooked_meat",
+    "name": "Cooked Meat",
+    "description": "A portion of well-cooked meat. Hearty and filling.",
+    "item_type": 19,
+    "base_type": "consumable.food.meat",
+    "subtype": "meat",
+    "weight": 0.5,
+    "value": 15,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 2,
+    "consumable_effects": [
+      {
+        "type": "restore_hunger",
+        "amount": 50,
+        "duration": 0
+      },
+      {
+        "type": "heal",
+        "amount": 10,
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "cooking",
+    "crafting_difficulty": 2
+  },
+  "water_flask": {
+    "template_id": "water_flask",
+    "name": "Water Flask",
+    "description": "A leather flask filled with fresh water.",
+    "item_type": 17,
+    "base_type": "consumable.drink.water",
+    "subtype": "water",
+    "weight": 1.0,
+    "value": 3,
+    "quality_tier": "common",
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 5,
+    "consumable_effects": [
+      {
+        "type": "restore_thirst",
+        "amount": 20,
+        "duration": 0
+      }
+    ]
+  },
+  "antidote": {
+    "template_id": "antidote",
+    "name": "Antidote",
+    "description": "A greenish potion that neutralizes most common poisons.",
+    "item_type": 10,
+    "base_type": "consumable.potion.antidote",
+    "subtype": "potion",
+    "weight": 0.3,
+    "value": 100,
+    "quality_tier": "good",
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "cure_poison",
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "alchemy",
+    "crafting_difficulty": 8
+  },
+  "bandage": {
+    "template_id": "bandage",
+    "name": "Bandage",
+    "description": "Clean linen bandages for treating wounds.",
+    "item_type": 40,
+    "base_type": "consumable.medical.bandage",
+    "subtype": "bandage",
+    "weight": 0.2,
+    "value": 10,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "heal_over_time",
+        "amount": 5,
+        "duration": 60
+      },
+      {
+        "type": "stop_bleeding",
+        "duration": 0
+      }
+    ]
+  },
+  "healing_salve": {
+    "template_id": "healing_salve",
+    "name": "Healing Salve",
+    "description": "A medicinal ointment made from healing herbs. Soothes wounds and promotes recovery.",
+    "item_type": 41,
+    "base_type": "consumable.medical.salve",
+    "subtype": "salve",
+    "weight": 0.3,
+    "value": 35,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 3,
+    "consumable_effects": [
+      {
+        "type": "heal",
+        "amount": 15,
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "herbalism",
+    "crafting_difficulty": 4
+  }
+}
+

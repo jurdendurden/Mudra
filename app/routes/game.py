@@ -4,6 +4,7 @@ from app import db
 from app.models.character import Character
 from app.models.room import Room
 from app.models.chat_message import ChatMessage
+from app.utils.race_loader import apply_racial_bonuses, get_racial_skills, get_racial_skill_bonuses, get_all_race_data
 
 game_bp = Blueprint('game', __name__)
 
@@ -69,9 +70,32 @@ def index():
             time_diff = char.last_played - char.created_at
             total_hours += time_diff.total_seconds() / 3600
     
+    # Calculate achievements completed
+    achievements_completed = 0
+    
+    # Hours played achievements
+    hours_thresholds = [5, 10, 25, 100, 300, 1000, 2500, 5000]
+    for threshold in hours_thresholds:
+        if total_hours >= threshold:
+            achievements_completed += 1
+    
+    # Characters created achievements
+    character_thresholds = [5, 10, 25, 50, 100, 250, 500]
+    for threshold in character_thresholds:
+        if len(characters) >= threshold:
+            achievements_completed += 1
+    
+    # Update account points based on achievements
+    current_user.update_account_points()
+    db.session.commit()
+    
     return render_template('game/account.html', 
                          characters=characters, 
-                         total_hours=total_hours)
+                         total_hours=total_hours,
+                         achievements_completed=achievements_completed,
+                         account_points=current_user.account_points,
+                         max_characters=current_user.get_max_characters(),
+                         next_slot_cost=current_user.get_next_slot_cost())
 
 @game_bp.route('/play/<int:character_id>')
 @login_required
@@ -101,14 +125,27 @@ def play_character(character_id):
     
     return render_template('game/index.html', character=character)
 
+@game_bp.route('/logout-character')
+@login_required
+def logout_character():
+    """Logout character and return to account screen"""
+    flash('Character logged out', 'info')
+    return redirect(url_for('game.index'))
+
 @game_bp.route('/create-character', methods=['GET', 'POST'])
 @login_required
 def create_character():
     """Character creation"""
+    # Check character slot limit
+    if not current_user.can_create_character():
+        flash(f'Character limit reached. You can have up to {current_user.get_max_characters()} characters.', 'error')
+        return redirect(url_for('game.index'))
+    
     if request.method == 'POST':
         name = request.form.get('name')
         race = request.form.get('race', 'Human')
         description = request.form.get('description', '')
+        avatar = request.form.get('avatar', '1.png')  # Default to first avatar
         attributes_json = request.form.get('attributes')
         
         # Validation
@@ -150,11 +187,22 @@ def create_character():
             name=name,
             race=race,
             description=description,
+            avatar=avatar,
             attributes=attributes,
             trial_points=0  # All points have been spent during creation
         )
         
-        # Calculate derived stats based on attributes
+        # Apply racial bonuses to attributes
+        apply_racial_bonuses(character, race)
+        
+        # Initialize racial skills
+        racial_skills = get_racial_skills(race)
+        if not character.skills:
+            character.skills = {}
+        for skill in racial_skills:
+            character.skills[skill] = 1  # Starting level
+        
+        # Calculate derived stats based on attributes (including racial modifiers)
         character.calculate_derived_stats()
         
         # Set starting location to Starting Village
@@ -181,7 +229,24 @@ def create_character():
         flash(f'Character {name} created successfully!', 'success')
         return redirect(url_for('game.index'))
     
-    return render_template('game/create_character.html')
+    # Get all race data for the template
+    race_data = get_all_race_data()
+    
+    return render_template('game/create_character.html', race_data=race_data)
+
+@game_bp.route('/shop/purchase-slot', methods=['POST'])
+@login_required
+def purchase_character_slot():
+    """Purchase an additional character slot"""
+    success, message = current_user.purchase_character_slot()
+    
+    if success:
+        db.session.commit()
+        flash(message, 'success')
+    else:
+        flash(message, 'error')
+    
+    return redirect(url_for('game.index'))
 
 @game_bp.route('/delete-character/<int:character_id>', methods=['POST'])
 @login_required

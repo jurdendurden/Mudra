@@ -7,6 +7,8 @@
 <li><a class="dropdown-item" href="#" onclick="openAdminPanel(); return false;"><i class="fas fa-cog me-2"></i>Admin Panel</a></li>
 <li><hr class="dropdown-divider"></li>
 {% endif %}
+<li><a class="dropdown-item" href="{{ url_for('game.logout_character') }}"><i class="fas fa-user-circle me-2"></i>Logout Character</a></li>
+<li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Quit Game</a></li>
 {% endblock %}
 
 {% block head %}
@@ -108,38 +110,47 @@
     }
     
     .character-name {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
-        color: #3498db;
-        margin-bottom: 5px;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        margin-bottom: 8px;
         text-align: center;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
     
     .character-race {
-        font-size: 14px;
-        color: #bdc3c7;
-        margin-bottom: 10px;
+        font-size: 15px;
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
+        margin-bottom: 15px;
         text-align: center;
     }
     
     .character-coords {
-        font-size: 12px;
-        color: #95a5a6;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid #4a5f7a;
+        font-size: 13px;
+        color: var(--medieval-text-dim);
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 2px solid var(--medieval-border);
         text-align: center;
+        font-family: 'Crimson Text', serif;
     }
     
     .character-coords .coord-label {
-        color: #7f8c8d;
-        font-weight: 500;
+        color: var(--medieval-text-faded);
+        font-weight: 600;
+        font-family: 'Cinzel', serif;
+        font-size: 12px;
     }
     
     .character-coords .coord-values {
-        color: #3498db;
+        color: var(--medieval-gold);
         font-weight: bold;
-        font-family: 'Courier New', monospace;
+        font-family: 'Source Code Pro', monospace;
+        font-size: 14px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     .attribute-section {
@@ -147,15 +158,25 @@
     }
     
     .attribute-section h6 {
-        color: #3498db;
-        margin-bottom: 5px;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        border-bottom: 1px solid var(--medieval-border);
+        padding-bottom: 5px;
     }
     
     .sub-attribute {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 3px;
-        font-size: 12px;
+        margin-bottom: 6px;
+        font-size: 13px;
+        padding: 4px 8px;
+        background: var(--medieval-charcoal);
+        border-radius: 4px;
+        border-left: 3px solid var(--medieval-border);
+        font-family: 'Crimson Text', serif;
     }
     
     /* Progress Bar Styles */
@@ -166,22 +187,23 @@
     .stat-bar-label {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 4px;
-        font-size: 12px;
-        color: #ecf0f1;
+        margin-bottom: 6px;
+        font-size: 13px;
+        color: var(--medieval-text);
+        font-family: 'Crimson Text', serif;
+        font-weight: 600;
     }
     
     .stat-bar-container {
         width: 100%;
-        height: 10px;
-        background: #1a252f;
-        border-width: 1px;
-        border-style: solid;
-        border-radius: 2px;        
+        height: 12px;
+        background: var(--medieval-shadow);
+        border: 2px solid var(--medieval-border);
+        border-radius: 6px;        
         overflow: hidden;
         position: relative;
-        border-color: black;
-            }
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    }
     
     .stat-bar-fill {
         height: 100%;
@@ -196,25 +218,34 @@
     }
     
     .stat-bar-fill.hp {
-        background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+        background: linear-gradient(90deg, var(--medieval-danger) 0%, var(--medieval-blood) 100%);
     }
     
     .stat-bar-fill.mana {
-        background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+        background: linear-gradient(90deg, var(--medieval-info) 0%, #4682b4 100%);
     }
     
     .stat-bar-fill.movement {
-        background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+        background: linear-gradient(90deg, var(--medieval-success) 0%, var(--medieval-moss) 100%);
     }
     
     .chat-window {
         height: 300px;
-        background: #1a252f;
-        border: 1px solid #4a5f7a;
-        border-radius: 5px;
-        padding: 10px;
+        background: var(--medieval-shadow);
+        border: 2px solid var(--medieval-border);
+        border-radius: 8px;
+        padding: 15px;
         overflow-y: auto;
+        margin-bottom: 15px;
+        box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+    }
+    
+    .chat-window h6 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
         margin-bottom: 10px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     /* Character Modal Styles */
@@ -232,19 +263,20 @@
     }
     
     .character-modal {
-        background: #2c3e50;
-        border-radius: 10px;
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
         width: 90%;
         max-width: 800px;
         max-height: 90%;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
     }
     
     .modal-header {
-        background: #34495e;
-        padding: 15px 20px;
-        border-bottom: 2px solid #4a5f7a;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-stone) 100%);
+        padding: 20px 25px;
+        border-bottom: 3px solid var(--medieval-bronze);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -252,29 +284,36 @@
     
     .modal-header h3 {
         margin: 0;
-        color: #ecf0f1;
-        font-size: 18px;
+        color: var(--medieval-gold);
+        font-size: 20px;
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
     
     .modal-close {
         background: none;
-        border: none;
-        color: #bdc3c7;
+        border: 2px solid var(--medieval-border);
+        color: var(--medieval-text);
         font-size: 24px;
         cursor: pointer;
         padding: 0;
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
         transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
     }
     
     .modal-close:hover {
-        background: #e74c3c;
-        color: white;
+        background: var(--medieval-danger);
+        border-color: var(--medieval-danger);
+        color: var(--medieval-text);
+        transform: scale(1.1);
     }
     
     .modal-body {
@@ -286,32 +325,34 @@
     /* Tab Navigation */
     .tab-navigation {
         display: flex;
-        background: #34495e;
-        border-bottom: 2px solid #4a5f7a;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-stone) 100%);
+        border-bottom: 3px solid var(--medieval-bronze);
     }
     
     .tab-button {
         flex: 1;
-        padding: 12px 20px;
+        padding: 15px 25px;
         background: none;
         border: none;
-        color: #bdc3c7;
+        color: var(--medieval-text-dim);
         cursor: pointer;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 600;
         transition: all 0.3s ease;
         border-bottom: 3px solid transparent;
+        font-family: 'Cinzel', serif;
     }
     
     .tab-button:hover {
-        background: #4a5f7a;
-        color: #ecf0f1;
+        background: var(--medieval-charcoal);
+        color: var(--medieval-text);
     }
     
     .tab-button.active {
-        background: #2c3e50;
-        color: #3498db;
-        border-bottom-color: #3498db;
+        background: var(--medieval-stone);
+        color: var(--medieval-gold);
+        border-bottom-color: var(--medieval-gold);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     /* Tab Content */
@@ -335,35 +376,43 @@
     }
     
     .info-section {
-        background: #34495e;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #4a5f7a;
+        background: linear-gradient(135deg, var(--medieval-charcoal) 0%, var(--medieval-stone) 100%);
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .info-section h4 {
-        margin: 0 0 15px 0;
-        color: #3498db;
-        font-size: 16px;
-        border-bottom: 1px solid #4a5f7a;
-        padding-bottom: 8px;
+        margin: 0 0 18px 0;
+        color: var(--medieval-gold);
+        font-size: 18px;
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 10px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     .info-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 8px;
-        font-size: 14px;
+        margin-bottom: 10px;
+        font-size: 15px;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--medieval-border);
     }
     
     .info-label {
-        color: #bdc3c7;
-        font-weight: 500;
+        color: var(--medieval-text-dim);
+        font-weight: 600;
+        font-family: 'Crimson Text', serif;
     }
     
     .info-value {
-        color: #ecf0f1;
+        color: var(--medieval-text);
         font-weight: 600;
+        font-family: 'Source Code Pro', monospace;
     }
     
     /* Attributes Section */
@@ -372,20 +421,25 @@
     }
     
     .attribute-category {
-        margin-bottom: 20px;
-        padding: 15px;
-        background: #2c3e50;
-        border-radius: 6px;
-        border: 1px solid #4a5f7a;
+        margin-bottom: 25px;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border-radius: 8px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .attribute-category h5 {
-        margin: 0 0 12px 0;
-        color: #e74c3c;
-        font-size: 14px;
+        margin: 0 0 15px 0;
+        color: var(--medieval-gold);
+        font-size: 16px;
         font-weight: bold;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        font-family: 'Cinzel', serif;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 8px;
     }
     
     .attribute-list {
@@ -397,36 +451,47 @@
     .attr-item {
         display: flex;
         justify-content: space-between;
-        padding: 6px 10px;
-        background: #34495e;
-        border-radius: 4px;
-        font-size: 13px;
+        padding: 8px 12px;
+        background: var(--medieval-stone);
+        border-radius: 6px;
+        font-size: 14px;
+        border-left: 3px solid var(--medieval-border);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     
     .attr-name {
-        color: #bdc3c7;
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-weight: 600;
     }
     
     .attr-value {
-        color: #3498db;
+        color: var(--medieval-gold);
         font-weight: bold;
+        font-family: 'Source Code Pro', monospace;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     /* Placeholder Content */
     .placeholder-content {
         text-align: center;
-        padding: 40px 20px;
-        color: #7f8c8d;
+        padding: 50px 30px;
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
     }
     
     .placeholder-content h4 {
-        color: #bdc3c7;
-        margin-bottom: 15px;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     .placeholder-content p {
-        margin-bottom: 10px;
-        line-height: 1.5;
+        margin-bottom: 15px;
+        line-height: 1.6;
+        font-style: italic;
     }
     
     /* Admin Panel Styles */
@@ -438,31 +503,34 @@
     }
     
     .admin-section {
-        background: #34495e;
-        border-radius: 8px;
-        border: 1px solid #4a5f7a;
+        background: linear-gradient(135deg, var(--medieval-charcoal) 0%, var(--medieval-stone) 100%);
+        border-radius: 10px;
+        border: 2px solid var(--medieval-border);
         overflow: hidden;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.3);
     }
     
     .admin-section-header {
-        background: #2c3e50;
-        padding: 15px 20px;
-        border-bottom: 1px solid #4a5f7a;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        padding: 20px 25px;
+        border-bottom: 2px solid var(--medieval-border);
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
     }
     
     .admin-section-header i {
-        color: #3498db;
-        font-size: 18px;
+        color: var(--medieval-gold);
+        font-size: 20px;
     }
     
     .admin-section-header h4 {
         margin: 0;
-        color: #ecf0f1;
-        font-size: 16px;
+        color: var(--medieval-gold);
+        font-size: 18px;
         font-weight: 600;
+        font-family: 'Cinzel', serif;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     .admin-section-content {
@@ -473,51 +541,55 @@
     }
     
     .admin-btn {
-        background: #2c3e50;
-        border: 1px solid #4a5f7a;
-        border-radius: 6px;
-        padding: 12px 15px;
-        color: #ecf0f1;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 8px;
+        padding: 15px 20px;
+        color: var(--medieval-text);
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
         text-align: left;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
     
     .admin-btn:hover {
-        background: #3498db;
-        border-color: #2980b9;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        background: linear-gradient(135deg, var(--medieval-accent) 0%, var(--medieval-bronze) 100%);
+        border-color: var(--medieval-accent);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(139, 69, 19, 0.4);
     }
     
     .admin-btn i {
-        color: #3498db;
-        font-size: 16px;
-        width: 20px;
+        color: var(--medieval-gold);
+        font-size: 18px;
+        width: 25px;
         text-align: center;
     }
     
     .admin-btn:hover i {
-        color: #ecf0f1;
+        color: var(--medieval-text);
     }
     
     .admin-btn span {
         font-weight: 600;
-        font-size: 14px;
+        font-size: 15px;
+        font-family: 'Cinzel', serif;
     }
     
     .admin-btn small {
         display: block;
-        color: #bdc3c7;
-        font-size: 11px;
-        margin-top: 2px;
+        color: var(--medieval-text-dim);
+        font-size: 12px;
+        margin-top: 4px;
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
     }
     
     .admin-btn:hover small {
-        color: #ecf0f1;
+        color: var(--medieval-text);
     }
 </style>
 {% endblock %}

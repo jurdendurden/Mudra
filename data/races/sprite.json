@@ -1,0 +1,89 @@
+{
+  "name": "Sprite",
+  "description": "Sprites are tiny fey creatures, with natural invisibility and nature magic. Mischievous forest guardians.",
+  "size": "tiny",
+  "base_speed": 10,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": -5,
+      "durability": -3,
+      "endurance": 1,
+      "vitality": -2
+    },
+    "mind": {
+      "intellect": 2,
+      "cognition": 3,
+      "willpower": 2,
+      "psionics": 2
+    },
+    "spirit": {
+      "mystical": 4,
+      "magical": 4,
+      "metaphysical": 3,
+      "percipience": 4
+    },
+    "kismet": {
+      "luck": 3,
+      "charisma": 2
+    }
+  },
+  
+  "racial_skills": [
+    "stealth",
+    "nature_magic",
+    "perception"
+  ],
+  
+  "skill_bonuses": {
+    "stealth": 20,
+    "nature_magic": 15,
+    "perception": 12,
+    "illusion_magic": 15,
+    "flying": 20
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "wield",
+    "hold",
+    "float"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Flight",
+      "description": "Can fly at speed of 40 feet"
+    },
+    {
+      "name": "Invisibility",
+      "description": "Can become invisible at will"
+    },
+    {
+      "name": "Heart Sight",
+      "description": "Can detect emotional state and alignment of creatures"
+    },
+    {
+      "name": "Tiny Size",
+      "description": "+20 to stealth, -5 to strength, cannot use large weapons"
+    },
+    {
+      "name": "Fey Ancestry",
+      "description": "+20% resistance to charm effects"
+    }
+  ],
+  
+  "resistances": {
+    "charm": 20
+  },
+  
+  "languages": ["Common", "Sylvan"],
+  "bonus_languages": ["Elvish", "Gnomish", "Primordial"]
+}
+

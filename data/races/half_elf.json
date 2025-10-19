@@ -1,0 +1,94 @@
+{
+  "name": "Half-Elf",
+  "description": "Half-Elves combine human adaptability with elven grace and magic. Versatile and diplomatic.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 0,
+      "durability": 0,
+      "endurance": 1,
+      "vitality": 0
+    },
+    "mind": {
+      "intellect": 1,
+      "cognition": 1,
+      "willpower": 1,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 1,
+      "magical": 1,
+      "metaphysical": 0,
+      "percipience": 2
+    },
+    "kismet": {
+      "luck": 1,
+      "charisma": 3
+    }
+  },
+  
+  "racial_skills": [
+    "diplomacy",
+    "perception",
+    "spellcraft"
+  ],
+  
+  "skill_bonuses": {
+    "diplomacy": 8,
+    "perception": 6,
+    "spellcraft": 5,
+    "enchanting": 5,
+    "archery": 4
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Low-Light Vision",
+      "description": "Can see twice as far in low light"
+    },
+    {
+      "name": "Fey Ancestry",
+      "description": "+5% resistance to charm and sleep"
+    },
+    {
+      "name": "Versatile",
+      "description": "Gains +2 bonus skill points at creation"
+    },
+    {
+      "name": "Dual Heritage",
+      "description": "Counts as both human and elf for magical effects"
+    }
+  ],
+  
+  "resistances": {
+    "charm": 5,
+    "sleep": 5
+  },
+  
+  "languages": ["Common", "Elvish"],
+  "bonus_languages": ["any"]
+}
+

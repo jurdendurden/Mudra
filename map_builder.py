@@ -29,8 +29,10 @@ def builder_index():
     # Get all areas and rooms for the builder
     areas = Area.query.all()
     rooms = Room.query.all()
-    
-    return render_template('map_builder/index.html', areas=areas, rooms=rooms)
+    # Detect the script root for subdirectory mounting
+    from flask import request
+    api_base = request.script_root.rstrip('/')
+    return render_template('map_builder/index.html', areas=areas, rooms=rooms, api_base=api_base)
 
 @app.route('/api/rooms')
 def get_rooms():

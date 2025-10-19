@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        // Set API_BASE for subdirectory or root usage
+        const API_BASE = "{{ api_base|default('') }}";
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mudra - Map Builder</title>
@@ -690,7 +694,7 @@
         // Load areas from API
         async function loadAreas() {
             try {
-                const response = await fetch('/api/areas');
+                const response = await fetch(`${API_BASE}/api/areas`);
                 areas = await response.json();
                 populateAreaSelect();
                 renderAreaList();
@@ -702,7 +706,7 @@
         // Load rooms from API
         async function loadRooms() {
             try {
-                const response = await fetch('/api/rooms');
+                const response = await fetch(`${API_BASE}/api/rooms`);
                 rooms = await response.json();
                  const selectedAreaId = document.getElementById('area-filter')?.value || null;
                  renderRoomList(selectedAreaId);
@@ -1393,7 +1397,7 @@
              };
              
              try {
-                const response = await fetch('/api/rooms', {
+                const response = await fetch(`${API_BASE}/api/rooms`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1612,7 +1616,7 @@
                     };
                     
                     try {
-                        const response = await fetch('/api/rooms', {
+                        const response = await fetch(`${API_BASE}/api/rooms`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -1729,7 +1733,7 @@
                     previousState = JSON.parse(JSON.stringify(selectedRoom));
                     
                     // Update existing room
-                    response = await fetch(`/api/rooms/${selectedRoom.id}`, {
+                    response = await fetch(`${API_BASE}/api/rooms/${selectedRoom.id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1738,7 +1742,7 @@
                     });
                 } else {
                     // Create new room
-                    response = await fetch('/api/rooms', {
+                    response = await fetch(`${API_BASE}/api/rooms`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1779,7 +1783,7 @@
                         }
                         
                         try {
-                            await fetch(`/api/rooms/${targetRoom.id}`, {
+                            await fetch(`${API_BASE}/api/rooms/${targetRoom.id}`, {
                                 method: 'PUT',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -1827,7 +1831,7 @@
                 const roomToDelete = JSON.parse(JSON.stringify(selectedRoom));
                 
                 try {
-                    const response = await fetch(`/api/rooms/${selectedRoom.id}`, {
+                    const response = await fetch(`${API_BASE}/api/rooms/${selectedRoom.id}`, {
                         method: 'DELETE'
                     });
                     
@@ -1855,7 +1859,7 @@
         async function saveMap() {
             try {
                 // Get all rooms from database
-                const response = await fetch('/api/rooms');
+                const response = await fetch(`${API_BASE}/api/rooms`);
                 if (!response.ok) {
                     alert('Error fetching rooms from database');
                     return;
@@ -1963,7 +1967,7 @@
             }
             
             try {
-                const response = await fetch(`/api/rooms/${selectedRoom.id}`, {
+                const response = await fetch(`${API_BASE}/api/rooms/${selectedRoom.id}`, {
                     method: 'DELETE'
                 });
                 

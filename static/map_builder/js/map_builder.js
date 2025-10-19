@@ -257,6 +257,13 @@ async function main() {
         ctx.innerHTML = `<div class="context-menu-item" id="changeNameContext"><i class="fas fa-edit"></i> Change Name</div>`;
         document.body.appendChild(ctx);
     }
+
+    const coordDisplay = document.createElement('div');
+    coordDisplay.className = 'coord-display';
+    coordDisplay.id = 'coord-display';
+    coordDisplay.textContent = 'X: 0, Y: 0, Z: 0';
+    document.body.appendChild(coordDisplay);
+    
     toggleGridlines();
     // Get API base from template variable
     const apiBase = window.API_BASE || '';

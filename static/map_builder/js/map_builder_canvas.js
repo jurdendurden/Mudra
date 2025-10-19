@@ -4,8 +4,7 @@ import {
     rooms, selectedRoom, multiSelectedRooms, isSelecting, selectionStart, selectionBox, isDraggingRoom, draggedRoom, draggedNode, draggedRooms, draggedNodes, dragOffset, CANVAS_CENTER, GRID_SIZE,
     setIsDraggingRoom, setDraggedRoom, setDraggedNode, setDraggedRooms, setDraggedNodes, setDragOffset, setIsSelecting, setSelectionStart, setSelectionBox, setMultiSelectedRooms, setSelectedRoom
 } from './map_builder_core.js';
-import { renderMap } from './map_builder_render.js';
-
+import { renderMap, updateSelectionDisplay } from './map_builder_render.js';
 // Handle room drag start
 export function handleRoomDragStart(event, room, node) {
     // Only allow drag with Ctrl key held

@@ -1,13 +1,19 @@
 // map_builder_room_editor.js
 // Room/area modal logic, exit management, dropdown population
-import { areas, rooms, selectedRoom, roomModal } from './map_builder_core.js';
+import { areas, rooms, selectedRoom, roomModal, setSelectedRoom } from './map_builder_core.js';
 import { createRoom, updateRoom, deleteRoom, createArea } from './map_builder_api.js';
 import { renderMap, renderAreaList, renderRoomList } from './map_builder_render.js';
 
 // Populate area select dropdown in room modal
 export function populateAreaSelect() {
     const select = document.getElementById('areaSelect');
-    select.innerHTML = '<option value="">Select Area</option>';
+    // Remove existing options
+    select.innerHTML = '';
+    // Add the default "Select Area" option programmatically
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Select Area';
+    select.appendChild(defaultOption);
     areas.forEach(area => {
         const option = document.createElement('option');
         option.value = area.area_id;
@@ -18,7 +24,8 @@ export function populateAreaSelect() {
 
 // Open room editor modal
 export function openRoomEditor(room) {
-    selectedRoom = room;
+    setSelectedRoom(room);
+    
     // ...populate modal fields with room data...
     roomModal.show();
 }

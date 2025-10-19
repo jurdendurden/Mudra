@@ -2,7 +2,7 @@
 // Entry point: imports all modules, initializes app
 import { initializeMapBuilder } from './map_builder_core.js';
 import { fetchAreas, fetchRooms } from './map_builder_api.js';
-import { renderAreaList, renderRoomList, renderMap } from './map_builder_render.js';
+import { renderAreaList, renderRoomList, renderMap, filterRoomsByArea } from './map_builder_render.js';
 import { populateAreaSelect } from './map_builder_room_editor.js';
 import { handleRoomDragStart, handleRoomDrop, handleSelectionStart, handleCanvasDrag, handleCanvasMouseUp, handleSelectionEnd, updateMultiSelection, clearMultiSelection, updateCoordDisplay } from './map_builder_canvas.js';
 import { addToUndoHistory, undoLastAction, updateUndoButton } from './map_builder_undo.js';
@@ -275,8 +275,10 @@ async function main() {
             core.rooms.push(...roomData);
 
             renderAreaList();
-            renderRoomList();
-            renderMap();
+            filterRoomsByArea();
+            //renderRoomList();
+            //renderMap();
+            
             populateAreaSelect();
         });
         

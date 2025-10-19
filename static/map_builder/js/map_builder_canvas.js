@@ -1,6 +1,9 @@
 // map_builder_canvas.js
 // Canvas interaction: drag-and-drop, selection, mouse/keyboard events, coordinate display
-import { rooms, selectedRoom, multiSelectedRooms, isSelecting, selectionStart, selectionBox, isDraggingRoom, draggedRoom, draggedNode, draggedRooms, draggedNodes, dragOffset, CANVAS_CENTER, GRID_SIZE } from './map_builder_core.js';
+import {
+    rooms, selectedRoom, multiSelectedRooms, isSelecting, selectionStart, selectionBox, isDraggingRoom, draggedRoom, draggedNode, draggedRooms, draggedNodes, dragOffset, CANVAS_CENTER, GRID_SIZE,
+    setIsDraggingRoom, setDraggedRoom, setDraggedNode, setDraggedRooms, setDraggedNodes, setDragOffset, setIsSelecting, setSelectionStart, setSelectionBox, setMultiSelectedRooms, setSelectedRoom
+} from './map_builder_core.js';
 import { renderMap } from './map_builder_render.js';
 
 // Handle room drag start
@@ -9,36 +12,36 @@ export function handleRoomDragStart(event, room, node) {
     if (event.ctrlKey) {
         event.preventDefault();
         event.stopPropagation();
-        isDraggingRoom = true;
-        draggedRoom = room;
-        draggedNode = node;
+        setIsDraggingRoom(true);
+        setDraggedRoom(room);
+        setDraggedNode(node);
         const nodeRect = node.getBoundingClientRect();
-        dragOffset = {
+        setDragOffset({
             x: event.clientX - nodeRect.left,
             y: event.clientY - nodeRect.top
-        };
+        });
         // Hide tooltip during drag
         if (typeof hideTooltip === 'function') hideTooltip();
         // Check if this room is part of a multi-selection
         if (multiSelectedRooms.includes(room.id)) {
-            draggedRooms = multiSelectedRooms.map(roomId => rooms.find(r => r.id === roomId)).filter(r => r);
-            draggedNodes = [];
+            setDraggedRooms(multiSelectedRooms.map(roomId => rooms.find(r => r.id === roomId)).filter(r => r));
+            setDraggedNodes([]);
             const allNodes = document.querySelectorAll('.room-node');
             allNodes.forEach(n => {
                 const nodeLeft = parseInt(n.style.left);
                 const nodeTop = parseInt(n.style.top);
-                const matchingRoom = draggedRooms.find(r => 
+                const matchingRoom = multiSelectedRooms.map(roomId => rooms.find(r => r.id === roomId)).filter(r => r).find(r => 
                     r.x * GRID_SIZE + CANVAS_CENTER + 10 === nodeLeft && 
                     -r.y * GRID_SIZE + CANVAS_CENTER + 10 === nodeTop
                 );
                 if (matchingRoom) {
-                    draggedNodes.push({ node: n, room: matchingRoom });
+                    setDraggedNodes(prev => [...(prev || []), { node: n, room: matchingRoom }]);
                     n.style.cursor = 'grabbing';
                 }
             });
         } else {
-            draggedRooms = [room];
-            draggedNodes = [{ node: node, room: room }];
+            setDraggedRooms([room]);
+            setDraggedNodes([{ node: node, room: room }]);
             node.style.cursor = 'grabbing';
         }
     }
@@ -109,11 +112,11 @@ export async function handleRoomDrop(event) {
         node.style.opacity = '1';
         node.style.zIndex = '';
     });
-    isDraggingRoom = false;
-    draggedRoom = null;
-    draggedNode = null;
-    draggedRooms = [];
-    draggedNodes = [];
+    setIsDraggingRoom(false);
+    setDraggedRoom(null);
+    setDraggedNode(null);
+    setDraggedRooms([]);
+    setDraggedNodes([]);
     if (typeof loadRooms === 'function') await loadRooms();
     renderMap();
 // End of handleRoomDrop
@@ -126,16 +129,17 @@ export function handleSelectionStart(event) {
     if (!event.shiftKey) {
         clearMultiSelection();
     }
-    isSelecting = true;
+    setIsSelecting(true);
     const rect = event.currentTarget.getBoundingClientRect();
-    selectionStart = {
+    setSelectionStart({
         x: event.clientX - rect.left + event.currentTarget.scrollLeft,
         y: event.clientY - rect.top + event.currentTarget.scrollTop
-    };
+    });
     if (!selectionBox) {
-        selectionBox = document.createElement('div');
-        selectionBox.className = 'selection-box';
-        event.currentTarget.appendChild(selectionBox);
+        const box = document.createElement('div');
+        box.className = 'selection-box';
+        event.currentTarget.appendChild(box);
+        setSelectionBox(box);
     }
     selectionBox.style.left = selectionStart.x + 'px';
     selectionBox.style.top = selectionStart.y + 'px';
@@ -192,7 +196,7 @@ export function handleCanvasMouseUp(event) {
 // Handle selection end
 export function handleSelectionEnd(event) {
     if (!isSelecting) return;
-    isSelecting = false;
+    setIsSelecting(false);
     if (selectionBox) {
         const width = parseFloat(selectionBox.style.width);
         const height = parseFloat(selectionBox.style.height);
@@ -216,7 +220,7 @@ export function handleSelectionEnd(event) {
                 if (roomLeft < boxRect.right && roomRight > boxRect.left &&
                     roomTop < boxRect.bottom && roomBottom > boxRect.top) {
                     if (!multiSelectedRooms.includes(room.id)) {
-                        multiSelectedRooms.push(room.id);
+                        setMultiSelectedRooms([...multiSelectedRooms, room.id]);
                     }
                 }
             });
@@ -248,8 +252,8 @@ export function updateMultiSelection() {
 
 // Clear multi selection
 export function clearMultiSelection() {
-    multiSelectedRooms = [];
-    selectedRoom = null;
+    setMultiSelectedRooms([]);
+    setSelectedRoom(null);
     updateMultiSelection();
 // End of clearMultiSelection
 }

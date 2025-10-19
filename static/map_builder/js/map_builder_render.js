@@ -1,6 +1,6 @@
 // map_builder_render.js
 // Rendering: map, sidebar, tooltips, gridlines, coordinate labels
-import { rooms, areas, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE, selectionBox, setSelectionBox } from './map_builder_core.js';
+import { rooms, areas, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE, selectionBox, setSelectionBox, setMultiSelectedRooms, setSelectedRoom } from './map_builder_core.js';
 
 // Render area list in sidebar
 export function renderAreaList() {
@@ -18,9 +18,10 @@ export function renderAreaList() {
     }
     // Add change event listener to filter rooms
     select.addEventListener('change', filterRoomsByArea);
+    return select;
 }
 
-function filterRoomsByArea() {
+export function filterRoomsByArea() {
     const selectedAreaId = document.getElementById('area-filter').value;
     clearMultiSelection();
     renderRoomList(selectedAreaId);
@@ -51,13 +52,13 @@ export function renderRoomList(filterAreaId = null) {
         if (this.value) {
             const selectedOptions = Array.from(this.selectedOptions);
             const selectedRoomIds = selectedOptions.map(option => parseInt(option.value));
-            multiSelectedRooms = selectedRoomIds;
-            selectedRoom = rooms.find(r => r.id === selectedRoomIds[0]) || null;
+            setMultiSelectedRooms(selectedRoomIds);
+            setSelectedRoom(rooms.find(r => r.id === selectedRoomIds[0]) || null);
             displayClearSelectedRooms();
             selectRoomsByIds(selectedRoomIds);
         } else {
-            multiSelectedRooms = [];
-            selectedRoom = null;
+            setMultiSelectedRooms([]);
+            setSelectedRoom(null);
             displayClearSelectedRooms();
             selectRoomsByIds([]);
         }
@@ -145,25 +146,28 @@ export function renderMap() {
             if (e.ctrlKey) {
                 const roomIndex = multiSelectedRooms.indexOf(room.id);
                 if (roomIndex > -1) {
-                    multiSelectedRooms.splice(roomIndex, 1);
+                    // Remove from multiSelectedRooms
+                    const newMulti = multiSelectedRooms.slice();
+                    newMulti.splice(roomIndex, 1);
+                    setMultiSelectedRooms(newMulti);
                     if (selectedRoom && selectedRoom.id === room.id) {
-                        selectedRoom = multiSelectedRooms.length > 0 
-                            ? rooms.find(r => r.id === multiSelectedRooms[0]) 
-                            : null;
+                        setSelectedRoom(newMulti.length > 0 
+                            ? rooms.find(r => r.id === newMulti[0]) 
+                            : null);
                     }
                 } else {
-                    multiSelectedRooms.push(room.id);
-                    selectedRoom = room;
+                    setMultiSelectedRooms([...multiSelectedRooms, room.id]);
+                    setSelectedRoom(room);
                 }
                 updateMultiSelection();
             } else if (e.shiftKey) {
                 if (!multiSelectedRooms.includes(room.id)) {
-                    multiSelectedRooms.push(room.id);
+                    setMultiSelectedRooms([...multiSelectedRooms, room.id]);
                 }
-                selectedRoom = room;
+                setSelectedRoom(room);
                 updateMultiSelection();
             } else {
-                multiSelectedRooms = [];
+                setMultiSelectedRooms([]);
                 selectRoomVisual(room, node);
             }
         };
@@ -367,7 +371,7 @@ function selectRoomsByIds(roomIds) {
 function selectRoomById(roomId, remove = true) {
     const room = rooms.find(r => r.id === roomId);
     if (!room) return;
-    selectedRoom = room;
+    setSelectedRoom(room);
     if(remove) {
         displayClearSelectedRooms();
     }
@@ -388,7 +392,7 @@ function selectRoomById(roomId, remove = true) {
 }
 
 function selectRoomVisual(room, node) {
-    selectedRoom = room;
+    setSelectedRoom(room);
     displayClearSelectedRooms();
     node.classList.add('selected');
     updateSelectionDisplay();
@@ -477,7 +481,7 @@ export function updateAutoRoomToggle() {
 }
 
 export function clearMultiSelection() {
-    multiSelectedRooms = [];
+    setMultiSelectedRooms([]);
     displayClearSelectedRooms();
     updateSelectionDisplay();
     updateAutoRoomToggle();

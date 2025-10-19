@@ -2,6 +2,25 @@
 export function setSelectionBox(val) {
     selectionBox = val;
 }
+// Setters for other global variables
+export function setRooms(val) { rooms = val; }
+export function setAreas(val) { areas = val; }
+export function setSelectedRoom(val) { selectedRoom = val; }
+export function setRoomModal(val) { roomModal = val; }
+export function setTooltip(val) { tooltip = val; }
+export function setMultiSelectedRooms(val) { multiSelectedRooms = val; }
+export function setIsSelecting(val) { isSelecting = val; }
+export function setSelectionStart(val) { selectionStart = val; }
+export function setJustFinishedDrag(val) { justFinishedDrag = val; }
+export function setIsDraggingRoom(val) { isDraggingRoom = val; }
+export function setDraggedRoom(val) { draggedRoom = val; }
+export function setDraggedNode(val) { draggedNode = val; }
+export function setDraggedRooms(val) { draggedRooms = val; }
+export function setDraggedNodes(val) { draggedNodes = val; }
+export function setDragOffset(val) { dragOffset = val; }
+export function setUndoHistory(val) { undoHistory = val; }
+export function setAutoRoomMode(val) { autoRoomMode = val; }
+export function setAPIBase(val) { API_BASE = val; }
 // map_builder_core.js
 // Initialization, global state, API base setup, main entry point
 

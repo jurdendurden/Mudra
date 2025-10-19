@@ -1,13 +1,15 @@
 // map_builder_undo.js
 // Undo/redo stack, action history, undo button state
-import { undoHistory, MAX_UNDO_STEPS } from './map_builder_core.js';
+import { undoHistory, MAX_UNDO_STEPS, setUndoHistory } from './map_builder_core.js';
 
 // Add action to undo history
 export function addToUndoHistory(action) {
-    if (undoHistory.length >= MAX_UNDO_STEPS) {
-        undoHistory.shift();
+    let newHistory = undoHistory.slice();
+    if (newHistory.length >= MAX_UNDO_STEPS) {
+        newHistory.shift();
     }
-    undoHistory.push(action);
+    newHistory.push(action);
+    setUndoHistory(newHistory);
 }
 
 // Undo last action

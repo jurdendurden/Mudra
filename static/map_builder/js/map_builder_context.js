@@ -1,6 +1,6 @@
 // map_builder_context.js
 // Context menu logic, keyboard shortcuts, batch actions
-import { rooms, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE } from './map_builder_core.js';
+import { rooms, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE, setMultiSelectedRooms, setSelectedRoom } from './map_builder_core.js';
 import { updateMultiSelection, clearMultiSelection } from './map_builder_canvas.js';
 import { renderMap, updateSelectionDisplay, updateAutoRoomToggle } from './map_builder_render.js';
 
@@ -19,9 +19,8 @@ export function handleContextMenu(event) {
         );
         if (clickedRoom) {
             if (!multiSelectedRooms.includes(clickedRoom.id)) {
-                multiSelectedRooms.length = 0;
-                multiSelectedRooms.push(clickedRoom.id);
-                window.selectedRoom = clickedRoom;
+                setMultiSelectedRooms([clickedRoom.id]);
+                setSelectedRoom(clickedRoom);
                 updateMultiSelection();
             }
             const contextMenu = document.getElementById('contextMenu');

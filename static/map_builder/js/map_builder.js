@@ -37,6 +37,7 @@ async function main() {
     let builderHeader = builderContainer.querySelector('.builder-header');
     if (!builderHeader) {
         builderHeader = document.createElement('div');
+        
         builderHeader.className = 'builder-header';
         builderHeader.innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
@@ -46,56 +47,164 @@ async function main() {
         `;
         builderContainer.appendChild(builderHeader);
     }
-    // Toolbar controls
+    // Import needed functions
+    const { renderMap, toggleGridlines, toggleCoordinateLabels, updateGridAlignment } = await import('./map_builder_render.js');
+    const { toggleAutoRoom } = await import('./map_builder_canvas.js');
+
+    // Toolbar controls (programmatic creation)
     let toolbar = builderHeader.querySelector('#toolbar-controls');
-    if (toolbar && toolbar.children.length === 0) {
-        toolbar.innerHTML = `
-            <div class="form-check form-switch me-4">
-                <input class="form-check-input" type="checkbox" id="surroundingAreasToggle">
-                <label class="form-check-label text-white" for="surroundingAreasToggle">
-                    <i class="fas fa-map-marked-alt"></i> Surrounding Areas
-                </label>
-            </div>
-            <div class="form-check form-switch me-4">
-                <input class="form-check-input" type="checkbox" id="autoRoomToggle" disabled>
-                <label class="form-check-label text-white" for="autoRoomToggle" id="autoRoomLabel" style="opacity: 0.5;">
-                    <i class="fas fa-walking"></i> Auto Room
-                </label>
-            </div>
-            <div class="form-check form-switch me-4">
-                <input class="form-check-input" type="checkbox" id="showCoordinatesToggle">
-                <label class="form-check-label text-white" for="showCoordinatesToggle">
-                    <i class="fas fa-hashtag"></i> Show X/Y
-                </label>
-            </div>
-            <div class="form-check form-switch me-2">
-                <input class="form-check-input" type="checkbox" id="gridlinesToggle" checked>
-                <label class="form-check-label text-white" for="gridlinesToggle">
-                    <i class="fas fa-border-all"></i> Gridlines
-                </label>
-            </div>
-            <select class="form-select form-select-sm me-4" id="gridAlignmentSelect" style="width: 140px;">
-                <option value="boxed">Boxed</option>
-                <option value="centered">Centered</option>
-            </select>
-            <label class="me-2 text-white">Z-Level:</label>
-            <select class="form-select me-3" id="zLevelFilter" style="width: 100px;">
-                <option value="all">All</option>
-            </select>
-            <button class="btn btn-info btn-sm me-2" id="copySelectedBtn" style="display: none;">
-                <i class="fas fa-copy"></i> Copy Selected
-            </button>
-            <button class="btn btn-warning btn-sm me-2" id="autoExitBtn" disabled>
-                <i class="fas fa-route"></i> Auto Exit
-            </button>
-            <button class="btn btn-secondary btn-sm me-2" id="undoBtn" disabled>
-                <i class="fas fa-undo"></i> Undo
-            </button>
-            <button class="btn btn-success me-2" id="saveMapBtn">
-                <i class="fas fa-save"></i> Save Map
-            </button>
-        `;
+    if (toolbar) {
+        // Helper to create a div with class and children
+        function createDivWithChildren(className, children) {
+            const div = document.createElement('div');
+            div.className = className;
+            children.forEach(child => div.appendChild(child));
+            return div;
+        }
+
+        // Surrounding Areas toggle
+        const surroundingAreasToggle = document.createElement('input');
+        surroundingAreasToggle.className = 'form-check-input';
+        surroundingAreasToggle.type = 'checkbox';
+        surroundingAreasToggle.id = 'surroundingAreasToggle';
+        const surroundingAreasLabel = document.createElement('label');
+        surroundingAreasLabel.className = 'form-check-label text-white';
+        surroundingAreasLabel.htmlFor = 'surroundingAreasToggle';
+        surroundingAreasLabel.innerHTML = '<i class="fas fa-map-marked-alt"></i> Surrounding Areas';
+        const surroundingAreasDiv = createDivWithChildren('form-check form-switch me-4', [surroundingAreasToggle, surroundingAreasLabel]);
+
+        // Auto Room toggle
+        const autoRoomToggle = document.createElement('input');
+        autoRoomToggle.className = 'form-check-input';
+        autoRoomToggle.type = 'checkbox';
+        autoRoomToggle.id = 'autoRoomToggle';
+        autoRoomToggle.disabled = true;
+        const autoRoomLabel = document.createElement('label');
+        autoRoomLabel.className = 'form-check-label text-white';
+        autoRoomLabel.htmlFor = 'autoRoomToggle';
+        autoRoomLabel.id = 'autoRoomLabel';
+        autoRoomLabel.style.opacity = '0.5';
+        autoRoomLabel.innerHTML = '<i class="fas fa-walking"></i> Auto Room';
+        const autoRoomDiv = createDivWithChildren('form-check form-switch me-4', [autoRoomToggle, autoRoomLabel]);
+
+        // Show Coordinates toggle
+        const showCoordinatesToggle = document.createElement('input');
+        showCoordinatesToggle.className = 'form-check-input';
+        showCoordinatesToggle.type = 'checkbox';
+        showCoordinatesToggle.id = 'showCoordinatesToggle';
+        const showCoordinatesLabel = document.createElement('label');
+        showCoordinatesLabel.className = 'form-check-label text-white';
+        showCoordinatesLabel.htmlFor = 'showCoordinatesToggle';
+        showCoordinatesLabel.innerHTML = '<i class="fas fa-hashtag"></i> Show X/Y';
+        const showCoordinatesDiv = createDivWithChildren('form-check form-switch me-4', [showCoordinatesToggle, showCoordinatesLabel]);
+
+        // Gridlines toggle
+        const gridlinesToggle = document.createElement('input');
+        gridlinesToggle.className = 'form-check-input';
+        gridlinesToggle.type = 'checkbox';
+        gridlinesToggle.id = 'gridlinesToggle';
+        gridlinesToggle.checked = true;
+        const gridlinesLabel = document.createElement('label');
+        gridlinesLabel.className = 'form-check-label text-white';
+        gridlinesLabel.htmlFor = 'gridlinesToggle';
+        gridlinesLabel.innerHTML = '<i class="fas fa-border-all"></i> Gridlines';
+        const gridlinesDiv = createDivWithChildren('form-check form-switch me-2', [gridlinesToggle, gridlinesLabel]);
+
+        // Grid Alignment select
+        const gridAlignmentSelect = document.createElement('select');
+        gridAlignmentSelect.className = 'form-select form-select-sm me-4';
+        gridAlignmentSelect.id = 'gridAlignmentSelect';
+        gridAlignmentSelect.style.width = '140px';
+        const boxedOption = document.createElement('option');
+        boxedOption.value = 'boxed';
+        boxedOption.textContent = 'Boxed';
+        const centeredOption = document.createElement('option');
+        centeredOption.value = 'centered';
+        centeredOption.textContent = 'Centered';
+        gridAlignmentSelect.appendChild(boxedOption);
+        gridAlignmentSelect.appendChild(centeredOption);
+
+        // Z-Level label and select
+        const zLevelLabel = document.createElement('label');
+        zLevelLabel.className = 'me-2 text-white';
+        zLevelLabel.textContent = 'Z-Level:';
+        const zLevelFilter = document.createElement('select');
+        zLevelFilter.className = 'form-select me-3';
+        zLevelFilter.id = 'zLevelFilter';
+        zLevelFilter.style.width = '100px';
+        const allOption = document.createElement('option');
+        allOption.value = 'all';
+        allOption.textContent = 'All';
+        zLevelFilter.appendChild(allOption);
+
+        // Copy Selected button
+        const copySelectedBtn = document.createElement('button');
+        copySelectedBtn.className = 'btn btn-info btn-sm me-2';
+        copySelectedBtn.id = 'copySelectedBtn';
+        copySelectedBtn.style.display = 'none';
+        copySelectedBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Selected';
+
+        // Auto Exit button
+        const autoExitBtn = document.createElement('button');
+        autoExitBtn.className = 'btn btn-warning btn-sm me-2';
+        autoExitBtn.id = 'autoExitBtn';
+        autoExitBtn.disabled = true;
+        autoExitBtn.innerHTML = '<i class="fas fa-route"></i> Auto Exit';
+
+        // Undo button
+        const undoBtn = document.createElement('button');
+        undoBtn.className = 'btn btn-secondary btn-sm me-2';
+        undoBtn.id = 'undoBtn';
+        undoBtn.disabled = true;
+        undoBtn.innerHTML = '<i class="fas fa-undo"></i> Undo';
+
+        // Save Map button
+        const saveMapBtn = document.createElement('button');
+        saveMapBtn.className = 'btn btn-success me-2';
+        saveMapBtn.id = 'saveMapBtn';
+        saveMapBtn.innerHTML = '<i class="fas fa-save"></i> Save Map';
+
+        // Clear toolbar and append all controls
+        toolbar.innerHTML = '';
+        toolbar.appendChild(surroundingAreasDiv);
+        toolbar.appendChild(autoRoomDiv);
+        toolbar.appendChild(showCoordinatesDiv);
+        toolbar.appendChild(gridlinesDiv);
+        toolbar.appendChild(gridAlignmentSelect);
+        toolbar.appendChild(zLevelLabel);
+        toolbar.appendChild(zLevelFilter);
+        toolbar.appendChild(copySelectedBtn);
+        toolbar.appendChild(autoExitBtn);
+        toolbar.appendChild(undoBtn);
+        toolbar.appendChild(saveMapBtn);
+
+        // Attach event listeners
+        surroundingAreasToggle.addEventListener('change', (e) => {
+            e.preventDefault();
+            renderMap();
+        });
+        autoRoomToggle.addEventListener('change', (e) => {
+            e.preventDefault();
+            toggleAutoRoom();
+        });
+        showCoordinatesToggle.addEventListener('change', (e) => {
+            e.preventDefault();
+            toggleCoordinateLabels();
+        });
+        gridlinesToggle.addEventListener('change',(e) => {
+            e.preventDefault();
+            toggleGridlines();
+        });
+        gridAlignmentSelect.addEventListener('change', (e) => {
+            e.preventDefault();
+            updateGridAlignment();
+        });
+        zLevelFilter.addEventListener('change', (e) => {
+            e.preventDefault();
+            renderMap();
+        });
     }
+    // (Other buttons can be hooked up here as needed)
     // Main content
     let builderMain = builderContainer.querySelector('.builder-main');
     if (!builderMain) {
@@ -148,7 +257,7 @@ async function main() {
         ctx.innerHTML = `<div class="context-menu-item" id="changeNameContext"><i class="fas fa-edit"></i> Change Name</div>`;
         document.body.appendChild(ctx);
     }
-
+    toggleGridlines();
     // Get API base from template variable
     const apiBase = window.API_BASE || '';
     

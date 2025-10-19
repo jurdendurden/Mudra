@@ -1,0 +1,491 @@
+{
+  "torch": {
+    "template_id": "torch",
+    "name": "Torch",
+    "description": "A wooden torch wrapped in oil-soaked cloth. Provides light for several hours.",
+    "item_type": 1,
+    "base_type": "light.torch",
+    "subtype": "light",
+    "weight": 1.0,
+    "value": 5,
+    "quality_tier": "common",
+    "wear_flags": ["take", "hold", "float"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "create_light",
+        "radius": 3,
+        "duration": 7200
+      }
+    ]
+  },
+  "lantern": {
+    "template_id": "lantern",
+    "name": "Iron Lantern",
+    "description": "A metal lantern with glass panes. Burns oil to provide steady light.",
+    "item_type": 1,
+    "base_type": "light.lantern",
+    "subtype": "light",
+    "weight": 2.0,
+    "value": 40,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take", "hold", "float"],
+    "consumable_charges": 10,
+    "consumable_effects": [
+      {
+        "type": "create_light",
+        "radius": 5,
+        "duration": 14400
+      }
+    ],
+    "max_durability": 100
+  },
+  "iron_key": {
+    "template_id": "iron_key",
+    "name": "Iron Key",
+    "description": "A simple iron key. Might unlock something.",
+    "item_type": 18,
+    "base_type": "utility.key",
+    "subtype": "key",
+    "weight": 0.1,
+    "value": 10,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"]
+  },
+  "room_key_inn": {
+    "template_id": "room_key_inn",
+    "name": "Inn Room Key",
+    "description": "A brass key to a room at the local inn.",
+    "item_type": 31,
+    "base_type": "utility.room_key",
+    "subtype": "room_key",
+    "weight": 0.08,
+    "value": 5,
+    "quality_tier": "common",
+    "item_flags": ["nodrop"],
+    "wear_flags": ["take"]
+  },
+  "world_map": {
+    "template_id": "world_map",
+    "name": "World Map",
+    "description": "A detailed map of the known world. Helps with navigation.",
+    "item_type": 28,
+    "base_type": "utility.map.world",
+    "subtype": "map",
+    "weight": 0.3,
+    "value": 100,
+    "quality_tier": "good",
+    "wear_flags": ["take", "hold"],
+    "equipment_stats": {
+      "navigation_bonus": 10,
+      "reveals_map": true
+    }
+  },
+  "local_map": {
+    "template_id": "local_map",
+    "name": "Local Area Map",
+    "description": "A map of the local area showing nearby landmarks.",
+    "item_type": 28,
+    "base_type": "utility.map.local",
+    "subtype": "map",
+    "weight": 0.2,
+    "value": 30,
+    "quality_tier": "common",
+    "wear_flags": ["take", "hold"],
+    "equipment_stats": {
+      "navigation_bonus": 5
+    }
+  },
+  "wooden_flute": {
+    "template_id": "wooden_flute",
+    "name": "Wooden Flute",
+    "description": "A simple wooden flute. Can be played to perform music.",
+    "item_type": 65,
+    "base_type": "entertainment.instrument.woodwind",
+    "subtype": "instrument",
+    "weight": 0.5,
+    "value": 50,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 80,
+    "equipment_stats": {
+      "instrument_type": 0,
+      "performance_bonus": 5
+    }
+  },
+  "brass_horn": {
+    "template_id": "brass_horn",
+    "name": "Brass Horn",
+    "description": "A brass instrument with a loud, clear tone.",
+    "item_type": 65,
+    "base_type": "entertainment.instrument.brass",
+    "subtype": "instrument",
+    "weight": 2.0,
+    "value": 120,
+    "quality_tier": "good",
+    "material": "bronze",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 150,
+    "equipment_stats": {
+      "instrument_type": 1,
+      "performance_bonus": 8
+    }
+  },
+  "lute": {
+    "template_id": "lute",
+    "name": "Lute",
+    "description": "A stringed instrument popular among bards and minstrels.",
+    "item_type": 65,
+    "base_type": "entertainment.instrument.stringed",
+    "subtype": "instrument",
+    "weight": 1.5,
+    "value": 150,
+    "quality_tier": "good",
+    "material": "maple",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 100,
+    "equipment_stats": {
+      "instrument_type": 2,
+      "performance_bonus": 10
+    }
+  },
+  "hand_drum": {
+    "template_id": "hand_drum",
+    "name": "Hand Drum",
+    "description": "A simple percussion instrument with a leather head.",
+    "item_type": 65,
+    "base_type": "entertainment.instrument.percussion",
+    "subtype": "instrument",
+    "weight": 1.0,
+    "value": 40,
+    "quality_tier": "common",
+    "material": "leather",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 80,
+    "equipment_stats": {
+      "instrument_type": 3,
+      "performance_bonus": 5
+    }
+  },
+  "scrying_orb": {
+    "template_id": "scrying_orb",
+    "name": "Scrying Orb",
+    "description": "A crystal orb used for scrying and divination magic.",
+    "item_type": 38,
+    "base_type": "magical.scrying.orb",
+    "subtype": "scry",
+    "weight": 2.0,
+    "value": 800,
+    "quality_tier": "rare",
+    "material": "crystal",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take", "hold"],
+    "consumable_charges": 20,
+    "max_durability": 50,
+    "requirements": {
+      "mystical": 15
+    }
+  },
+  "gold_coin": {
+    "template_id": "gold_coin",
+    "name": "Gold Coin",
+    "description": "A shiny gold coin. Currency of the realm.",
+    "item_type": 20,
+    "base_type": "currency.gold",
+    "subtype": "money",
+    "weight": 0.01,
+    "value": 1,
+    "quality_tier": "common",
+    "material": "gold",
+    "wear_flags": ["take"]
+  },
+  "warp_stone": {
+    "template_id": "warp_stone",
+    "name": "Warp Stone",
+    "description": "A magical stone that can teleport the user to a marked location. Single use.",
+    "item_type": 30,
+    "base_type": "magical.teleport.stone",
+    "subtype": "warp_stone",
+    "weight": 0.5,
+    "value": 500,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "item_flags_2": ["quest_item"],
+    "wear_flags": ["take"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "teleport",
+        "destination": "marked_location"
+      }
+    ]
+  },
+  "portal_gem": {
+    "template_id": "portal_gem",
+    "name": "Portal Gem",
+    "description": "A gem that creates temporary portals between two locations.",
+    "item_type": 29,
+    "base_type": "magical.portal.gem",
+    "subtype": "portal",
+    "weight": 0.3,
+    "value": 1200,
+    "quality_tier": "epic",
+    "item_flags": ["magic", "glow"],
+    "item_flags_2": ["epic"],
+    "wear_flags": ["take"],
+    "consumable_charges": 5,
+    "requirements": {
+      "mystical": 20
+    }
+  },
+  "quill_pen": {
+    "template_id": "quill_pen",
+    "name": "Quill Pen",
+    "description": "A writing quill made from a large feather.",
+    "item_type": 35,
+    "base_type": "utility.writing.pen",
+    "subtype": "pen",
+    "weight": 0.05,
+    "value": 3,
+    "quality_tier": "common",
+    "wear_flags": ["take", "hold"]
+  },
+  "parchment": {
+    "template_id": "parchment",
+    "name": "Parchment",
+    "description": "A blank sheet of parchment suitable for writing.",
+    "item_type": 36,
+    "base_type": "utility.writing.paper",
+    "subtype": "paper",
+    "weight": 0.02,
+    "value": 2,
+    "quality_tier": "common",
+    "wear_flags": ["take"]
+  },
+  "wooden_pipe": {
+    "template_id": "wooden_pipe",
+    "name": "Wooden Pipe",
+    "description": "A carved wooden smoking pipe.",
+    "item_type": 68,
+    "base_type": "entertainment.smoking.pipe",
+    "subtype": "pipe",
+    "weight": 0.2,
+    "value": 15,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take", "hold"],
+    "max_durability": 60
+  },
+  "flint_and_steel": {
+    "template_id": "flint_and_steel",
+    "name": "Flint and Steel",
+    "description": "A piece of flint and a steel striker for starting fires.",
+    "item_type": 69,
+    "base_type": "utility.firestarting.flint",
+    "subtype": "flint",
+    "weight": 0.3,
+    "value": 10,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "max_durability": 200,
+    "equipment_stats": {
+      "fire_starting": true
+    }
+  },
+  "iron_lock": {
+    "template_id": "iron_lock",
+    "name": "Iron Lock",
+    "description": "A sturdy iron padlock. Can be attached to containers.",
+    "item_type": 88,
+    "base_type": "utility.security.lock",
+    "subtype": "lock",
+    "weight": 0.5,
+    "value": 50,
+    "quality_tier": "common",
+    "material": "iron",
+    "wear_flags": ["take"],
+    "max_durability": 500,
+    "equipment_stats": {
+      "lock_difficulty": 15
+    }
+  },
+  "gaming_dice": {
+    "template_id": "gaming_dice",
+    "name": "Gaming Dice",
+    "description": "A set of bone dice for games of chance.",
+    "item_type": 80,
+    "base_type": "entertainment.gaming.dice",
+    "subtype": "dice",
+    "weight": 0.1,
+    "value": 8,
+    "quality_tier": "common",
+    "material": "bone",
+    "wear_flags": ["take"]
+  },
+  "wheat_seed": {
+    "template_id": "wheat_seed",
+    "name": "Wheat Seeds",
+    "description": "A handful of wheat seeds ready for planting.",
+    "item_type": 70,
+    "base_type": "farming.seed.wheat",
+    "subtype": "seed",
+    "weight": 0.05,
+    "value": 3,
+    "quality_tier": "common",
+    "wear_flags": ["take"]
+  },
+  "sapling": {
+    "template_id": "sapling",
+    "name": "Oak Sapling",
+    "description": "A young oak tree sapling that can be planted.",
+    "item_type": 71,
+    "base_type": "farming.plant.tree",
+    "subtype": "plant",
+    "weight": 2.0,
+    "value": 15,
+    "quality_tier": "common",
+    "wear_flags": ["take"]
+  },
+  "clan_invitation": {
+    "template_id": "clan_invitation",
+    "name": "Clan Invitation",
+    "description": "An official invitation to join a clan.",
+    "item_type": 72,
+    "base_type": "special.clan.invite",
+    "subtype": "clan_invite",
+    "weight": 0.1,
+    "value": 0,
+    "quality_tier": "uncommon",
+    "item_flags": ["nodrop"],
+    "item_flags_2": ["quest_item"],
+    "wear_flags": ["take"]
+  },
+  "soul_gem": {
+    "template_id": "soul_gem",
+    "name": "Soul Gem",
+    "description": "A mystical gem capable of capturing souls.",
+    "item_type": 77,
+    "base_type": "magical.soul.gem",
+    "subtype": "soul",
+    "weight": 0.2,
+    "value": 300,
+    "quality_tier": "rare",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "consumable_charges": 1,
+    "requirements": {
+      "mystical": 18
+    }
+  },
+  "soul_container": {
+    "template_id": "soul_container",
+    "name": "Soul Container",
+    "description": "A vessel designed to hold captured souls.",
+    "item_type": 78,
+    "base_type": "magical.soul.container",
+    "subtype": "soul_container",
+    "weight": 1.0,
+    "value": 800,
+    "quality_tier": "rare",
+    "material": "crystal",
+    "item_flags": ["magic", "glow"],
+    "wear_flags": ["take"],
+    "container_capacity": 10,
+    "requirements": {
+      "mystical": 20
+    }
+  },
+  "fishing_bait": {
+    "template_id": "fishing_bait",
+    "name": "Fishing Bait",
+    "description": "Live worms for use as fishing bait.",
+    "item_type": 79,
+    "base_type": "fishing.bait.worms",
+    "subtype": "bait",
+    "weight": 0.1,
+    "value": 2,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 10
+  },
+  "raw_fish": {
+    "template_id": "raw_fish",
+    "name": "Raw Fish",
+    "description": "A freshly caught fish. Can be cooked for better nutrition.",
+    "item_type": 93,
+    "base_type": "food.fish.raw",
+    "subtype": "fish",
+    "weight": 0.8,
+    "value": 8,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "restore_hunger",
+        "amount": 20
+      }
+    ]
+  },
+  "small_figurine": {
+    "template_id": "small_figurine",
+    "name": "Small Figurine",
+    "description": "A small carved figurine. Might be valuable to collectors.",
+    "item_type": 56,
+    "base_type": "treasure.figurine",
+    "subtype": "figurine",
+    "weight": 0.3,
+    "value": 50,
+    "quality_tier": "good",
+    "material": "bone",
+    "wear_flags": ["take"]
+  },
+  "treasure_chest": {
+    "template_id": "treasure_chest",
+    "name": "Treasure Chest",
+    "description": "An ornate chest likely containing valuables.",
+    "item_type": 8,
+    "base_type": "treasure.chest",
+    "subtype": "treasure",
+    "weight": 10.0,
+    "value": 500,
+    "quality_tier": "rare",
+    "item_flags": ["glow"],
+    "wear_flags": ["take"]
+  },
+  "wagon": {
+    "template_id": "wagon",
+    "name": "Wooden Wagon",
+    "description": "A sturdy wooden wagon for transporting large loads.",
+    "item_type": 100,
+    "base_type": "vehicle.wagon",
+    "subtype": "wagon",
+    "weight": 200.0,
+    "value": 1500,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "container_capacity": 1000,
+    "container_weight_capacity": 2000.0,
+    "max_durability": 5000
+  },
+  "horse_harness": {
+    "template_id": "horse_harness",
+    "name": "Horse Harness",
+    "description": "A leather harness for attaching a horse to a wagon or cart.",
+    "item_type": 101,
+    "base_type": "vehicle.harness",
+    "subtype": "harness",
+    "weight": 5.0,
+    "value": 120,
+    "quality_tier": "common",
+    "material": "leather",
+    "wear_flags": ["take"],
+    "max_durability": 300
+  }
+}
+

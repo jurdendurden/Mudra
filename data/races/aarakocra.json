@@ -1,0 +1,89 @@
+{
+  "name": "Aarakocra",
+  "description": "Aarakocras are bird-like humanoids, with natural flight and keen vision. Children of the sky.",
+  "size": "medium",
+  "base_speed": 25,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": -1,
+      "durability": -1,
+      "endurance": 2,
+      "vitality": 0
+    },
+    "mind": {
+      "intellect": 1,
+      "cognition": 3,
+      "willpower": 2,
+      "psionics": 1
+    },
+    "spirit": {
+      "mystical": 1,
+      "magical": 0,
+      "metaphysical": 1,
+      "percipience": 4
+    },
+    "kismet": {
+      "luck": 1,
+      "charisma": 0
+    }
+  },
+  
+  "racial_skills": [
+    "perception",
+    "flying",
+    "navigation"
+  ],
+  
+  "skill_bonuses": {
+    "perception": 15,
+    "flying": 20,
+    "navigation": 10,
+    "aerial_combat": 12,
+    "diving_attack": 10
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Flight",
+      "description": "Can fly at speed of 50 feet"
+    },
+    {
+      "name": "Talons",
+      "description": "Natural weapons dealing 1d4+strength damage"
+    },
+    {
+      "name": "Keen Sight",
+      "description": "+15 bonus to perception checks involving sight"
+    },
+    {
+      "name": "Dive Attack",
+      "description": "Extra damage when attacking from above"
+    }
+  ],
+  
+  "languages": ["Common", "Auran", "Aarakocra"],
+  "bonus_languages": ["Celestial", "Draconic"]
+}
+

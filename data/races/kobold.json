@@ -1,0 +1,98 @@
+{
+  "name": "Kobold",
+  "description": "Kobolds are small and clever, with natural trap-making and pack tactics. Dragon-blooded tricksters.",
+  "size": "small",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": -3,
+      "durability": 0,
+      "endurance": 1,
+      "vitality": -1
+    },
+    "mind": {
+      "intellect": 2,
+      "cognition": 3,
+      "willpower": 1,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 0,
+      "magical": 1,
+      "metaphysical": 0,
+      "percipience": 2
+    },
+    "kismet": {
+      "luck": 1,
+      "charisma": -1
+    }
+  },
+  
+  "racial_skills": [
+    "traps",
+    "mining",
+    "tinkering"
+  ],
+  
+  "skill_bonuses": {
+    "traps": 15,
+    "mining": 10,
+    "tinkering": 10,
+    "pack_tactics": 12,
+    "tunnel_sense": 8
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "tail",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Darkvision",
+      "description": "Can see in darkness up to 60 feet"
+    },
+    {
+      "name": "Pack Tactics",
+      "description": "+12 bonus to attacks when ally is nearby"
+    },
+    {
+      "name": "Sunlight Sensitivity",
+      "description": "-2 penalty in direct sunlight"
+    },
+    {
+      "name": "Grovel, Cower, and Beg",
+      "description": "Can distract enemies to help allies"
+    },
+    {
+      "name": "Trap Expert",
+      "description": "+15 bonus to creating and detecting traps"
+    },
+    {
+      "name": "Tail",
+      "description": "Has a tail, can wear tail equipment"
+    }
+  ],
+  
+  "languages": ["Common", "Draconic"],
+  "bonus_languages": ["Goblin", "Gnomish", "Undercommon"]
+}
+

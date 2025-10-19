@@ -11,157 +11,473 @@
     }
     
     .account-header {
-        background: linear-gradient(135deg, #2c3e50, #34495e);
-        color: white;
-        padding: 30px;
-        border-radius: 10px;
-        margin-bottom: 30px;
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        color: var(--medieval-text);
+        padding: 40px;
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
+        margin-bottom: 35px;
         text-align: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        font-family: 'Crimson Text', serif;
     }
     
     .account-stats {
         display: flex;
         justify-content: space-around;
-        margin-top: 20px;
+        margin-top: 25px;
     }
     
     .stat-item {
         text-align: center;
+        padding: 15px;
+        background: var(--medieval-dark);
+        border-radius: 8px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .stat-value {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
-        color: #3498db;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
     
     .stat-label {
-        font-size: 14px;
-        opacity: 0.8;
+        font-size: 16px;
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
+        margin-top: 5px;
     }
     
     .characters-section {
-        background: #2c3e50;
-        color: white;
-        border-radius: 10px;
-        padding: 30px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        color: var(--medieval-text);
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
+        padding: 35px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .characters-section h2 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 24px;
+        margin-bottom: 25px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 10px;
     }
     
     .characters-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+        margin-bottom: 35px;
     }
     
     .character-card {
-        border: 2px solid #434950;
-        border-radius: 8px;
-        padding: 20px;
+        border: 3px solid var(--medieval-border);
+        border-radius: 10px;
+        padding: 15px;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: #2c3e50;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        color: var(--medieval-text);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        height: fit-content;
     }
     
     .character-card:hover {
-        border-color: #3498db;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        border-color: var(--medieval-accent);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
     }
     
     .character-card.selected {
-        border-color: #00ff00;
-        background: #2c3e50;
-        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        border-color: var(--medieval-gold);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+        box-shadow: 0 8px 20px rgba(218, 165, 32, 0.4);
+    }
+    
+    .character-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        margin-top: 8px;
     }
     
     .character-name {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
-        color: #d0d3d6;
-        margin-bottom: 10px;
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        flex: 1;
+    }
+    
+    .character-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        flex-shrink: 0;
     }
     
     .character-info {
         font-size: 14px;
-        color: #6c757d;
-        margin-bottom: 5px;
+        color: var(--medieval-text-dim);
+        margin-bottom: 4px;
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .character-info strong {
+        color: var(--medieval-text);
+        font-weight: 600;
     }
     
     .character-description {
         font-size: 13px;
-        color: #8e9aaf;
+        color: var(--medieval-text-faded);
         font-style: italic;
-        margin-top: 10px;
+        margin-top: 8px;
+        font-family: 'Crimson Text', serif;
+        padding: 8px;
+        background: var(--medieval-dark);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-accent);
     }
     
     .action-buttons {
         display: flex;
-        gap: 15px;
+        gap: 20px;
         justify-content: center;
-        margin-top: 30px;
+        margin-top: 35px;
     }
     
     .btn-action {
-        padding: 12px 30px;
-        border-radius: 6px;
+        padding: 15px 35px;
+        border-radius: 8px;
         font-weight: 600;
         text-decoration: none;
-        border: none;
+        border: 2px solid;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
     .btn-primary {
-        background: #3498db;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-accent) 0%, var(--medieval-bronze) 100%);
+        border-color: var(--medieval-accent);
+        color: var(--medieval-text);
     }
     
     .btn-primary:hover {
-        background: #2980b9;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-accent-light) 0%, var(--medieval-accent) 100%);
+        border-color: var(--medieval-accent-light);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-success {
-        background: #27ae60;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-success) 0%, var(--medieval-moss) 100%);
+        border-color: var(--medieval-success);
+        color: var(--medieval-text);
     }
     
     .btn-success:hover {
-        background: #219a52;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-moss) 0%, var(--medieval-success) 100%);
+        border-color: var(--medieval-moss);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-danger {
-        background: #e74c3c;
-        color: white;
+        background: linear-gradient(135deg, var(--medieval-danger) 0%, var(--medieval-blood) 100%);
+        border-color: var(--medieval-danger);
+        color: var(--medieval-text);
     }
     
     .btn-danger:hover {
-        background: #c0392b;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--medieval-crimson) 0%, var(--medieval-danger) 100%);
+        border-color: var(--medieval-crimson);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     
     .btn-action:disabled {
-        background: #bdc3c7;
-        color: #7f8c8d;
+        background: var(--medieval-border);
+        border-color: var(--medieval-border);
+        color: var(--medieval-text-faded);
         cursor: not-allowed;
         transform: none;
+        box-shadow: none;
     }
     
     .no-characters {
         text-align: center;
-        color: #6c757d;
-        padding: 40px;
-        font-size: 16px;
+        color: var(--medieval-text-dim);
+        padding: 50px;
+        font-size: 18px;
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
+    }
+    
+    .no-characters h3 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     
     .welcome-message {
+        font-size: 20px;
+        margin-bottom: 25px;
+        font-family: 'Crimson Text', serif;
+        font-style: italic;
+        color: var(--medieval-text-dim);
+    }
+    
+    /* Tab System Styles */
+    .tab-container {
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        border: 3px solid var(--medieval-bronze);
+        border-radius: 12px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .tab-nav {
+        display: flex;
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border-bottom: 2px solid var(--medieval-border);
+        border-radius: 9px 9px 0 0;
+    }
+    
+    .tab-button {
+        flex: 1;
+        padding: 15px 20px;
+        background: transparent;
+        border: none;
+        color: var(--medieval-text-dim);
+        font-family: 'Cinzel', serif;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .tab-button:hover {
+        color: var(--medieval-text);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+    }
+    
+    .tab-button.active {
+        color: var(--medieval-gold);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+        border-bottom-color: var(--medieval-bronze);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    
+    .tab-content {
+        padding: 35px;
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    /* Achievements Styles */
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .achievement-category {
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .achievement-category h6 {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
         font-size: 18px;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 8px;
+    }
+    
+    .achievement-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        background: var(--medieval-stone);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-border);
+        transition: all 0.3s ease;
+    }
+    
+    .achievement-item.completed {
+        border-left-color: var(--medieval-success);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-moss) 20%);
+    }
+    
+    .achievement-item.current {
+        border-left-color: var(--medieval-accent);
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-bronze) 20%);
+    }
+    
+    .achievement-name {
+        font-weight: 600;
+        color: var(--medieval-text);
+        font-family: 'Crimson Text', serif;
+    }
+    
+    .achievement-progress {
+        font-size: 14px;
+        color: var(--medieval-text-dim);
+        font-family: 'Source Code Pro', monospace;
+    }
+    
+    .achievement-icon {
+        font-size: 16px;
+        margin-right: 8px;
+    }
+    
+    .achievement-item.completed .achievement-icon {
+        color: var(--medieval-success);
+    }
+    
+    .achievement-item.current .achievement-icon {
+        color: var(--medieval-accent);
+    }
+    
+    .achievement-item:not(.completed):not(.current) .achievement-icon {
+        color: var(--medieval-text-faded);
+    }
+    
+    /* Shop Styles */
+    .shop-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .shop-item {
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-charcoal) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .shop-item-info {
+        flex: 1;
+    }
+    
+    .shop-item-name {
+        color: var(--medieval-gold);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 20px;
+        margin-bottom: 8px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    
+    .shop-item-description {
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .shop-item-cost {
+        color: var(--medieval-accent);
+        font-family: 'Source Code Pro', monospace;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .shop-item-button {
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 2px solid;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .shop-item-button.enabled {
+        background: linear-gradient(135deg, var(--medieval-accent) 0%, var(--medieval-bronze) 100%);
+        border-color: var(--medieval-accent);
+        color: var(--medieval-text);
+    }
+    
+    .shop-item-button.enabled:hover {
+        background: linear-gradient(135deg, var(--medieval-accent-light) 0%, var(--medieval-accent) 100%);
+        border-color: var(--medieval-accent-light);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    
+    .shop-item-button.disabled {
+        background: var(--medieval-border);
+        border-color: var(--medieval-border);
+        color: var(--medieval-text-faded);
+        cursor: not-allowed;
+    }
+    
+    .character-limit-info {
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-dark) 100%);
+        border: 2px solid var(--medieval-border);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+    
+    .character-limit-text {
+        color: var(--medieval-text);
+        font-family: 'Crimson Text', serif;
+        font-size: 16px;
+    }
+    
+    .character-limit-text strong {
+        color: var(--medieval-gold);
+        font-weight: 600;
     }
 </style>
 {% endblock %}
@@ -169,7 +485,7 @@
 {% block content %}
 <div class="account-container">
     <div class="account-header">
-        <h1>Welcome back, {{ current_user.username }}!</h1>
+        <h1 style="color: var(--medieval-gold); font-family: 'Cinzel', serif; font-weight: 600; font-size: 32px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Welcome back, {{ current_user.username }}!</h1>
         <p class="welcome-message">Manage your characters and continue your adventures</p>
         
         <div class="account-stats">
@@ -182,60 +498,182 @@
                 <div class="stat-label">Hours Played</div>
             </div>
             <div class="stat-item">
+                <div class="stat-value">{{ achievements_completed }}</div>
+                <div class="stat-label">Achievements</div>
+            </div>
+            <div class="stat-item">
                 <div class="stat-value">{{ current_user.created_at.strftime('%Y-%m-%d') }}</div>
                 <div class="stat-label">Account Created</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ account_points }}</div>
+                <div class="stat-label">Account Points</div>
             </div>
         </div>
     </div>
     
-    <div class="characters-section">
-        <h2>Your Characters</h2>
+    <div class="tab-container">
+        <div class="tab-nav">
+            <button class="tab-button active" data-tab="characters">Characters</button>
+            <button class="tab-button" data-tab="achievements">Achievements</button>
+            <button class="tab-button" data-tab="shop">Shop</button>
+        </div>
         
-        {% if characters %}
-        <div class="characters-grid">
-            {% for character in characters %}
-            <div class="character-card" data-character-id="{{ character.id }}">
-                <div class="character-name">{{ character.name }}</div>
-                <div class="character-info">
-                    <strong>Race:</strong> {{ character.race or 'Unknown' }}
+        <!-- Characters Tab -->
+        <div class="tab-content active" id="characters-tab">
+            <h2>Your Characters</h2>
+            
+            {% if characters %}
+            <div class="characters-grid">
+                {% for character in characters %}
+                <div class="character-card" data-character-id="{{ character.id }}">
+                    <div class="character-header">
+                        <div class="character-name">{{ character.name }}</div>
+                        <img src="/static/assets/avatars/{{ character.avatar or '1.png' }}" alt="{{ character.name }}" class="character-avatar">
+                    </div>
+                    <div class="character-info">
+                        <strong>Race:</strong> {{ character.race or 'Unknown' }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Created:</strong> {{ character.created_at.strftime('%Y-%m-%d') }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Last Played:</strong> {{ character.last_played.strftime('%Y-%m-%d %H:%M') if character.last_played else 'Never' }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Trial Points:</strong> {{ character.trial_points }}
+                    </div>
+                    <div class="character-info">
+                        <strong>Progress Points:</strong> {{ character.progress_points }}
+                    </div>
+                    {% if character.description %}
+                    <div class="character-description">{{ character.description }}</div>
+                    {% endif %}
                 </div>
-                <div class="character-info">
-                    <strong>Created:</strong> {{ character.created_at.strftime('%Y-%m-%d') }}
-                </div>
-                <div class="character-info">
-                    <strong>Last Played:</strong> {{ character.last_played.strftime('%Y-%m-%d %H:%M') if character.last_played else 'Never' }}
-                </div>
-                <div class="character-info">
-                    <strong>Trial Points:</strong> {{ character.trial_points }}
-                </div>
-                <div class="character-info">
-                    <strong>Progress Points:</strong> {{ character.progress_points }}
-                </div>
-                {% if character.description %}
-                <div class="character-description">{{ character.description }}</div>
-                {% endif %}
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <div class="no-characters">
+                <h3>No Characters Yet</h3>
+                <p>Create your first character to begin your adventure!</p>
+            </div>
+            {% endif %}
+            
+            <div class="action-buttons">
+                {% if characters|length < max_characters %}
+                    <a href="{{ url_for('game.create_character') }}" class="btn-action btn-primary">
+                        Create Character
+                    </a>
+                {% else %}
+                    <button class="btn-action btn-primary" disabled>
+                        Character Limit Reached
+                    </button>
+                {% endif %}
+                
+                <button id="load-character-btn" class="btn-action btn-success" disabled>
+                    Load Character
+                </button>
+                
+                <button id="delete-character-btn" class="btn-action btn-danger" disabled>
+                    Delete Character
+                </button>
+            </div>
         </div>
-        {% else %}
-        <div class="no-characters">
-            <h3>No Characters Yet</h3>
-            <p>Create your first character to begin your adventure!</p>
-        </div>
-        {% endif %}
         
-        <div class="action-buttons">
-            <a href="{{ url_for('game.create_character') }}" class="btn-action btn-primary">
-                Create Character
-            </a>
+        <!-- Achievements Tab -->
+        <div class="tab-content" id="achievements-tab">
+            <h2>Achievements</h2>
+            <p class="welcome-message">Track your progress and unlock rewards as you play!</p>
             
-            <button id="load-character-btn" class="btn-action btn-success" disabled>
-                Load Character
-            </button>
+            <div class="achievements-grid">
+                <!-- Hours Played Achievements -->
+                <div class="achievement-category">
+                    <h6><i class="fas fa-clock achievement-icon"></i>Hours Played</h6>
+                    {% for threshold in [5, 10, 25, 100, 300, 1000, 2500, 5000] %}
+                    <div class="achievement-item {% if total_hours >= threshold %}completed{% elif total_hours >= threshold * 0.8 %}current{% endif %}">
+                        <div>
+                            <span class="achievement-icon">
+                                {% if total_hours >= threshold %}✓{% else %}○{% endif %}
+                            </span>
+                            <span class="achievement-name">{{ threshold }} Hours</span>
+                        </div>
+                        <div class="achievement-progress">{{ "%.1f"|format(total_hours) }}/{{ threshold }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Characters Created Achievements -->
+                <div class="achievement-category">
+                    <h6><i class="fas fa-users achievement-icon"></i>Characters Created</h6>
+                    {% for threshold in [5, 10, 25, 50, 100, 250, 500] %}
+                    <div class="achievement-item {% if characters|length >= threshold %}completed{% elif characters|length >= threshold * 0.8 %}current{% endif %}">
+                        <div>
+                            <span class="achievement-icon">
+                                {% if characters|length >= threshold %}✓{% else %}○{% endif %}
+                            </span>
+                            <span class="achievement-name">{{ threshold }} Characters</span>
+                        </div>
+                        <div class="achievement-progress">{{ characters|length }}/{{ threshold }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Shop Tab -->
+        <div class="tab-content" id="shop-tab">
+            <h2>Shop</h2>
+            <p class="welcome-message">Spend your account points to unlock new features!</p>
             
-            <button id="delete-character-btn" class="btn-action btn-danger" disabled>
-                Delete Character
-            </button>
+            <div class="character-limit-info">
+                <div class="character-limit-text">
+                    You can currently have <strong>{{ characters|length }}</strong> out of <strong>{{ max_characters }}</strong> characters.
+                    {% if characters|length >= max_characters %}
+                        <br>Purchase additional character slots to create more characters.
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="shop-grid">
+                <!-- Character Slot Purchase -->
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">Additional Character Slot</div>
+                        <div class="shop-item-description">
+                            Increase your maximum character limit by 1. 
+                            {% if next_slot_cost %}
+                                Current slots: {{ max_characters }}, Next slot costs {{ next_slot_cost }} points.
+                            {% else %}
+                                You have reached the maximum of 20 character slots.
+                            {% endif %}
+                        </div>
+                        <div class="shop-item-cost">
+                            {% if next_slot_cost %}
+                                {{ next_slot_cost }} Account Points
+                            {% else %}
+                                Maximum Reached
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        {% if next_slot_cost and account_points >= next_slot_cost %}
+                            <form method="POST" action="{{ url_for('game.purchase_character_slot') }}" style="display: inline;">
+                                <button type="submit" class="shop-item-button enabled">
+                                    Purchase Slot
+                                </button>
+                            </form>
+                        {% elif next_slot_cost %}
+                            <button class="shop-item-button disabled" disabled>
+                                Need {{ next_slot_cost - account_points }} more points
+                            </button>
+                        {% else %}
+                            <button class="shop-item-button disabled" disabled>
+                                Maximum Reached
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -245,6 +683,23 @@
     
     // Character selection
     document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+                
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                this.classList.add('active');
+                document.getElementById(targetTab + '-tab').classList.add('active');
+            });
+        });
         const characterCards = document.querySelectorAll('.character-card');
         const loadBtn = document.getElementById('load-character-btn');
         const deleteBtn = document.getElementById('delete-character-btn');

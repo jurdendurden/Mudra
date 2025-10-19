@@ -1,0 +1,71 @@
+{
+  "alchemy_recipe_health": {
+    "template_id": "alchemy_recipe_health",
+    "name": "Recipe: Greater Health Potion",
+    "description": "An alchemical recipe for creating greater health potions.",
+    "item_type": 58,
+    "base_type": "recipe.alchemy",
+    "subtype": "alchemy_recipe",
+    "weight": 0.1,
+    "value": 100,
+    "quality_tier": "uncommon",
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "teaches_recipe": "greater_health_potion",
+      "required_skill": "alchemy",
+      "required_level": 10
+    }
+  },
+  "cooking_recipe_stew": {
+    "template_id": "cooking_recipe_stew",
+    "name": "Recipe: Hearty Stew",
+    "description": "A cooking recipe for making hearty stew.",
+    "item_type": 59,
+    "base_type": "recipe.cooking",
+    "subtype": "cooking_recipe",
+    "weight": 0.1,
+    "value": 50,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "teaches_recipe": "hearty_stew",
+      "required_skill": "cooking",
+      "required_level": 5
+    }
+  },
+  "blacksmith_plans_sword": {
+    "template_id": "blacksmith_plans_sword",
+    "name": "Plans: Iron Longsword",
+    "description": "Smithing plans for crafting an iron longsword.",
+    "item_type": 60,
+    "base_type": "recipe.smithing",
+    "subtype": "blacksmith_plans",
+    "weight": 0.2,
+    "value": 120,
+    "quality_tier": "good",
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "teaches_recipe": "iron_longsword",
+      "required_skill": "smithing",
+      "required_level": 8
+    }
+  },
+  "tailoring_plans_cloak": {
+    "template_id": "tailoring_plans_cloak",
+    "name": "Pattern: Wool Cloak",
+    "description": "Tailoring pattern for sewing a wool cloak.",
+    "item_type": 61,
+    "base_type": "recipe.tailoring",
+    "subtype": "tailoring_plans",
+    "weight": 0.1,
+    "value": 60,
+    "quality_tier": "common",
+    "wear_flags": ["take"],
+    "equipment_stats": {
+      "teaches_recipe": "wool_cloak",
+      "required_skill": "tailoring",
+      "required_level": 4
+    }
+  }
+}
+

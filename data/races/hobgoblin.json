@@ -1,0 +1,89 @@
+{
+  "name": "Hobgoblin",
+  "description": "Hobgoblins are disciplined and militaristic, with natural leadership and strategy. Soldiers by nature.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 2,
+      "durability": 2,
+      "endurance": 2,
+      "vitality": 1
+    },
+    "mind": {
+      "intellect": 1,
+      "cognition": 2,
+      "willpower": 2,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 0,
+      "magical": 0,
+      "metaphysical": 0,
+      "percipience": 1
+    },
+    "kismet": {
+      "luck": 0,
+      "charisma": 1
+    }
+  },
+  
+  "racial_skills": [
+    "tactics",
+    "leadership",
+    "weapon_mastery"
+  ],
+  
+  "skill_bonuses": {
+    "tactics": 12,
+    "leadership": 10,
+    "weapon_mastery": 10,
+    "intimidation": 8,
+    "discipline": 10
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Darkvision",
+      "description": "Can see in darkness up to 60 feet"
+    },
+    {
+      "name": "Martial Training",
+      "description": "Proficient with all weapons and armor"
+    },
+    {
+      "name": "Saving Face",
+      "description": "Can add bonus to failed attack based on nearby allies"
+    },
+    {
+      "name": "Tactical Genius",
+      "description": "+10 bonus to group combat tactics"
+    }
+  ],
+  
+  "languages": ["Common", "Goblin"],
+  "bonus_languages": ["Orc", "Giant", "Draconic"]
+}
+

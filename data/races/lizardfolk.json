@@ -1,0 +1,94 @@
+{
+  "name": "Lizardfolk",
+  "description": "Lizardfolk are reptilian and adaptive, with natural armor and swimming. Cold-blooded hunters.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 2,
+      "durability": 3,
+      "endurance": 2,
+      "vitality": 2
+    },
+    "mind": {
+      "intellect": -1,
+      "cognition": 1,
+      "willpower": 2,
+      "psionics": -1
+    },
+    "spirit": {
+      "mystical": -1,
+      "magical": -1,
+      "metaphysical": 0,
+      "percipience": 2
+    },
+    "kismet": {
+      "luck": 0,
+      "charisma": -2
+    }
+  },
+  
+  "racial_skills": [
+    "swimming",
+    "survival",
+    "tracking"
+  ],
+  
+  "skill_bonuses": {
+    "swimming": 15,
+    "survival": 10,
+    "tracking": 8,
+    "natural_armor": 10,
+    "bite_attack": 5
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "tail",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Natural Armor",
+      "description": "+2 base armor class from scales"
+    },
+    {
+      "name": "Hold Breath",
+      "description": "Can hold breath for up to 15 minutes"
+    },
+    {
+      "name": "Bite Attack",
+      "description": "Natural weapon dealing 1d6+strength damage"
+    },
+    {
+      "name": "Cunning Artisan",
+      "description": "Can craft items from slain creatures"
+    },
+    {
+      "name": "Tail",
+      "description": "Has a tail, can wear tail equipment"
+    }
+  ],
+  
+  "languages": ["Common", "Draconic"],
+  "bonus_languages": ["Aquan", "Goblin", "Orc"]
+}
+

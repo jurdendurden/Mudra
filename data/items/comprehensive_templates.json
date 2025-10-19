@@ -1,0 +1,408 @@
+{
+  "weapons": {
+    "mithril_longsword": {
+      "template_id": "mithril_longsword",
+      "name": "Mithril Longsword",
+      "description": "A masterfully crafted longsword forged from pure mithril. The blade gleams with a silvery-blue sheen and feels remarkably light despite its strength. Two gem sockets are embedded in the crossguard.",
+      "item_type": 5,
+      "base_type": "weapon.blade.sword",
+      "subtype": "longsword",
+      "weight": 3.0,
+      "value": 2500,
+      "quality_tier": "rare",
+      "material": "mithril",
+      "item_flags": ["magic", "glow"],
+      "wear_flags": ["take", "wield"],
+      "socket_count": 2,
+      "socket_types": ["gem", "gem"],
+      "weapon_type": 11,
+      "base_damage_min": 15,
+      "base_damage_max": 25,
+      "attack_speed": 1.0,
+      "damage_types": ["slashing"],
+      "max_durability": 180,
+      "max_enchantments": 2,
+      "enchantable": true,
+      "crafting_skill": "smithing",
+      "crafting_difficulty": 25,
+      "components_required": [
+        {"type": "metal.mithril_ingot", "quantity": 4},
+        {"type": "wood.ironwood", "quantity": 1},
+        {"type": "fabric.leather", "quantity": 1}
+      ],
+      "disassembly_data": {
+        "skill_required": "smithing:20",
+        "yields": [
+          {"type": "metal.mithril_ingot", "quantity": 3},
+          {"type": "wood.ironwood", "quantity": 1}
+        ],
+        "quality_dependent": true
+      },
+      "requirements": {
+        "strength": 15,
+        "cognition": 8
+      }
+    },
+    "vorpal_dagger": {
+      "template_id": "vorpal_dagger",
+      "name": "Vorpal Dagger",
+      "description": "A wickedly sharp dagger with an obsidian blade. The edge seems impossibly thin and gleams with deadly intent. Runes of sharpening are etched along the blade.",
+      "item_type": 5,
+      "base_type": "weapon.blade.dagger",
+      "subtype": "dagger",
+      "weight": 1.2,
+      "value": 1800,
+      "quality_tier": "epic",
+      "material": "obsidian",
+      "item_flags": ["magic", "sharp"],
+      "item_flags_2": ["epic"],
+      "wear_flags": ["take", "wield", "sheath"],
+      "socket_count": 1,
+      "socket_types": ["rune"],
+      "weapon_type": 1,
+      "weapon_flags": ["vorpal", "sharp"],
+      "base_damage_min": 8,
+      "base_damage_max": 15,
+      "attack_speed": 0.7,
+      "damage_types": ["piercing"],
+      "max_durability": 100,
+      "max_enchantments": 1,
+      "enchantable": true,
+      "requirements": {
+        "strength": 8,
+        "agility": 12
+      }
+    },
+    "flamberge_greatsword": {
+      "template_id": "flamberge_greatsword",
+      "name": "Flamberge Greatsword",
+      "description": "A massive two-handed sword with a wavy flame-shaped blade. The steel ripples with heat, and embers dance along its edge. Three sockets allow for further enhancement.",
+      "item_type": 5,
+      "base_type": "weapon.blade.greatsword",
+      "subtype": "greatsword",
+      "weight": 8.5,
+      "value": 3200,
+      "quality_tier": "epic",
+      "material": "steel",
+      "item_flags": ["magic", "glow"],
+      "item_flags_2": ["epic"],
+      "wear_flags": ["take", "wield", "two_handed"],
+      "socket_count": 3,
+      "socket_types": ["gem", "gem", "rune"],
+      "weapon_type": 11,
+      "weapon_flags": ["flaming", "fire_dam"],
+      "base_damage_min": 22,
+      "base_damage_max": 38,
+      "attack_speed": 1.5,
+      "damage_types": ["slashing", "fire"],
+      "max_durability": 150,
+      "max_enchantments": 3,
+      "enchantable": true,
+      "requirements": {
+        "strength": 22,
+        "constitution": 14
+      }
+    }
+  },
+  "armor": {
+    "dragonscale_armor": {
+      "template_id": "dragonscale_armor",
+      "name": "Dragonscale Armor",
+      "description": "Magnificent armor crafted from red dragon scales. The crimson scales overlap perfectly, providing exceptional protection while remaining surprisingly flexible. Naturally resistant to fire.",
+      "item_type": 9,
+      "base_type": "armor.heavy.dragonscale",
+      "subtype": "chest_armor",
+      "weight": 18.0,
+      "value": 5000,
+      "quality_tier": "legendary",
+      "material": "dragonhide",
+      "item_flags": ["magic", "burn_proof"],
+      "item_flags_2": ["legendary"],
+      "wear_flags": ["take", "chest"],
+      "socket_count": 3,
+      "socket_types": ["gem", "gem", "gem"],
+      "armor_class": 25,
+      "armor_slot": "chest",
+      "damage_reduction": {
+        "physical": 10,
+        "fire": 25,
+        "slashing": 8
+      },
+      "max_durability": 200,
+      "max_enchantments": 3,
+      "enchantable": true,
+      "crafting_skill": "armorsmithing",
+      "crafting_difficulty": 30,
+      "components_required": [
+        {"type": "hide.dragon_scale", "quantity": 15},
+        {"type": "metal.mithril_ingot", "quantity": 3},
+        {"type": "fabric.silk", "quantity": 5}
+      ],
+      "requirements": {
+        "strength": 18,
+        "constitution": 15
+      }
+    },
+    "elven_cloak": {
+      "template_id": "elven_cloak",
+      "name": "Elven Cloak",
+      "description": "A flowing cloak woven from spider silk and enchanted leaves. It shimmers with a faint green glow and seems to blend with natural surroundings. Light as a feather.",
+      "item_type": 11,
+      "base_type": "armor.light.cloak",
+      "subtype": "cloak",
+      "weight": 1.5,
+      "value": 1200,
+      "quality_tier": "rare",
+      "material": "silk",
+      "item_flags": ["magic", "glow"],
+      "wear_flags": ["take", "shoulders"],
+      "socket_count": 1,
+      "socket_types": ["gem"],
+      "armor_class": 5,
+      "armor_slot": "shoulders",
+      "damage_reduction": {
+        "cold": 10
+      },
+      "max_durability": 80,
+      "max_enchantments": 2,
+      "enchantable": true,
+      "requirements": {
+        "agility": 10
+      }
+    }
+  },
+  "gems": {
+    "flawless_ruby": {
+      "template_id": "flawless_ruby",
+      "name": "Flawless Ruby",
+      "description": "A perfectly cut ruby that pulses with inner fire. When socketed into a weapon, it adds flames to each strike. In armor, it protects against fire.",
+      "item_type": 85,
+      "base_type": "gem.socket.ruby",
+      "subtype": "ruby",
+      "weight": 0.1,
+      "value": 500,
+      "quality_tier": "rare",
+      "item_flags": ["magic", "glow"],
+      "wear_flags": ["take"],
+      "equipment_stats": {
+        "damage_type": "fire",
+        "damage_min": 5,
+        "damage_max": 12,
+        "damage_reduction": {
+          "fire": 8
+        }
+      }
+    },
+    "perfect_diamond": {
+      "template_id": "perfect_diamond",
+      "name": "Perfect Diamond",
+      "description": "A flawless diamond that radiates pure white light. It channels holy energy and provides protection against darkness and necromantic forces.",
+      "item_type": 85,
+      "base_type": "gem.socket.diamond",
+      "subtype": "diamond",
+      "weight": 0.1,
+      "value": 800,
+      "quality_tier": "epic",
+      "item_flags": ["magic", "glow"],
+      "item_flags_2": ["epic"],
+      "wear_flags": ["take"],
+      "equipment_stats": {
+        "damage_type": "holy",
+        "damage_min": 6,
+        "damage_max": 15,
+        "armor_bonus": 5,
+        "damage_reduction": {
+          "negative": 12
+        }
+      }
+    },
+    "ancient_amethyst": {
+      "template_id": "ancient_amethyst",
+      "name": "Ancient Amethyst",
+      "description": "A deep purple amethyst that hums with arcane power. It enhances magical abilities and channels pure mystical energy.",
+      "item_type": 85,
+      "base_type": "gem.socket.amethyst",
+      "subtype": "amethyst",
+      "weight": 0.1,
+      "value": 600,
+      "quality_tier": "rare",
+      "item_flags": ["magic", "glow"],
+      "wear_flags": ["take"],
+      "equipment_stats": {
+        "damage_type": "energy",
+        "damage_min": 4,
+        "damage_max": 10,
+        "mystical": 5,
+        "damage_reduction": {
+          "energy": 6
+        }
+      }
+    }
+  },
+  "containers": {
+    "enchanted_backpack": {
+      "template_id": "enchanted_backpack",
+      "name": "Enchanted Backpack",
+      "description": "A magical backpack that seems larger on the inside. It reduces the weight of items stored within and can hold far more than its size suggests.",
+      "item_type": 15,
+      "base_type": "container.backpack",
+      "subtype": "backpack",
+      "weight": 2.5,
+      "value": 800,
+      "quality_tier": "uncommon",
+      "material": "leather",
+      "item_flags": ["magic"],
+      "wear_flags": ["take", "shoulders"],
+      "container_capacity": 100,
+      "container_weight_capacity": 200.0,
+      "weight_reduction": 0.3,
+      "max_durability": 100,
+      "enchantable": false,
+      "equipment_stats": {
+        "capacity": 100,
+        "weight_reduction": 0.3
+      }
+    }
+  },
+  "consumables": {
+    "greater_health_potion": {
+      "template_id": "greater_health_potion",
+      "name": "Greater Health Potion",
+      "description": "A vibrant red potion that glows with restorative power. It restores a significant amount of health when consumed.",
+      "item_type": 10,
+      "base_type": "consumable.potion.health",
+      "subtype": "potion",
+      "weight": 0.5,
+      "value": 150,
+      "quality_tier": "good",
+      "wear_flags": ["take", "hold"],
+      "consumable_charges": 1,
+      "consumable_effects": [
+        {
+          "type": "heal",
+          "amount": 75,
+          "duration": 0
+        }
+      ],
+      "components_required": [
+        {"type": "herb.healing_herb", "quantity": 5},
+        {"type": "essence.life", "quantity": 2},
+        {"type": "liquid.pure_water", "quantity": 1},
+        {"type": "container.glass_vial", "quantity": 1}
+      ],
+      "crafting_skill": "alchemy",
+      "crafting_difficulty": 10
+    },
+    "scroll_of_fireball": {
+      "template_id": "scroll_of_fireball",
+      "name": "Scroll of Fireball",
+      "description": "An ancient parchment inscribed with the incantation for Fireball. The runes glow with barely contained flames. Single use.",
+      "item_type": 2,
+      "base_type": "consumable.scroll.spell",
+      "subtype": "spell_scroll",
+      "weight": 0.2,
+      "value": 250,
+      "quality_tier": "uncommon",
+      "item_flags": ["magic"],
+      "wear_flags": ["take", "hold"],
+      "consumable_charges": 1,
+      "consumable_effects": [
+        {
+          "type": "spell_cast",
+          "spell_id": "fireball",
+          "power": 50
+        }
+      ],
+      "requirements": {
+        "mystical": 8
+      }
+    }
+  },
+  "crafting_materials": {
+    "mithril_ingot": {
+      "template_id": "mithril_ingot",
+      "name": "Mithril Ingot",
+      "description": "A bar of refined mithril, one of the lightest and strongest metals known. It gleams with a silvery-blue sheen and feels almost weightless.",
+      "item_type": 8,
+      "base_type": "component.metal.mithril",
+      "subtype": "ingot",
+      "weight": 1.0,
+      "value": 500,
+      "quality_tier": "rare",
+      "material": "mithril",
+      "wear_flags": ["take"],
+      "components_required": [
+        {"type": "ore.mithril_ore", "quantity": 3}
+      ],
+      "crafting_skill": "smithing",
+      "crafting_difficulty": 20
+    },
+    "dragon_scale": {
+      "template_id": "dragon_scale",
+      "name": "Dragon Scale",
+      "description": "A large scale from a fire dragon. It's incredibly tough and naturally resistant to heat. Essential for crafting legendary armor.",
+      "item_type": 37,
+      "base_type": "component.hide.dragon_scale",
+      "subtype": "scale",
+      "weight": 0.8,
+      "value": 350,
+      "quality_tier": "epic",
+      "material": "scales",
+      "item_flags": ["burn_proof"],
+      "item_flags_2": ["epic"],
+      "wear_flags": ["take"]
+    },
+    "essence_of_fire": {
+      "template_id": "essence_of_fire",
+      "name": "Essence of Fire",
+      "description": "A crystallized essence of pure flame. It burns warm to the touch but never consumes itself. Used in fire enchantments and alchemical recipes.",
+      "item_type": 63,
+      "base_type": "component.essence.fire",
+      "subtype": "essence",
+      "weight": 0.1,
+      "value": 100,
+      "quality_tier": "uncommon",
+      "item_flags": ["magic", "glow"],
+      "wear_flags": ["take"]
+    }
+  },
+  "tools": {
+    "master_blacksmith_hammer": {
+      "template_id": "master_blacksmith_hammer",
+      "name": "Master Blacksmith's Hammer",
+      "description": "A finely balanced smithing hammer with enchantments to improve crafting quality. Used by master smiths to create exceptional weapons and armor.",
+      "item_type": 55,
+      "base_type": "tool.smithing.hammer",
+      "subtype": "smithing_hammer",
+      "weight": 3.0,
+      "value": 1000,
+      "quality_tier": "rare",
+      "material": "steel",
+      "item_flags": ["magic"],
+      "wear_flags": ["take", "hold"],
+      "max_durability": 500,
+      "equipment_stats": {
+        "crafting_bonus": 10,
+        "quality_bonus": 0.15
+      }
+    },
+    "jewelers_loupe": {
+      "template_id": "jewelers_loupe",
+      "name": "Jeweler's Loupe",
+      "description": "A magical magnifying glass used for precise gem cutting and socket creation. It reveals the hidden potential within gems.",
+      "item_type": 7,
+      "base_type": "tool.jewelcrafting.loupe",
+      "subtype": "loupe",
+      "weight": 0.3,
+      "value": 600,
+      "quality_tier": "uncommon",
+      "item_flags": ["magic"],
+      "wear_flags": ["take", "hold"],
+      "equipment_stats": {
+        "gem_quality_bonus": 0.2,
+        "socket_success_bonus": 10
+      }
+    }
+  }
+}
+

@@ -1,0 +1,92 @@
+{
+  "name": "Dwarf",
+  "description": "Dwarves are hardy and strong, with natural resistance to magic and poison. Masters of stone and metal.",
+  "size": "medium",
+  "base_speed": 25,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 2,
+      "durability": 3,
+      "endurance": 2,
+      "vitality": 1
+    },
+    "mind": {
+      "intellect": 0,
+      "cognition": 1,
+      "willpower": 2,
+      "psionics": -1
+    },
+    "spirit": {
+      "mystical": -2,
+      "magical": -2,
+      "metaphysical": 0,
+      "percipience": 1
+    },
+    "kismet": {
+      "luck": 0,
+      "charisma": -1
+    }
+  },
+  
+  "racial_skills": [
+    "smithing",
+    "mining",
+    "stoneworking",
+    "appraise"
+  ],
+  
+  "skill_bonuses": {
+    "smithing": 10,
+    "mining": 10,
+    "stoneworking": 10,
+    "appraise": 8,
+    "poison_resistance": 15,
+    "magic_resistance": 10
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Darkvision",
+      "description": "Can see in darkness up to 60 feet"
+    },
+    {
+      "name": "Dwarven Resilience",
+      "description": "+15% resistance to poison, +10% resistance to magic"
+    },
+    {
+      "name": "Stonecunning",
+      "description": "Can detect traps and secret doors in stone with +20 bonus"
+    }
+  ],
+  
+  "resistances": {
+    "poison": 15,
+    "magic": 10
+  },
+  
+  "languages": ["Common", "Dwarvish"],
+  "bonus_languages": ["Giant", "Gnomish", "Goblin", "Orc", "Terran", "Undercommon"]
+}
+

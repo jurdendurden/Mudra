@@ -1,0 +1,78 @@
+{
+  "name": "Human",
+  "description": "Humans are adaptable and ambitious, with no inherent strengths or weaknesses. Their versatility makes them capable in any role.",
+  "size": "medium",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": 0,
+      "durability": 0,
+      "endurance": 0,
+      "vitality": 0
+    },
+    "mind": {
+      "intellect": 0,
+      "cognition": 0,
+      "willpower": 0,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 0,
+      "magical": 0,
+      "metaphysical": 0,
+      "percipience": 0
+    },
+    "kismet": {
+      "luck": 1,
+      "charisma": 1
+    }
+  },
+  
+  "racial_skills": [
+    "diplomacy",
+    "trade"
+  ],
+  
+  "skill_bonuses": {
+    "diplomacy": 5,
+    "trade": 5,
+    "leadership": 3
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Adaptable",
+      "description": "Humans gain +1 bonus trial point at character creation"
+    },
+    {
+      "name": "Skilled",
+      "description": "Humans learn skills 10% faster"
+    }
+  ],
+  
+  "languages": ["Common"],
+  "bonus_languages": ["any"]
+}
+

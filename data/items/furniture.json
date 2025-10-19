@@ -1,0 +1,72 @@
+{
+  "wooden_chair": {
+    "template_id": "wooden_chair",
+    "name": "Wooden Chair",
+    "description": "A simple wooden chair. You can sit on it.",
+    "item_type": 12,
+    "base_type": "furniture.seating.chair",
+    "subtype": "furniture",
+    "weight": 15.0,
+    "value": 25,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "max_durability": 500,
+    "equipment_stats": {
+      "furniture_flags": ["sit_on", "stand_on"]
+    }
+  },
+  "wooden_table": {
+    "template_id": "wooden_table",
+    "name": "Wooden Table",
+    "description": "A sturdy wooden table. Items can be placed on it.",
+    "item_type": 12,
+    "base_type": "furniture.surface.table",
+    "subtype": "furniture",
+    "weight": 30.0,
+    "value": 50,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "max_durability": 800,
+    "equipment_stats": {
+      "furniture_flags": ["put_on", "stand_on"]
+    }
+  },
+  "comfortable_bed": {
+    "template_id": "comfortable_bed",
+    "name": "Comfortable Bed",
+    "description": "A comfortable bed with a feather mattress. Perfect for sleeping.",
+    "item_type": 12,
+    "base_type": "furniture.bed",
+    "subtype": "furniture",
+    "weight": 80.0,
+    "value": 200,
+    "quality_tier": "good",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "max_durability": 1000,
+    "equipment_stats": {
+      "furniture_flags": ["sleep_on", "rest_on", "sit_on"],
+      "rest_bonus": 10
+    }
+  },
+  "wooden_bench": {
+    "template_id": "wooden_bench",
+    "name": "Wooden Bench",
+    "description": "A long wooden bench that can seat several people.",
+    "item_type": 12,
+    "base_type": "furniture.seating.bench",
+    "subtype": "furniture",
+    "weight": 25.0,
+    "value": 40,
+    "quality_tier": "common",
+    "material": "oak",
+    "wear_flags": ["take"],
+    "max_durability": 600,
+    "equipment_stats": {
+      "furniture_flags": ["sit_on", "rest_on"]
+    }
+  }
+}
+

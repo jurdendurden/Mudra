@@ -1,0 +1,89 @@
+{
+  "name": "Goblin",
+  "description": "Goblins are small and cunning, with natural stealth and agility. Sly and resourceful.",
+  "size": "small",
+  "base_speed": 30,
+  
+  "ability_modifiers": {
+    "body": {
+      "strength": -2,
+      "durability": 1,
+      "endurance": 2,
+      "vitality": 0
+    },
+    "mind": {
+      "intellect": 0,
+      "cognition": 2,
+      "willpower": 0,
+      "psionics": 0
+    },
+    "spirit": {
+      "mystical": 0,
+      "magical": 0,
+      "metaphysical": 0,
+      "percipience": 2
+    },
+    "kismet": {
+      "luck": 2,
+      "charisma": -1
+    }
+  },
+  
+  "racial_skills": [
+    "stealth",
+    "traps",
+    "survival"
+  ],
+  
+  "skill_bonuses": {
+    "stealth": 12,
+    "traps": 10,
+    "survival": 8,
+    "dodge": 10,
+    "riding": 8
+  },
+  
+  "wearable_slots": [
+    "head",
+    "neck",
+    "chest",
+    "shoulders",
+    "arms",
+    "hands",
+    "fingers",
+    "waist",
+    "legs",
+    "feet",
+    "wrist",
+    "ears",
+    "wield",
+    "shield",
+    "hold",
+    "float",
+    "sheath",
+    "quiver"
+  ],
+  
+  "special_abilities": [
+    {
+      "name": "Darkvision",
+      "description": "Can see in darkness up to 60 feet"
+    },
+    {
+      "name": "Nimble Escape",
+      "description": "Can disengage or hide as a bonus action"
+    },
+    {
+      "name": "Fury of the Small",
+      "description": "Extra damage when attacking larger creatures"
+    },
+    {
+      "name": "Small Size",
+      "description": "+2 bonus to stealth, -2 to intimidation"
+    }
+  ],
+  
+  "languages": ["Common", "Goblin"],
+  "bonus_languages": ["Orc", "Hobgoblin", "Giant", "Undercommon"]
+}
+

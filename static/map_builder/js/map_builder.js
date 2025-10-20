@@ -1,6 +1,9 @@
 // map_builder.js
 // Entry point: imports all modules, initializes app
 import { initializeMapBuilder } from './map_builder_core.js';
+const apiBase = window.API_BASE || '';
+    
+initializeMapBuilder(apiBase);
 import { fetchAreas, fetchRooms } from './map_builder_api.js';
 import { renderAreaList, renderRoomList, renderMap, filterRoomsByArea } from './map_builder_render.js';
 import { populateAreaSelect } from './map_builder_room_editor.js';
@@ -8,7 +11,7 @@ import { handleRoomDragStart, handleRoomDrop, handleSelectionStart, handleCanvas
 import { addToUndoHistory, undoLastAction, updateUndoButton } from './map_builder_undo.js';
 import { handleContextMenu, hideContextMenu, handleKeyPress, copySelectedRooms, deleteSelectedRooms, autoExitSelectedRooms, changeSelectedRoomNames } from './map_builder_context.js';
 import { deepCopy, getNextRoomId, getOppositeDirection } from './map_builder_utils.js';
-
+import { handleCanvasClick } from './map_builder_canvas.js';
 
 // Main initialization logic
 async function main() {
@@ -47,6 +50,7 @@ async function main() {
         `;
         builderContainer.appendChild(builderHeader);
     }
+    
     // Import needed functions
     const { renderMap, toggleGridlines, toggleCoordinateLabels, updateGridAlignment } = await import('./map_builder_render.js');
     const { toggleAutoRoom } = await import('./map_builder_canvas.js');
@@ -263,12 +267,10 @@ async function main() {
     coordDisplay.id = 'coord-display';
     coordDisplay.textContent = 'X: 0, Y: 0, Z: 0';
     document.body.appendChild(coordDisplay);
-    
+
     toggleGridlines();
     // Get API base from template variable
-    const apiBase = window.API_BASE || '';
     
-    initializeMapBuilder(apiBase);
 
     // Load initial data
     try {
@@ -295,11 +297,13 @@ async function main() {
 
     // Attach event listeners
     const canvas = document.getElementById('map-canvas');
+    
     if (canvas) {
         canvas.addEventListener('mousedown', handleSelectionStart);
         canvas.addEventListener('mousemove', handleCanvasDrag);
         canvas.addEventListener('mouseup', handleCanvasMouseUp);
         canvas.addEventListener('mouseleave', handleSelectionEnd);
+        canvas.addEventListener('click', handleCanvasClick);
     }
     document.addEventListener('keydown', handleKeyPress);
     // ...other event listeners as needed...

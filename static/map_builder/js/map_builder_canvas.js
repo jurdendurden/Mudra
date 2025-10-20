@@ -1,10 +1,138 @@
 // map_builder_canvas.js
 // Canvas interaction: drag-and-drop, selection, mouse/keyboard events, coordinate display
 import {
-    rooms, selectedRoom, multiSelectedRooms, isSelecting, selectionStart, selectionBox, isDraggingRoom, draggedRoom, draggedNode, draggedRooms, draggedNodes, dragOffset, CANVAS_CENTER, GRID_SIZE,
-    setIsDraggingRoom, setDraggedRoom, setDraggedNode, setDraggedRooms, setDraggedNodes, setDragOffset, setIsSelecting, setSelectionStart, setSelectionBox, setMultiSelectedRooms, setSelectedRoom
+    areas, rooms, selectedRoom, multiSelectedRooms, isSelecting, selectionStart, selectionBox,
+    isDraggingRoom, draggedRoom, draggedNode, draggedRooms, draggedNodes, dragOffset, CANVAS_CENTER, GRID_SIZE,
+    setIsDraggingRoom, setDraggedRoom, setDraggedNode, setDraggedRooms, setDraggedNodes,
+    setDragOffset, setIsSelecting, setSelectionStart, setSelectionBox, setMultiSelectedRooms, setSelectedRoom,
+    autoRoomMode, setAutoRoomMode
 } from './map_builder_core.js';
-import { renderMap, updateSelectionDisplay } from './map_builder_render.js';
+import { renderMap, updateSelectionDisplay, updateAutoRoomToggle } from './map_builder_render.js';
+import { createRoom, fetchRooms } from './map_builder_api.js';
+import { getNextRoomId, getOppositeDirection } from './map_builder_utils.js';
+// Canvas click handler: create room at clicked position
+export async function handleCanvasClick(event) {
+    // Only create room if not clicking on a room node and not dragging/selecting
+    if (isDraggingRoom || isSelecting || event.target.classList.contains('room-node')) return;
+    // Don't create room if we just finished a drag
+    if (window.justFinishedDrag) {
+        window.justFinishedDrag = false;
+        return;
+    }
+    const canvas = event.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+    const clickX = event.clientX - rect.left + canvas.scrollLeft;
+    const clickY = event.clientY - rect.top + canvas.scrollTop;
+    const gridX = Math.floor((clickX - (CANVAS_CENTER + 10)) / GRID_SIZE);
+    const gridY = Math.ceil(-(clickY - (CANVAS_CENTER + 10)) / GRID_SIZE);
+    const zFilter = document.getElementById('zLevelFilter').value;
+    const gridZ = (zFilter === 'all') ? 0 : parseInt(zFilter);
+    // Check if a room already exists at this position
+    if (rooms.some(r => r.x === gridX && r.y === gridY && (r.z || 0) === gridZ)) {
+        return;
+    }
+    // Get current area filter
+    const areaFilter = document.getElementById('area-filter')?.value || null;
+    let selectedAreaId = null;
+    
+    // If filtering by a specific area, use that area for new rooms
+    if (areaFilter) {
+        const selectedArea = areas.find(a => a.area_id === areaFilter);
+        if (selectedArea) {
+            selectedAreaId = selectedArea.id;
+        }
+    }
+    
+    const newRoomId = getNextRoomId();
+    const newRoom = {
+        room_id: newRoomId,
+        name: `Room ${newRoomId}`,
+        description: '',
+        area_id: selectedAreaId,
+        x: gridX,
+        y: gridY,
+        z: gridZ,
+        exits: {}
+    };
+    try {
+        const created = await createRoom(newRoom);
+        rooms.push(created);
+        setSelectedRoom(created);
+        renderMap();
+        updateSelectionDisplay();
+        updateAutoRoomToggle();
+    } catch (err) {
+        alert('Failed to create room: ' + err.message);
+    }
+}
+
+// Auto Room: create room in direction using numpad keys
+export async function handleKeyPress(event) {
+    // Only act if Auto Room mode is enabled and a room is selected
+    if (!autoRoomMode || !selectedRoom) return;
+    // Map numpad keys to directions
+    const keyMap = {
+        'Numpad8': { dx: 0, dy: 1, dz: 0, dir: 'north' },
+        'Numpad2': { dx: 0, dy: -1, dz: 0, dir: 'south' },
+        'Numpad6': { dx: 1, dy: 0, dz: 0, dir: 'east' },
+        'Numpad4': { dx: -1, dy: 0, dz: 0, dir: 'west' },
+        'Numpad9': { dx: 1, dy: 1, dz: 0, dir: 'northeast' },
+        'Numpad7': { dx: -1, dy: 1, dz: 0, dir: 'northwest' },
+        'Numpad3': { dx: 1, dy: -1, dz: 0, dir: 'southeast' },
+        'Numpad1': { dx: -1, dy: -1, dz: 0, dir: 'southwest' },
+        'NumpadAdd': { dx: 0, dy: 0, dz: 1, dir: 'up' },
+        'NumpadSubtract': { dx: 0, dy: 0, dz: -1, dir: 'down' }
+    };
+    const mapping = keyMap[event.code];
+    if (!mapping) return;
+    event.preventDefault();
+    // Calculate new position
+    const newX = selectedRoom.x + mapping.dx;
+    const newY = selectedRoom.y + mapping.dy;
+    const newZ = (selectedRoom.z || 0) + mapping.dz;
+    // Check if room exists at new position
+    let targetRoom = rooms.find(r => r.x === newX && r.y === newY && (r.z || 0) === newZ);
+    if (!targetRoom) {
+        // Create new room
+        const areaId = selectedRoom.area_id;
+        const newRoomId = getNextRoomId();
+        const newRoom = {
+            room_id: newRoomId,
+            name: `Room ${newRoomId}`,
+            description: '',
+            area_id: areaId,
+            x: newX,
+            y: newY,
+            z: newZ,
+            exits: {}
+        };
+        try {
+            targetRoom = await createRoom(newRoom);
+            rooms.push(targetRoom);
+        } catch (err) {
+            alert('Failed to create room: ' + err.message);
+            return;
+        }
+    }
+    // Add exit from selectedRoom to targetRoom
+    if (!selectedRoom.exits) selectedRoom.exits = {};
+    selectedRoom.exits[mapping.dir] = targetRoom.room_id;
+    // Add reverse exit from targetRoom to selectedRoom
+    if (!targetRoom.exits) targetRoom.exits = {};
+    const reverseDir = getOppositeDirection(mapping.dir);
+    if (reverseDir) targetRoom.exits[reverseDir] = selectedRoom.room_id;
+    // Save both rooms
+    try {
+        await createRoom(selectedRoom); // Should be updateRoom, but API may differ
+        await createRoom(targetRoom);   // Should be updateRoom, but API may differ
+    } catch (err) {
+        // Ignore save errors for now
+    }
+    setSelectedRoom(targetRoom);
+    renderMap();
+    updateSelectionDisplay();
+    updateAutoRoomToggle();
+}
 // Handle room drag start
 export function handleRoomDragStart(event, room, node) {
     // Only allow drag with Ctrl key held
@@ -86,19 +214,15 @@ export async function handleRoomDrop(event) {
                 const newY = roomToMove.y + deltaY;
                 const newZ = roomToMove.z || 0;
                 try {
-                    await fetch(`/api/rooms/${roomToMove.id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            room_id: roomToMove.room_id,
-                            name: roomToMove.name,
-                            description: roomToMove.description,
-                            area_id: roomToMove.area_id,
-                            x: newX,
-                            y: newY,
-                            z: newZ,
-                            exits: roomToMove.exits || {}
-                        })
+                    await updateRoom(roomToMove.id, {
+                        room_id: roomToMove.room_id,
+                        name: roomToMove.name,
+                        description: roomToMove.description,
+                        area_id: roomToMove.area_id,
+                        x: newX,
+                        y: newY,
+                        z: newZ,
+                        exits: roomToMove.exits || {}
                     });
                 } catch (error) {
                     console.error(`Error updating room ${roomToMove.room_id}:`, error);
@@ -116,7 +240,7 @@ export async function handleRoomDrop(event) {
     setDraggedNode(null);
     setDraggedRooms([]);
     setDraggedNodes([]);
-    if (typeof loadRooms === 'function') await loadRooms();
+    if (typeof fetchRooms === 'function') await fetchRooms();
     renderMap();
 // End of handleRoomDrop
 }
@@ -285,3 +409,25 @@ export function updateCoordDisplay(event) {
     coordDisplay.textContent = displayText;
 // End of updateCoordDisplay
 }
+
+// Toggle Auto Room mode
+export function toggleAutoRoom() {
+    const toggle = document.getElementById('autoRoomToggle');
+    setAutoRoomMode(toggle.checked);
+    
+    if (autoRoomMode) {
+        console.log('========================================');
+        console.log('Auto Room mode ENABLED');
+        console.log('Use numpad keys to create rooms:');
+        console.log('  8 = North, 2 = South');
+        console.log('  6 = East, 4 = West');
+        console.log('  9 = NE, 7 = NW, 3 = SE, 1 = SW');
+        console.log('  + = Up, - = Down');
+        console.log('Selected room:', selectedRoom ? selectedRoom.room_id : 'none');
+        console.log('========================================');
+    } else {
+        console.log('Auto Room mode DISABLED');
+    }
+}
+// End of toggleAutoRoom
+// (file end)

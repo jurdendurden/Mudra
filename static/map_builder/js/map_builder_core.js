@@ -52,7 +52,7 @@ export let undoHistory = [];
 export const MAX_UNDO_STEPS = 3;
 
 // Auto Room mode
-export let autoRoomMode = false;
+export let autoRoomMode = true;
 
 // API base (set by template)
 export let API_BASE = '';

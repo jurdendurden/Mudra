@@ -1,6 +1,7 @@
 // map_builder_render.js
 // Rendering: map, sidebar, tooltips, gridlines, coordinate labels
-import { rooms, areas, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE, selectionBox, setSelectionBox, setMultiSelectedRooms, setSelectedRoom } from './map_builder_core.js';
+import { rooms, areas, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE, selectionBox, setSelectionBox, setMultiSelectedRooms, setSelectedRoom, autoRoomMode, setAutoRoomMode } from './map_builder_core.js';
+import { openRoomEditor } from './map_builder_room_editor.js';
 
 // Render area list in sidebar
 export function renderAreaList() {
@@ -474,9 +475,9 @@ export function updateAutoRoomToggle() {
     const canEnable = selectedRoom && multiSelectedRooms.length <= 1;
     toggle.disabled = !canEnable;
     label.style.opacity = canEnable ? '1' : '0.5';
-    if (!canEnable && window.autoRoomMode) {
+    if (!canEnable && autoRoomMode) {
         toggle.checked = false;
-        window.autoRoomMode = false;
+        setAutoRoomMode(false);
     }
 }
 

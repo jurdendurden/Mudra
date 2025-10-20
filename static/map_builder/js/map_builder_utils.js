@@ -1,5 +1,6 @@
 // map_builder_utils.js
 // Helper functions, shared constants
+import { rooms } from './map_builder_core.js';
 
 // Deep copy utility
 export function deepCopy(obj) {
@@ -10,8 +11,8 @@ export function deepCopy(obj) {
 // Generate the next available room ID in the format 'room_XXX'
 export function getNextRoomId() {
     // Assume global 'rooms' array is available via import in modules
-    if (typeof window !== 'undefined' && window.rooms && window.rooms.length > 0) {
-        const roomNumbers = window.rooms
+    if (rooms.length > 0) {
+        const roomNumbers = rooms
             .map(r => r.room_id)
             .filter(id => id && id.startsWith('room_'))
             .map(id => parseInt(id.replace('room_', '')))

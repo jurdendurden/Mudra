@@ -57,6 +57,27 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Coordinate Validation**: Automatic checking to prevent room overlaps
 - **Visual Map Builder**: Web-based tool for creating and editing rooms with real-time visualization
 
+#### Door, Lock & Key System
+- **Comprehensive Door Management**: Full-featured door system with locks and keys
+- **Lock Difficulty Range (0-255)**:
+  - **0**: No lock (door can be opened freely)
+  - **1-100**: Normal locks (pickable by thieves with lockpicking skill)
+  - **101-255**: Magical locks (enhanced by wizard lock spell)
+- **10 Available Keys**: From common rusty iron keys to legendary artifact keys
+- **Key Requirement**: Locked doors MUST have a key assigned (enforced by validation)
+- **9 Door Flags** for advanced behavior:
+  - **closed**: Door starts in closed state
+  - **locked**: Door is locked (requires key or lockpicking)
+  - **pick_proof**: Cannot be picked by thieves (immune to lockpicking)
+  - **pass_proof**: Cannot pass through at all (impassable barrier)
+  - **secret**: Hidden door (requires search or detection to find)
+  - **hidden**: Not visible in room description
+  - **no_lock**: Door cannot be locked
+  - **no_knock**: Knock spell won't work on this door
+  - **no_close**: Door cannot be closed
+- **Spell Support**: Designed for knock spell (magical door opening) and wizard lock (increase difficulty)
+- **Dual Validation**: Both frontend and backend enforce all rules consistently
+
 ## Technology Stack
 
 ### Backend
@@ -460,7 +481,94 @@ Features:
 - Room ID recycling (reuses deleted IDs)
 - Map export to JSON format
 - Real-time coordinate display
-- Door/Lock/Key system for room connections
+- **Comprehensive Door/Lock/Key System** for room connections
+
+#### Using the Door Editor in Map Builder
+
+The Map Builder includes a full-featured door editor accessible when editing any room:
+
+**Accessing the Door Editor:**
+1. Select a room by clicking on it
+2. Click any directional door button (North, South, East, West, Up, Down)
+3. The door editor modal will open
+
+**Door Properties:**
+- **Door ID**: Unique identifier (required) - e.g., "village_gate_001"
+- **Door Name**: Display name (required) - e.g., "Heavy Oak Gate"
+- **Description**: Detailed description visible when examining the door
+- **Key Template**: Select from 10 available keys (REQUIRED if door is locked)
+- **Lock Difficulty** (0-255 slider):
+  - **0**: No lock - door can be freely opened
+  - **1-100**: Normal locks - pickable by thieves with lockpicking skill
+    - 1-25: Very easy
+    - 26-50: Easy
+    - 51-75: Medium
+    - 76-100: Hard
+  - **101-255**: Magical locks - enhanced by wizard lock spell
+    - 101-150: Magical
+    - 151-200: Very magical
+    - 201-255: Nearly impossible
+
+**Door Flags (checkboxes):**
+- **closed**: Door starts in closed state (players must open it)
+- **locked**: Door is locked - requires key or lockpicking (MUST assign a key!)
+- **pick_proof**: Cannot be picked by thieves (immune to lockpicking)
+- **pass_proof**: Completely impassable barrier (even when open)
+- **secret**: Hidden door requiring search or detection to find
+- **hidden**: Not visible in room description (secret passive)
+- **no_lock**: Door cannot be locked by any means
+- **no_knock**: Knock spell won't work on this door
+- **no_close**: Door cannot be closed
+
+**Validation Rules (Enforced):**
+- ✓ Locked doors MUST have a key assigned
+- ✓ Cannot combine "No Lock" with "Locked"
+- ✓ Cannot combine "No Close" with "Closed"
+- ✓ Lock difficulty must be 0-255
+- ✓ Door ID and name are required
+
+**Available Keys:**
+The system includes 10 pre-configured keys in `data/items/keys.json`:
+- **key_001**: Rusty Iron Key (common, 5 gold)
+- **key_002**: Brass Door Key (common, 15 gold)
+- **key_003**: Steel Gate Key (uncommon, 50 gold)
+- **key_004**: Silver Mansion Key (rare, 100 gold)
+- **key_005**: Golden Treasury Key (epic, 500 gold)
+- **key_006**: Skeleton Key (rare, 250 gold) - master key
+- **key_007**: Mithril Dungeon Key (epic, 750 gold) - magical
+- **key_008**: Obsidian Prison Key (legendary, 1000 gold) - cursed
+- **key_009**: Crystal Tower Key (legendary, 1500 gold)
+- **key_010**: Ancient Rune Key (artifact, 2500 gold) - quest item
+
+**Usage Examples:**
+
+*Simple Closed Door:*
+- Door ID: "inn_room_001"
+- Name: "Wooden Door"
+- Flags: closed
+- Lock Difficulty: 0
+- Key: None
+
+*Locked Door:*
+- Door ID: "treasure_vault_001"
+- Name: "Iron Treasury Door"
+- Flags: closed, locked
+- Lock Difficulty: 75
+- Key: key_005 (Golden Treasury Key)
+
+*Secret Magical Door:*
+- Door ID: "wizard_tower_secret"
+- Name: "Hidden Magical Portal"
+- Flags: secret, hidden, locked, no_knock
+- Lock Difficulty: 200
+- Key: key_010 (Ancient Rune Key)
+
+*Impassable Magical Barrier:*
+- Door ID: "demon_seal_001"
+- Name: "Demonic Seal"
+- Flags: closed, locked, pass_proof, no_knock, pick_proof
+- Lock Difficulty: 255
+- Key: key_010 (Ancient Rune Key)
 
 #### Door/Lock/Key System
 The Map Builder includes a comprehensive door system for creating locked doors, secret passages, and complex access control:

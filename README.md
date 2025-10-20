@@ -460,6 +460,59 @@ Features:
 - Room ID recycling (reuses deleted IDs)
 - Map export to JSON format
 - Real-time coordinate display
+- Door/Lock/Key system for room connections
+
+#### Door/Lock/Key System
+The Map Builder includes a comprehensive door system for creating locked doors, secret passages, and complex access control:
+
+**Lock Difficulty Ranges:**
+- `0`: No lock
+- `1-25`: Trivial locks (beginner thieves can pick)
+- `26-50`: Easy locks (novice thieves can pick)
+- `51-75`: Medium locks (experienced thieves needed)
+- `76-100`: Hard locks (master thieves only)
+- `101-150`: Magical locks (wizard lock spell)
+- `151-200`: Very magical locks (powerful wizard lock)
+- `201-255`: Nearly impossible (arcane sealing magic)
+
+**Door Flags:**
+- `closed`: Door starts in a closed state
+- `locked`: Door is locked (requires matching key)
+- `pick_proof`: Cannot be picked by thieves (must use key)
+- `pass_proof`: Cannot pass through at all (impassable wall)
+- `secret`: Hidden door that requires search to find
+- `hidden`: Door is not visible in room descriptions
+- `no_lock`: Door cannot be locked
+- `no_knock`: Knock spell will not work on this door
+- `no_close`: Door cannot be closed
+
+**Key System:**
+- Keys are item templates stored in `data/items/keys.json`
+- 10 pre-configured key templates from rusty iron keys to ancient rune keys
+- Each locked door MUST have an associated key template ID
+- System prevents creating locked doors without assigned keys
+- Keys can be unique (quest items) or common (dungeon keys)
+
+**Using the Door Editor:**
+1. Open a room for editing in the Map Builder
+2. Click on any of the 6 door buttons (North, South, East, West, Up, Down)
+3. Configure door properties:
+   - Unique door ID
+   - Door name and description
+   - Key template (required if locked)
+   - Lock difficulty (0-255 slider)
+   - Door flags (checkboxes)
+4. System validates:
+   - Locked doors have keys assigned
+   - Conflicting flags (e.g., no_lock + locked)
+   - Required fields (door ID, name)
+
+**Integration with Game Mechanics:**
+- Players will need keys in inventory to unlock doors
+- Thieves can attempt to pick locks (difficulty check)
+- Wizards can cast "Knock" spell to open doors (unless no_knock flag)
+- "Wizard Lock" spell increases lock difficulty by 100+
+- Secret doors require search skill checks to discover
 
 ### In-Game Minimap
 The game features a live minimap displayed on the right panel:

@@ -614,5 +614,22 @@ class Item(db.Model):
             self.template.item_type == ItemType.CONTAINER
         )
     
+    def is_key(self):
+        """Check if this is a key"""
+        return self.template and self.template.base_type == 'key'
+    
+    def can_unlock_door(self, door_data):
+        """Check if this key can unlock a specific door"""
+        if not self.is_key() or not door_data:
+            return False
+        
+        # Keys match doors by template_id
+        required_key_id = door_data.get('key_id')
+        if not required_key_id:
+            return False
+        
+        # Match by template_id from the template
+        return self.template.template_id == required_key_id
+    
     def __repr__(self):
         return f'<Item {self.name} (ID: {self.id})>'

@@ -12,6 +12,7 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Command Parser**: Comprehensive command system for all game interactions
 - **3D World System**: Full cartesian coordinate system with vertical movement (up/down)
 - **Map Builder**: Visual tool for creating and managing game world
+- **NPC Builder**: Comprehensive tool for creating NPCs with full character capabilities
 - **Live Minimap**: Canvas-based real-time map display showing nearby rooms, connections, and player position
 
 ### Character System
@@ -622,6 +623,78 @@ The Map Builder includes a comprehensive door system for creating locked doors, 
 - "Wizard Lock" spell increases lock difficulty by 100+
 - Secret doors require search skill checks to discover
 
+### NPC Builder Tool
+The NPC Builder is a comprehensive visual interface for creating and managing NPCs:
+
+```bash
+# Run the NPC builder (separate from main app)
+python npc_builder.py
+```
+
+Access at `http://localhost:5002`
+
+Features:
+- Full NPC creation with all character-like attributes
+- Auto-generated unique NPC IDs (editable with duplicate prevention)
+- Visual NPC list with search/filter functionality
+- Complete attribute system (Body, Mind, Spirit, Kismet)
+- Skills and spells management
+- Currency management (gold, silver, copper)
+- Room assignment with area-based filtering
+- AI behavior configuration
+- Faction and reputation settings
+- Respawn time configuration
+- Hostility and unique NPC flags
+
+**NPC Capabilities:**
+NPCs are functionally identical to player characters with additional AI features:
+- Full attribute system (14 sub-attributes across 4 prime attributes)
+- Skills and spells (can learn/cast like players)
+- Inventory and equipment (can carry items, wear armor/weapons)
+- Currency (can hold gold, silver, copper)
+- HP, Mana, and Movement stats
+- Trial Points and Progress Points
+- Race selection with all racial bonuses
+
+**NPC-Specific Features:**
+- **AI Behavior**: Passive, Aggressive, Defensive, Merchant, Quest Giver, Guard, Patrol
+- **Hostility**: Flag NPCs as hostile or friendly
+- **Respawn Time**: Configure respawn delay in seconds (0 = no respawn)
+- **Unique Flag**: Prevent respawn for special/quest NPCs
+- **Faction**: Assign NPCs to factions for reputation system
+- **Reputation Required**: Set minimum reputation to interact
+- **Loot Tables**: Define items dropped on death (coming soon)
+- **Dialogue Trees**: Create conversation paths (coming soon)
+
+**Using the NPC Builder:**
+1. Click "Create New NPC" to start building
+2. Fill in basic information:
+   - NPC ID (unique identifier)
+   - Name (must be unique)
+   - Race selection
+   - Description
+   - Avatar
+3. Set location (room and coordinates)
+4. Configure attributes manually or auto-calculate
+5. Add skills and spells as needed
+6. Set currency amounts
+7. Configure AI behavior and properties
+8. Save to database
+
+**Editing Existing NPCs:**
+- Click any NPC from the list to edit
+- All fields are editable
+- Changes save immediately to database
+- Delete NPCs with confirmation prompt
+
+**Integration with Game World:**
+- NPCs appear in assigned rooms
+- Can be interacted with by players
+- Merchant NPCs can trade items
+- Quest NPCs can give quests (when quest system is implemented)
+- Hostile NPCs will attack players
+- Respawn at configured intervals
+
 ### In-Game Minimap
 The game features a live minimap displayed on the right panel:
 
@@ -762,7 +835,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [x] Visual Map Builder tool
 - [x] Coordinate validation system
 - [x] Multi-level support (up/down movement)
-- [ ] NPC framework
+- [x] NPC framework with visual builder tool
 - [ ] Loot generation
 - [x] Minimap implementation
 

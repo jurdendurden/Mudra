@@ -167,6 +167,8 @@ class Item(db.Model):
     # Ownership and location
     owner_character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
     equipped_character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
+    owner_npc_id = db.Column(db.Integer, db.ForeignKey('npcs.id'))
+    equipped_npc_id = db.Column(db.Integer, db.ForeignKey('npcs.id'))
     equipped_slot = db.Column(db.String(50))  # Which slot it's equipped in
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
     container_id = db.Column(db.Integer, db.ForeignKey('items.id'))  # For containers

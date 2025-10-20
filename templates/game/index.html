@@ -900,6 +900,11 @@
                             <span>Map Builder</span>
                             <small>Create and edit rooms</small>
                         </button>
+                        <button class="admin-btn" onclick="openNpcBuilder()">
+                            <i class="fas fa-users"></i>
+                            <span>NPC Builder</span>
+                            <small>Create and manage NPCs</small>
+                        </button>
                         <button class="admin-btn" onclick="openAreaBuilder()">
                             <i class="fas fa-globe"></i>
                             <span>Area Builder</span>
@@ -1119,6 +1124,12 @@
         closeAdminPanel();
         // Open map builder in a new window/tab
         window.open('http://localhost:5001', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+    
+    function openNpcBuilder() {
+        closeAdminPanel();
+        // Open NPC builder in a new window/tab
+        window.open('http://localhost:5002', '_blank', 'width=1400,height=900,scrollbars=yes,resizable=yes');
     }
     
     function openAreaBuilder() {

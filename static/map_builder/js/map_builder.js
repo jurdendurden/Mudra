@@ -165,6 +165,10 @@ async function main() {
         undoBtn.id = 'undoBtn';
         undoBtn.disabled = true;
         undoBtn.innerHTML = '<i class="fas fa-undo"></i> Undo';
+        undoBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await undoLastAction();
+        });
 
         // Save Map button
         const saveMapBtn = document.createElement('button');

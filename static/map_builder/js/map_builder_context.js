@@ -273,24 +273,46 @@ export async function deleteSelectedRooms() {
         return;
     }
 
-    if(multiSelectedRooms.length > 0) {
+    if(multiSelectedRooms.length > 1) {
+        const errorRooms = [];
         for (const roomId of multiSelectedRooms) {
             try {
-                await deleteRoom(roomId);
+                let roomToDelete = rooms.find(r => r.id == roomId);
+                if(roomToDelete) {
+                    addToUndoHistory({
+                        type: 'delete',
+                        room: roomToDelete
+                    });
+                    await deleteRoom(roomId);
+                }
             } catch (error) {
+                errorRooms.push(roomId);
                 console.error('Error deleting room:', error);
             }
         }
+        if(errorRooms.length > 0) {
+            alert(`Error deleting the following rooms: ${errorRooms.join(', ')}`);
+        }
     }
-    else if(selectedRoom !== null) {
+    else if(selectedRoom !== null || multiSelectedRooms.length === 1) {
+        if(selectedRoom === null) {
+            setSelectedRoom(rooms.find(r => r.id === multiSelectedRooms[0]));
+        }
         try {
+            addToUndoHistory({
+                    type: 'delete',
+                    room: selectedRoom
+                });
             await deleteRoom(selectedRoom.id);
         } catch (error) {
             console.error('Error deleting room:', error);
+            alert(`Error deleting room: ${error.message}`);
         }
     }
-    
-    if (typeof fetchRooms === 'function') setRooms(await fetchRooms());
+
+    if (typeof fetchRooms === 'function') {
+        setRooms(await fetchRooms());
+    }
     renderMap();
     clearMultiSelection();
 } // End of deleteSelectedRooms

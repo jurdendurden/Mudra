@@ -1,7 +1,7 @@
 // map_builder_undo.js
 // Undo/redo stack, action history, undo button state
 import { undoHistory, MAX_UNDO_STEPS, setUndoHistory, setRooms } from './map_builder_core.js';
-import { fetchRooms } from './map_builder_api.js';
+import { fetchRooms, createRoom, deleteRoom, updateRoom } from './map_builder_api.js';
 import { renderMap } from './map_builder_render.js';
 
 // Add action to undo history
@@ -33,70 +33,35 @@ export async function undoLastAction() {
     
     try {
         switch (action.type) {
-            case 'create':
-                // Undo room creation by deleting it
-                await fetch(`/api/rooms/${action.room.id}`, {
-                    method: 'DELETE'
-                });
-                break;
-                
-            case 'delete':
-                // Undo deletion by recreating the room
-                await fetch('/api/rooms', {
-                    method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                room_id: action.room.room_id,
-                                name: action.room.name,
-                                description: action.room.description,
-                                area_id: action.room.area_id,
-                                x: action.room.x,
-                                y: action.room.y,
-                                z: action.room.z || 0,
-                                exits: action.room.exits || {},
-                                lighting: action.room.lighting || 'normal'
-                            })
-                        });
-                        break;
-                        
-                    case 'update':
-                        // Undo update by restoring previous state
-                        await fetch(`/api/rooms/${action.room.id}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                room_id: action.previousState.room_id,
-                                name: action.previousState.name,
-                                description: action.previousState.description,
-                                area_id: action.previousState.area_id,
-                                x: action.previousState.x,
-                                y: action.previousState.y,
-                                z: action.previousState.z || 0,
-                                exits: action.previousState.exits || {},
-                                lighting: action.previousState.lighting || 'normal'
-                            })
-                        });
-                        break;
-                        
-                    case 'bulk':
-                        // Undo bulk operation
-                        for (const subAction of action.actions.reverse()) {
-                            // Recursively undo each action in the bulk operation
-                            undoHistory.push(subAction);
-                            await undoLastAction();
-                        }
-                        break;
-                }
-                
-                setRooms(await fetchRooms());
-                renderMap();
-                console.log('Undo successful');
-            } catch (error) {
-                console.error('Error undoing action:', error);
-                alert('Error undoing action');
+        case 'create':
+            await deleteRoom(action.room.id);
+            break;
+            
+        case 'delete':
+            // Undo deletion by recreating the room
+            await createRoom(action.room);
+            break;
+                    
+        case 'update':
+            // Undo update by restoring previous state
+            await updateRoom(action.room.id, action.previousState);
+            break;
+
+        case 'bulk':
+            // Undo bulk operation
+            for (const subAction of action.actions.reverse()) {
+                // Recursively undo each action in the bulk operation
+                undoHistory.push(subAction);
+                await undoLastAction();
             }
+            break;
         }
+                
+        setRooms(await fetchRooms());
+        renderMap();
+        console.log('Undo successful');
+    } catch (error) {
+        console.error('Error undoing action:', error);
+        alert('Error undoing action');
+    }
+}

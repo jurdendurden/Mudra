@@ -61,6 +61,6 @@ export let API_BASE = '';
 export function initializeMapBuilder(apiBase) {
     API_BASE = apiBase || '';
     // Modal initialization (Bootstrap)
-    roomModal = new window.bootstrap.Modal(document.getElementById('roomModal'));
+    //roomModal = new window.bootstrap.Modal(document.getElementById('roomModal'));
     // Any other global setup can go here
 }

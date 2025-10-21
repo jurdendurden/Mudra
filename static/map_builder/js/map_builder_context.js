@@ -5,6 +5,8 @@ import { updateMultiSelection, clearMultiSelection } from './map_builder_canvas.
 import { renderMap, updateSelectionDisplay, updateAutoRoomToggle } from './map_builder_render.js';
 import { getNextRoomId } from './map_builder_utils.js';
 import { fetchRooms, createRoom, updateRoom, deleteRoom } from './map_builder_api.js';
+import { addToUndoHistory, undoLastAction, updateUndoButton } from './map_builder_undo.js';
+import { saveRoom } from './map_builder_room_editor.js';
 
 // Context menu
 export function handleContextMenu(event) {
@@ -176,11 +178,8 @@ export function handleKeyPress(event) {
         return;
     }
     if (event.key === 'Delete') {
-        if (multiSelectedRooms.length > 0) {
-            deleteSelectedRooms();
-        } else if (selectedRoom) {
-            if (typeof deleteSingleSelectedRoom === 'function') deleteSingleSelectedRoom();
-        }
+        deleteSelectedRooms();
+        return;
     }
     // Numpad handling for Auto Room mode
     // Create a room in the given direction using Auto Room mode
@@ -265,25 +264,36 @@ export async function copySelectedRooms() {
 }
 
 export async function deleteSelectedRooms() {
-    if (multiSelectedRooms.length === 0) {
+    if (selectedRoom === null && multiSelectedRooms.length === 0) {
         alert('No rooms selected');
         return;
     }
-    if (!confirm(`Are you sure you want to delete ${multiSelectedRooms.length} room(s)?`)) {
+    if ((multiSelectedRooms.length <= 1 && selectedRoom != null && !confirm(`Are you sure you want to delete the room "${selectedRoom.name}"?`)) 
+        || (multiSelectedRooms.length > 1 && !confirm(`Are you sure you want to delete ${multiSelectedRooms.length} room(s)?`))) {
         return;
     }
-    for (const roomId of multiSelectedRooms) {
+
+    if(multiSelectedRooms.length > 0) {
+        for (const roomId of multiSelectedRooms) {
+            try {
+                await deleteRoom(roomId);
+            } catch (error) {
+                console.error('Error deleting room:', error);
+            }
+        }
+    }
+    else if(selectedRoom !== null) {
         try {
-            await deleteRoom(roomId);
+            await deleteRoom(selectedRoom.id);
         } catch (error) {
             console.error('Error deleting room:', error);
         }
     }
+    
     if (typeof fetchRooms === 'function') setRooms(await fetchRooms());
     renderMap();
     clearMultiSelection();
-// End of deleteSelectedRooms
-}
+} // End of deleteSelectedRooms
 
 export async function autoExitSelectedRooms() {
     if (multiSelectedRooms.length === 0) {

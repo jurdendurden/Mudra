@@ -1,12 +1,12 @@
 // map_builder.js
 // Entry point: imports all modules, initializes app
-import { initializeMapBuilder } from './map_builder_core.js';
+import { initializeMapBuilder, setRoomModal, roomModal } from './map_builder_core.js';
 const apiBase = window.API_BASE || '';
     
 initializeMapBuilder(apiBase);
 import { fetchAreas, fetchRooms } from './map_builder_api.js';
 import { renderAreaList, renderRoomList, renderMap, filterRoomsByArea } from './map_builder_render.js';
-import { populateAreaSelect } from './map_builder_room_editor.js';
+import { populateAreaSelect, saveRoom, deleteRoom, saveMap } from './map_builder_room_editor.js';
 import { handleRoomDragStart, handleRoomDrop, handleSelectionStart, handleCanvasDrag, handleCanvasMouseUp, handleSelectionEnd, updateMultiSelection, clearMultiSelection, updateCoordDisplay } from './map_builder_canvas.js';
 import { addToUndoHistory, undoLastAction, updateUndoButton } from './map_builder_undo.js';
 import { handleContextMenu, hideContextMenu, handleKeyPress, copySelectedRooms, deleteSelectedRooms, autoExitSelectedRooms, changeSelectedRoomNames } from './map_builder_context.js';
@@ -154,6 +154,10 @@ async function main() {
         autoExitBtn.id = 'autoExitBtn';
         autoExitBtn.disabled = true;
         autoExitBtn.innerHTML = '<i class="fas fa-route"></i> Auto Exit';
+        autoExitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            autoExitSelectedRooms();
+        });
 
         // Undo button
         const undoBtn = document.createElement('button');
@@ -167,7 +171,10 @@ async function main() {
         saveMapBtn.className = 'btn btn-success me-2';
         saveMapBtn.id = 'saveMapBtn';
         saveMapBtn.innerHTML = '<i class="fas fa-save"></i> Save Map';
-
+        saveMapBtn .addEventListener('click', (e) => {
+            e.preventDefault();
+            saveMap();
+        });
         // Clear toolbar and append all controls
         toolbar.innerHTML = '';
         toolbar.appendChild(surroundingAreasDiv);
@@ -244,14 +251,315 @@ async function main() {
         canvasContainer.appendChild(mapCanvas);
     }
     // Modal (room editor)
-    if (!document.getElementById('roomModal')) {
-        const modalDiv = document.createElement('div');
+    let modalDiv = document.getElementById('roomModal');
+    
+    if (!modalDiv) 
+    {
+        modalDiv = document.createElement('div');
         modalDiv.className = 'modal fade';
         modalDiv.id = 'roomModal';
         modalDiv.tabIndex = -1;
-        modalDiv.innerHTML = `<div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Room Editor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="roomForm"><div class="row"><div class="col-md-6"><div class="mb-3"><label for="roomId" class="form-label">Room ID</label><input type="text" class="form-control" id="roomId" required></div><div class="mb-3"><label for="roomName" class="form-label">Room Name</label><input type="text" class="form-control" id="roomName" required></div><div class="mb-3"><label for="areaSelect" class="form-label">Area</label><select class="form-select" id="areaSelect"><option value="">Select Area</option></select></div></div><div class="col-md-6"><div class="mb-3"><label for="roomX" class="form-label">X Position (East/West)</label><input type="number" class="form-control" id="roomX" value="0"></div><div class="mb-3"><label for="roomY" class="form-label">Y Position (North/South)</label><input type="number" class="form-control" id="roomY" value="0"></div><div class="mb-3"><label for="roomZ" class="form-label">Z Position (Up/Down)</label><input type="number" class="form-control" id="roomZ" value="0"></div></div></div><div class="mb-3"><label for="roomDescription" class="form-label">Description</label><textarea class="form-control" id="roomDescription" rows="4"></textarea></div><div class="mb-3"><div class="d-flex justify-content-between align-items-center mb-2"><label class="form-label mb-0">Exits</label><div class="btn-group btn-group-sm" role="group"><button type="button" class="btn btn-outline-primary" id="selectAllExitsBtn"><i class="fas fa-check-double"></i> Select All</button><button type="button" class="btn btn-outline-secondary" id="clearAllExitsBtn"><i class="fas fa-times"></i> Clear All</button><button type="button" class="btn btn-outline-success" id="autoSelectExitsBtn"><i class="fas fa-magic"></i> Auto Detect</button></div></div><div class="row"><div class="col-md-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="exitNorth"><label class="form-check-label" for="exitNorth">North</label></div></div><div class="col-md-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="exitSouth"><label class="form-check-label" for="exitSouth">South</label></div></div><div class="col-md-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="exitEast"><label class="form-check-label" for="exitEast">East</label></div></div><div class="col-md-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="exitWest"><label class="form-check-label" for="exitWest">West</label></div></div><div class="col-md-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="exitUp"><label class="form-check-label" for="exitUp">Up</label></div></div><div class="col-md-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="exitDown"><label class="form-check-label" for="exitDown">Down</label></div></div></div></div><div class="mb-3"><label for="roomLighting" class="form-label">Lighting</label><select class="form-select" id="roomLighting"><option value="dark">Dark</option><option value="dim">Dim</option><option value="normal" selected>Normal</option><option value="bright">Bright</option></select></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete</button><button type="button" class="btn btn-primary" id="saveRoomBtn">Save Room</button></div></div></div></div>`;
         document.body.appendChild(modalDiv);
+        
     }
+    
+    // Modal dialog
+    const modalDialog = document.createElement('div');
+    modalDialog.className = 'modal-dialog modal-lg';
+
+    // Modal content
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+
+    // Modal header
+    const modalHeader = document.createElement('div');
+    modalHeader.className = 'modal-header';
+    const modalTitle = document.createElement('h5');
+    modalTitle.className = 'modal-title';
+    modalTitle.textContent = 'Room Editor';
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'btn-close btn-close-white';
+    closeBtn.setAttribute('data-bs-dismiss', 'modal');
+    modalHeader.appendChild(modalTitle);
+    modalHeader.appendChild(closeBtn);
+
+    // Modal body
+    const modalBody = document.createElement('div');
+    modalBody.className = 'modal-body';
+
+    // Room form
+    const roomForm = document.createElement('form');
+    roomForm.id = 'roomForm';
+
+    // Row
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'row';
+
+    // Left column
+    const colLeft = document.createElement('div');
+    colLeft.className = 'col-md-6';
+
+    // Room ID
+    const roomIdDiv = document.createElement('div');
+    roomIdDiv.className = 'mb-3';
+    const roomIdLabel = document.createElement('label');
+    roomIdLabel.className = 'form-label';
+    roomIdLabel.htmlFor = 'roomId';
+    roomIdLabel.textContent = 'Room ID';
+    const roomIdInput = document.createElement('input');
+    roomIdInput.type = 'text';
+    roomIdInput.className = 'form-control';
+    roomIdInput.id = 'roomId';
+    roomIdInput.required = true;
+    roomIdDiv.appendChild(roomIdLabel);
+    roomIdDiv.appendChild(roomIdInput);
+
+    // Room Name
+    const roomNameDiv = document.createElement('div');
+    roomNameDiv.className = 'mb-3';
+    const roomNameLabel = document.createElement('label');
+    roomNameLabel.className = 'form-label';
+    roomNameLabel.htmlFor = 'roomName';
+    roomNameLabel.textContent = 'Room Name';
+    const roomNameInput = document.createElement('input');
+    roomNameInput.type = 'text';
+    roomNameInput.className = 'form-control';
+    roomNameInput.id = 'roomName';
+    roomNameInput.required = true;
+    roomNameDiv.appendChild(roomNameLabel);
+    roomNameDiv.appendChild(roomNameInput);
+
+    // Area select
+    const areaDiv = document.createElement('div');
+    areaDiv.className = 'mb-3';
+    const areaLabel = document.createElement('label');
+    areaLabel.className = 'form-label';
+    areaLabel.htmlFor = 'areaSelect';
+    areaLabel.textContent = 'Area';
+    const areaSelect = document.createElement('select');
+    areaSelect.className = 'form-select';
+    areaSelect.id = 'areaSelect';
+    const defaultAreaOption = document.createElement('option');
+    defaultAreaOption.value = '';
+    defaultAreaOption.textContent = 'Select Area';
+    areaSelect.appendChild(defaultAreaOption);
+    areaDiv.appendChild(areaLabel);
+    areaDiv.appendChild(areaSelect);
+
+    colLeft.appendChild(roomIdDiv);
+    colLeft.appendChild(roomNameDiv);
+    colLeft.appendChild(areaDiv);
+
+    // Right column
+    const colRight = document.createElement('div');
+    colRight.className = 'col-md-6';
+
+    // X Position
+    const xDiv = document.createElement('div');
+    xDiv.className = 'mb-3';
+    const xLabel = document.createElement('label');
+    xLabel.className = 'form-label';
+    xLabel.htmlFor = 'roomX';
+    xLabel.textContent = 'X Position (East/West)';
+    const xInput = document.createElement('input');
+    xInput.type = 'number';
+    xInput.className = 'form-control';
+    xInput.id = 'roomX';
+    xInput.value = 0;
+    xDiv.appendChild(xLabel);
+    xDiv.appendChild(xInput);
+
+    // Y Position
+    const yDiv = document.createElement('div');
+    yDiv.className = 'mb-3';
+    const yLabel = document.createElement('label');
+    yLabel.className = 'form-label';
+    yLabel.htmlFor = 'roomY';
+    yLabel.textContent = 'Y Position (North/South)';
+    const yInput = document.createElement('input');
+    yInput.type = 'number';
+    yInput.className = 'form-control';
+    yInput.id = 'roomY';
+    yInput.value = 0;
+    yDiv.appendChild(yLabel);
+    yDiv.appendChild(yInput);
+
+    // Z Position
+    const zDiv = document.createElement('div');
+    zDiv.className = 'mb-3';
+    const zLabel = document.createElement('label');
+    zLabel.className = 'form-label';
+    zLabel.htmlFor = 'roomZ';
+    zLabel.textContent = 'Z Position (Up/Down)';
+    const zInput = document.createElement('input');
+    zInput.type = 'number';
+    zInput.className = 'form-control';
+    zInput.id = 'roomZ';
+    zInput.value = 0;
+    zDiv.appendChild(zLabel);
+    zDiv.appendChild(zInput);
+
+    colRight.appendChild(xDiv);
+    colRight.appendChild(yDiv);
+    colRight.appendChild(zDiv);
+
+    rowDiv.appendChild(colLeft);
+    rowDiv.appendChild(colRight);
+
+    // Description
+    const descDiv = document.createElement('div');
+    descDiv.className = 'mb-3';
+    const descLabel = document.createElement('label');
+    descLabel.className = 'form-label';
+    descLabel.htmlFor = 'roomDescription';
+    descLabel.textContent = 'Description';
+    const descTextarea = document.createElement('textarea');
+    descTextarea.className = 'form-control';
+    descTextarea.id = 'roomDescription';
+    descTextarea.rows = 4;
+    descDiv.appendChild(descLabel);
+    descDiv.appendChild(descTextarea);
+
+    // Exits
+    const exitsDiv = document.createElement('div');
+    exitsDiv.className = 'mb-3';
+    const exitsHeader = document.createElement('div');
+    exitsHeader.className = 'd-flex justify-content-between align-items-center mb-2';
+    const exitsLabel = document.createElement('label');
+    exitsLabel.className = 'form-label mb-0';
+    exitsLabel.textContent = 'Exits';
+    const exitsBtnGroup = document.createElement('div');
+    exitsBtnGroup.className = 'btn-group btn-group-sm';
+    exitsBtnGroup.setAttribute('role', 'group');
+    // Select All
+    const selectAllBtn = document.createElement('button');
+    selectAllBtn.type = 'button';
+    selectAllBtn.className = 'btn btn-outline-primary';
+    selectAllBtn.id = 'selectAllExitsBtn';
+    selectAllBtn.innerHTML = '<i class="fas fa-check-double"></i> Select All';
+    // Clear All
+    const clearAllBtn = document.createElement('button');
+    clearAllBtn.type = 'button';
+    clearAllBtn.className = 'btn btn-outline-secondary';
+    clearAllBtn.id = 'clearAllExitsBtn';
+    clearAllBtn.innerHTML = '<i class="fas fa-times"></i> Clear All';
+    // Auto Detect
+    const autoDetectBtn = document.createElement('button');
+    autoDetectBtn.type = 'button';
+    autoDetectBtn.className = 'btn btn-outline-success';
+    autoDetectBtn.id = 'autoSelectExitsBtn';
+    autoDetectBtn.innerHTML = '<i class="fas fa-magic"></i> Auto Detect';
+    exitsBtnGroup.appendChild(selectAllBtn);
+    exitsBtnGroup.appendChild(clearAllBtn);
+    exitsBtnGroup.appendChild(autoDetectBtn);
+    exitsHeader.appendChild(exitsLabel);
+    exitsHeader.appendChild(exitsBtnGroup);
+
+    // Exits checkboxes row
+    const exitsRow = document.createElement('div');
+    exitsRow.className = 'row';
+    const exitNames = [
+        { id: 'exitNorth', label: 'North' },
+        { id: 'exitSouth', label: 'South' },
+        { id: 'exitEast', label: 'East' },
+        { id: 'exitWest', label: 'West' },
+        { id: 'exitUp', label: 'Up' },
+        { id: 'exitDown', label: 'Down' }
+    ];
+    exitNames.forEach(({ id, label }) => {
+        const col = document.createElement('div');
+        col.className = 'col-md-2';
+        const checkDiv = document.createElement('div');
+        checkDiv.className = 'form-check';
+        const checkInput = document.createElement('input');
+        checkInput.className = 'form-check-input';
+        checkInput.type = 'checkbox';
+        checkInput.id = id;
+        const checkLabel = document.createElement('label');
+        checkLabel.className = 'form-check-label';
+        checkLabel.htmlFor = id;
+        checkLabel.textContent = label;
+        checkDiv.appendChild(checkInput);
+        checkDiv.appendChild(checkLabel);
+        col.appendChild(checkDiv);
+        exitsRow.appendChild(col);
+    });
+
+    exitsDiv.appendChild(exitsHeader);
+    exitsDiv.appendChild(exitsRow);
+
+    // Lighting
+    const lightingDiv = document.createElement('div');
+    lightingDiv.className = 'mb-3';
+    const lightingLabel = document.createElement('label');
+    lightingLabel.className = 'form-label';
+    lightingLabel.htmlFor = 'roomLighting';
+    lightingLabel.textContent = 'Lighting';
+    const lightingSelect = document.createElement('select');
+    lightingSelect.className = 'form-select';
+    lightingSelect.id = 'roomLighting';
+    const lightingOptions = [
+        { value: 'dark', text: 'Dark' },
+        { value: 'dim', text: 'Dim' },
+        { value: 'normal', text: 'Normal', selected: true },
+        { value: 'bright', text: 'Bright' }
+    ];
+    lightingOptions.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.text;
+        if (opt.selected) option.selected = true;
+        lightingSelect.appendChild(option);
+    });
+    lightingDiv.appendChild(lightingLabel);
+    lightingDiv.appendChild(lightingSelect);
+
+    // Assemble form
+    roomForm.appendChild(rowDiv);
+    roomForm.appendChild(descDiv);
+    roomForm.appendChild(exitsDiv);
+    roomForm.appendChild(lightingDiv);
+
+    modalBody.appendChild(roomForm);
+
+    // Modal footer
+    const modalFooter = document.createElement('div');
+    modalFooter.className = 'modal-footer';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'btn btn-secondary';
+    cancelBtn.setAttribute('data-bs-dismiss', 'modal');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => {
+        // TODO Cancel room edit
+    });
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.className = 'btn btn-danger';
+    deleteBtn.id = 'deleteBtn';
+    deleteBtn.style.display = 'none';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', deleteRoom);
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'btn btn-primary';
+    saveBtn.id = 'saveRoomBtn';
+    saveBtn.textContent = 'Save Room';
+    saveBtn.addEventListener('click', saveRoom);
+    modalFooter.appendChild(cancelBtn);
+    modalFooter.appendChild(deleteBtn);
+    modalFooter.appendChild(saveBtn);
+
+    // Assemble modal
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(modalBody);
+    modalContent.appendChild(modalFooter);
+    modalDialog.appendChild(modalContent);
+    modalDiv.innerHTML = '';
+    modalDiv.appendChild(modalDialog);
+    setRoomModal(new bootstrap.Modal(modalDiv));
+    
     // Context menu
     if (!document.getElementById('contextMenu')) {
         const ctx = document.createElement('div');

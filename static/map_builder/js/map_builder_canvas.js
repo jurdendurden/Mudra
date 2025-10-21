@@ -10,6 +10,8 @@ import {
 import { renderMap, updateSelectionDisplay, updateAutoRoomToggle } from './map_builder_render.js';
 import { createRoom, fetchRooms } from './map_builder_api.js';
 import { getNextRoomId, getOppositeDirection } from './map_builder_utils.js';
+import { addToUndoHistory } from "./map_builder_undo.js";
+
 // Canvas click handler: create room at clicked position
 export async function handleCanvasClick(event) {
     // Only create room if not clicking on a room node and not dragging/selecting
@@ -56,6 +58,11 @@ export async function handleCanvasClick(event) {
     };
     try {
         const created = await createRoom(newRoom);
+        // Add to undo history
+        addToUndoHistory({
+            type: 'create',
+            room: created
+        });
         rooms.push(created);
         setSelectedRoom(created);
         renderMap();

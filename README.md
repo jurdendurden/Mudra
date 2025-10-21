@@ -29,6 +29,22 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Character Slot Limits**: Non-admin accounts start with 3 character slots, purchasable up to 20
 - **Shop System**: Spend account points to purchase additional character slots
 
+#### Character Sheet Interface
+- **5 Tab Navigation**: Character, Skills, Spells, Equipment, Inventory
+- **Character Tab**: View all basic info, stats, attributes (BODY, MIND, SPIRIT, KISMET), currency, and progression points
+- **Skills Tab**: Display learned skills and their levels (coming soon)
+- **Spells Tab**: View known spells and their details (coming soon)
+- **Equipment Tab**: Visual display of all 19 equipment slots with equipped items
+  - Slots: Head, Face, Neck, Shoulders, Chest, Back, Arms, Wrists, Hands, Waist, Legs, Feet, Left Ring, Right Ring, Ears, Main Hand, Off Hand, Two-Handed, Ranged
+  - Real-time stats summary showing total armor, weapon damage, attack speed
+  - Visual indicators for equipped vs empty slots
+- **Inventory Tab**: Complete inventory management with item details
+  - Item count and total weight tracking
+  - Detailed item cards showing name, description, stats, condition, and weight
+  - Visual distinction for equipped items
+  - Weapon damage and armor stats display
+- **Keyboard Shortcut**: Press 'C' to open character sheet
+
 ### Item System
 - **Comprehensive Item Types**: 101+ item types including weapons, armor, gems, tools, crafting materials, and more
 - **Socket System**: Items can have gem/rune sockets for customization and power

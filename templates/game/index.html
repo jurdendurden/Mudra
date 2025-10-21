@@ -591,6 +591,222 @@
     .admin-btn:hover small {
         color: var(--medieval-text);
     }
+    
+    /* Equipment Tab Styles */
+    .equipment-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .equipment-slots h4,
+    .equipment-stats h4 {
+        margin: 0 0 15px 0;
+        color: var(--medieval-gold);
+        font-size: 18px;
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        border-bottom: 2px solid var(--medieval-border);
+        padding-bottom: 10px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    
+    .equipment-slot-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .equipment-slot {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background: linear-gradient(135deg, var(--medieval-charcoal) 0%, var(--medieval-stone) 100%);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-border);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .equipment-slot:hover {
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        border-left-color: var(--medieval-gold);
+        transform: translateX(5px);
+    }
+    
+    .equipment-slot.equipped {
+        border-left-color: var(--medieval-success);
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-stone) 100%);
+    }
+    
+    .slot-label {
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .slot-item {
+        color: var(--medieval-text);
+        font-family: 'Source Code Pro', monospace;
+        font-size: 14px;
+    }
+    
+    .slot-item.empty {
+        color: var(--medieval-text-faded);
+        font-style: italic;
+    }
+    
+    .slot-item.equipped {
+        color: var(--medieval-gold);
+        font-weight: bold;
+    }
+    
+    .equipment-stats {
+        background: linear-gradient(135deg, var(--medieval-charcoal) 0%, var(--medieval-stone) 100%);
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid var(--medieval-border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    #equipment-stats-display {
+        font-family: 'Crimson Text', serif;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+    
+    #equipment-stats-display .stat-line {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--medieval-border);
+        margin-bottom: 6px;
+    }
+    
+    #equipment-stats-display .stat-line:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    #equipment-stats-display .stat-label {
+        color: var(--medieval-text-dim);
+        font-weight: 600;
+    }
+    
+    #equipment-stats-display .stat-value {
+        color: var(--medieval-gold);
+        font-family: 'Source Code Pro', monospace;
+        font-weight: bold;
+    }
+    
+    /* Inventory Tab Styles */
+    .inventory-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 2px solid var(--medieval-border);
+    }
+    
+    .inventory-header h4 {
+        margin: 0;
+        color: var(--medieval-gold);
+        font-size: 18px;
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    
+    .inventory-info {
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-size: 14px;
+    }
+    
+    .inventory-info span {
+        font-weight: 600;
+    }
+    
+    .inventory-list {
+        padding: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .inventory-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, var(--medieval-charcoal) 0%, var(--medieval-stone) 100%);
+        border-radius: 6px;
+        border-left: 3px solid var(--medieval-border);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .inventory-item:hover {
+        background: linear-gradient(135deg, var(--medieval-stone) 0%, var(--medieval-charcoal) 100%);
+        border-left-color: var(--medieval-gold);
+        transform: translateX(5px);
+    }
+    
+    .inventory-item.equipped {
+        border-left-color: var(--medieval-success);
+        background: linear-gradient(135deg, var(--medieval-dark) 0%, var(--medieval-stone) 100%);
+    }
+    
+    .inventory-item-info {
+        flex: 1;
+    }
+    
+    .inventory-item-name {
+        color: var(--medieval-text);
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+    
+    .inventory-item-name.equipped {
+        color: var(--medieval-gold);
+    }
+    
+    .inventory-item-details {
+        color: var(--medieval-text-dim);
+        font-family: 'Crimson Text', serif;
+        font-size: 13px;
+        font-style: italic;
+    }
+    
+    .inventory-item-stats {
+        display: flex;
+        gap: 15px;
+        color: var(--medieval-text-dim);
+        font-family: 'Source Code Pro', monospace;
+        font-size: 12px;
+    }
+    
+    .inventory-item-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .inventory-item-stat-label {
+        color: var(--medieval-text-faded);
+        font-size: 11px;
+    }
+    
+    .inventory-item-stat-value {
+        color: var(--medieval-gold);
+        font-weight: bold;
+        margin-top: 2px;
+    }
 </style>
 {% endblock %}
 
@@ -703,6 +919,8 @@
                 <button class="tab-button active" onclick="switchTab('character')">Character</button>
                 <button class="tab-button" onclick="switchTab('skills')">Skills</button>
                 <button class="tab-button" onclick="switchTab('spells')">Spells</button>
+                <button class="tab-button" onclick="switchTab('equipment')">Equipment</button>
+                <button class="tab-button" onclick="switchTab('inventory')">Inventory</button>
             </div>
             
             <!-- Tab Content -->
@@ -871,6 +1089,113 @@
                         <h4>Spells</h4>
                         <p>Spells system coming soon...</p>
                         <p>This tab will display your character's known spells and their details.</p>
+                    </div>
+                </div>
+                
+                <!-- Equipment Tab -->
+                <div id="equipment-tab" class="tab-panel">
+                    <div class="equipment-grid">
+                        <div class="equipment-slots">
+                            <h4>Equipped Items</h4>
+                            <div class="equipment-slot-list">
+                                <div class="equipment-slot" data-slot="head">
+                                    <span class="slot-label">Head:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="face">
+                                    <span class="slot-label">Face:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="neck">
+                                    <span class="slot-label">Neck:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="shoulders">
+                                    <span class="slot-label">Shoulders:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="chest">
+                                    <span class="slot-label">Chest:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="back">
+                                    <span class="slot-label">Back:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="arms">
+                                    <span class="slot-label">Arms:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="wrists">
+                                    <span class="slot-label">Wrists:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="hands">
+                                    <span class="slot-label">Hands:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="waist">
+                                    <span class="slot-label">Waist:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="legs">
+                                    <span class="slot-label">Legs:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="feet">
+                                    <span class="slot-label">Feet:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="finger_left">
+                                    <span class="slot-label">Left Ring:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="finger_right">
+                                    <span class="slot-label">Right Ring:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="ears">
+                                    <span class="slot-label">Ears:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="main_hand">
+                                    <span class="slot-label">Main Hand:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="off_hand">
+                                    <span class="slot-label">Off Hand:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="two_handed">
+                                    <span class="slot-label">Two-Handed:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="ranged">
+                                    <span class="slot-label">Ranged:</span>
+                                    <span class="slot-item">Empty</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="equipment-stats">
+                            <h4>Equipment Stats</h4>
+                            <div id="equipment-stats-display">
+                                <p class="text-muted">Equip items to see stats.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Inventory Tab -->
+                <div id="inventory-tab" class="tab-panel">
+                    <div class="inventory-header">
+                        <h4>Inventory</h4>
+                        <div class="inventory-info">
+                            <span id="inventory-count">0</span> items
+                            <span class="ms-3">Weight: <span id="inventory-weight">0.0</span> lbs</span>
+                        </div>
+                    </div>
+                    <div class="inventory-list" id="inventory-list">
+                        <p class="text-muted text-center">No items in inventory.</p>
                     </div>
                 </div>
             </div>
@@ -1079,6 +1404,189 @@
         // Add active class to selected tab and panel
         document.querySelector(`button[onclick="switchTab('${tabName}')"]`).classList.add('active');
         document.getElementById(`${tabName}-tab`).classList.add('active');
+        
+        // Load data for the tab if needed
+        if (tabName === 'equipment') {
+            loadEquipment();
+        } else if (tabName === 'inventory') {
+            loadInventory();
+        }
+    }
+    
+    // Load equipment data
+    function loadEquipment() {
+        fetch(`/api/character/${characterId}/equipment`)
+            .then(response => response.json())
+            .then(data => {
+                const equipment = data.equipment;
+                
+                // Update each equipment slot
+                for (const [slot, item] of Object.entries(equipment)) {
+                    const slotElement = document.querySelector(`.equipment-slot[data-slot="${slot}"] .slot-item`);
+                    const slotContainer = document.querySelector(`.equipment-slot[data-slot="${slot}"]`);
+                    
+                    if (item) {
+                        slotElement.textContent = item.name;
+                        slotElement.classList.remove('empty');
+                        slotElement.classList.add('equipped');
+                        slotContainer.classList.add('equipped');
+                    } else {
+                        slotElement.textContent = 'Empty';
+                        slotElement.classList.add('empty');
+                        slotElement.classList.remove('equipped');
+                        slotContainer.classList.remove('equipped');
+                    }
+                }
+                
+                // Update equipment stats display
+                updateEquipmentStats(equipment);
+            })
+            .catch(error => {
+                console.error('Error loading equipment:', error);
+            });
+    }
+    
+    // Update equipment stats display
+    function updateEquipmentStats(equipment) {
+        const statsDisplay = document.getElementById('equipment-stats-display');
+        const stats = {
+            armor: 0,
+            damage: null,
+            attack_speed: 0,
+            count: 0
+        };
+        
+        // Calculate total stats from equipped items
+        for (const item of Object.values(equipment)) {
+            if (item) {
+                stats.count++;
+                if (item.armor_class) {
+                    stats.armor += item.armor_class;
+                }
+                if (item.damage && !stats.damage) {
+                    stats.damage = item.damage;
+                    stats.attack_speed = item.attack_speed || 1.0;
+                }
+            }
+        }
+        
+        if (stats.count === 0) {
+            statsDisplay.innerHTML = '<p class="text-muted">Equip items to see stats.</p>';
+            return;
+        }
+        
+        let html = '';
+        
+        if (stats.armor > 0) {
+            html += `
+                <div class="stat-line">
+                    <span class="stat-label">Total Armor:</span>
+                    <span class="stat-value">${stats.armor}</span>
+                </div>
+            `;
+        }
+        
+        if (stats.damage) {
+            html += `
+                <div class="stat-line">
+                    <span class="stat-label">Weapon Damage:</span>
+                    <span class="stat-value">${stats.damage}</span>
+                </div>
+            `;
+            html += `
+                <div class="stat-line">
+                    <span class="stat-label">Attack Speed:</span>
+                    <span class="stat-value">${stats.attack_speed.toFixed(2)}x</span>
+                </div>
+            `;
+        }
+        
+        html += `
+            <div class="stat-line">
+                <span class="stat-label">Items Equipped:</span>
+                <span class="stat-value">${stats.count}</span>
+            </div>
+        `;
+        
+        statsDisplay.innerHTML = html;
+    }
+    
+    // Load inventory data
+    function loadInventory() {
+        fetch(`/api/character/${characterId}/inventory`)
+            .then(response => response.json())
+            .then(data => {
+                const inventory = data.inventory;
+                const inventoryList = document.getElementById('inventory-list');
+                const inventoryCount = document.getElementById('inventory-count');
+                const inventoryWeight = document.getElementById('inventory-weight');
+                
+                // Update counts
+                inventoryCount.textContent = inventory.length;
+                
+                let totalWeight = 0;
+                inventory.forEach(item => {
+                    totalWeight += item.weight || 0;
+                });
+                inventoryWeight.textContent = totalWeight.toFixed(1);
+                
+                // Clear and rebuild inventory list
+                if (inventory.length === 0) {
+                    inventoryList.innerHTML = '<p class="text-muted text-center">No items in inventory.</p>';
+                    return;
+                }
+                
+                let html = '';
+                inventory.forEach(item => {
+                    const equippedClass = item.is_equipped ? 'equipped' : '';
+                    const equippedNameClass = item.is_equipped ? 'equipped' : '';
+                    
+                    html += `
+                        <div class="inventory-item ${equippedClass}" data-item-id="${item.id}">
+                            <div class="inventory-item-info">
+                                <div class="inventory-item-name ${equippedNameClass}">${item.name}</div>
+                                <div class="inventory-item-details">${item.description || 'No description'}</div>
+                            </div>
+                            <div class="inventory-item-stats">
+                    `;
+                    
+                    if (item.is_weapon && item.damage) {
+                        html += `
+                            <div class="inventory-item-stat">
+                                <span class="inventory-item-stat-label">Damage</span>
+                                <span class="inventory-item-stat-value">${item.damage}</span>
+                            </div>
+                        `;
+                    }
+                    
+                    if (item.is_armor && item.armor_class) {
+                        html += `
+                            <div class="inventory-item-stat">
+                                <span class="inventory-item-stat-label">Armor</span>
+                                <span class="inventory-item-stat-value">${item.armor_class}</span>
+                            </div>
+                        `;
+                    }
+                    
+                    html += `
+                                <div class="inventory-item-stat">
+                                    <span class="inventory-item-stat-label">Condition</span>
+                                    <span class="inventory-item-stat-value">${item.condition}%</span>
+                                </div>
+                                <div class="inventory-item-stat">
+                                    <span class="inventory-item-stat-label">Weight</span>
+                                    <span class="inventory-item-stat-value">${item.weight.toFixed(1)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                inventoryList.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error loading inventory:', error);
+            });
     }
     
     // Close modal when clicking outside of it

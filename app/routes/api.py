@@ -18,16 +18,83 @@ def get_inventory(character_id):
     
     inventory = []
     for item in character.inventory:
-        inventory.append({
+        item_data = {
             'id': item.id,
-            'name': item.name,
+            'name': item.get_display_name(),
             'description': item.description,
             'condition': item.condition,
-            'weight': item.template.weight if item.template else 0,
-            'is_equipped': item.equipped_character_id == character.id
-        })
+            'weight': item.get_effective_weight(),
+            'is_equipped': item.equipped_character_id == character.id,
+            'is_equipment': item.is_equipment(),
+            'is_weapon': item.is_weapon(),
+            'is_armor': item.is_armor(),
+            'is_consumable': item.is_consumable(),
+            'is_container': item.is_container(),
+        }
+        
+        # Add weapon stats if applicable
+        if item.is_weapon():
+            min_dmg, max_dmg = item.get_effective_damage()
+            item_data['damage'] = f"{min_dmg}-{max_dmg}" if min_dmg else "N/A"
+            item_data['attack_speed'] = item.get_attack_speed()
+        
+        # Add armor stats if applicable
+        if item.is_armor():
+            item_data['armor_class'] = item.get_armor_class()
+        
+        inventory.append(item_data)
     
     return jsonify({'inventory': inventory})
+
+@api_bp.route('/character/<int:character_id>/equipment')
+@login_required
+def get_equipment(character_id):
+    """Get character equipped items"""
+    character = Character.query.filter_by(
+        id=character_id, 
+        player_id=current_user.id
+    ).first_or_404()
+    
+    # Define equipment slots
+    slots = [
+        'head', 'face', 'neck', 'shoulders', 'chest', 'back',
+        'arms', 'wrists', 'hands', 'waist', 'legs', 'feet',
+        'finger_left', 'finger_right', 'ears', 'main_hand', 
+        'off_hand', 'two_handed', 'ranged'
+    ]
+    
+    equipment = {}
+    for slot in slots:
+        equipment[slot] = None
+    
+    # Get equipped items
+    for item in character.equipped_items:
+        slot = item.equipped_slot
+        if slot and slot in equipment:
+            item_data = {
+                'id': item.id,
+                'name': item.get_display_name(),
+                'description': item.description,
+                'condition': item.condition,
+                'weight': item.get_effective_weight(),
+                'slot': slot,
+                'is_weapon': item.is_weapon(),
+                'is_armor': item.is_armor(),
+            }
+            
+            # Add weapon stats if applicable
+            if item.is_weapon():
+                min_dmg, max_dmg = item.get_effective_damage()
+                item_data['damage'] = f"{min_dmg}-{max_dmg}" if min_dmg else "N/A"
+                item_data['attack_speed'] = item.get_attack_speed()
+            
+            # Add armor stats if applicable
+            if item.is_armor():
+                item_data['armor_class'] = item.get_armor_class()
+            
+            equipment[slot] = item_data
+    
+    return jsonify({'equipment': equipment})
 
 @api_bp.route('/character/<int:character_id>/equip/<int:item_id>', methods=['POST'])
 @login_required

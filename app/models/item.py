@@ -16,6 +16,7 @@ class ItemTemplate(db.Model):
     template_id = db.Column(db.String(100), unique=True, nullable=False, index=True)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
+    icon_path = db.Column(db.String(255))  # Path to item icon image
     
     # Item type classification
     item_type = db.Column(db.Integer, nullable=False, default=ItemType.TRASH)  # ItemType enum
@@ -591,11 +592,14 @@ class Item(db.Model):
         self.last_repaired_at = datetime.utcnow()
     
     def is_equipment(self):
-        """Check if this is equipment (weapon/armor/accessory)"""
+        """Check if this is equipment (weapon/armor/accessory/clothing)"""
         if not self.template:
             return False
         base_type = self.template.base_type
-        return base_type.startswith('weapon.') or base_type.startswith('armor.') or base_type.startswith('accessory.')
+        return (base_type.startswith('weapon.') or 
+                base_type.startswith('armor.') or 
+                base_type.startswith('accessory.') or
+                base_type.startswith('clothing.'))
     
     def is_weapon(self):
         """Check if this is a weapon"""
@@ -608,6 +612,10 @@ class Item(db.Model):
     def is_consumable(self):
         """Check if this is a consumable"""
         return self.template and self.template.base_type.startswith('consumable.')
+    
+    def is_clothing(self):
+        """Check if this is clothing"""
+        return self.template and self.template.base_type.startswith('clothing.')
     
     def is_container(self):
         """Check if this is a container"""

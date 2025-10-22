@@ -38,15 +38,21 @@ progression system based on attributes, skills, and detailed item crafting/disas
   - Slots: Head, Face, Neck, Shoulders, Chest, Back, Arms, Wrists, Hands, Waist, Legs, Feet, Left Ring, Right Ring, Ears, Main Hand, Off Hand, Two-Handed, Ranged
   - Real-time stats summary showing total armor, weapon damage, attack speed
   - Visual indicators for equipped vs empty slots
-- **Inventory Tab**: Complete inventory management with item details
+- **Inventory Tab**: WoW-style inventory management with bag system
+  - 5 quick bag slots for equipping containers (drag-and-drop support)
+  - Dynamic inventory capacity (20 base slots + equipped bags)
+  - Grid-based item display with item icons
+  - Hover tooltips showing detailed item stats with quality-based coloring
   - Item count and total weight tracking
-  - Detailed item cards showing name, description, stats, condition, and weight
-  - Visual distinction for equipped items
+  - Equipped items do NOT take up inventory slots (they only appear in equipment slots)
+  - Bags range from 4 to 40 slots
   - Weapon damage and armor stats display
+  - Drag items from equipment back to inventory to unequip them
 - **Keyboard Shortcut**: Press 'C' to open character sheet
 
 ### Item System
-- **Comprehensive Item Types**: 101+ item types including weapons, armor, gems, tools, crafting materials, and more
+- **Comprehensive Item Types**: 101+ item types including weapons, armor, clothing, gems, tools, crafting materials, and more
+- **Clothing Items**: Belts, cloaks, robes, and other clothing items can be equipped via drag-and-drop to equipment slots
 - **Socket System**: Items can have gem/rune sockets for customization and power
 - **Enchanting System**: Apply magical enchantments with various effects (damage types, resistances, stat bonuses)
 - **Material System**: Items crafted from different materials (mithril, dragonhide, etc.) with unique properties
@@ -198,8 +204,10 @@ Each room has:
 - `inventory/i` - View your inventory
 
 ### Equipment & Items
-- `equip <item>` - Equip an item
+- `equip <item>` - Equip an item (works with weapons, armor, and clothing)
 - `unequip <item>` - Unequip an item
+- **Drag-and-Drop Equipping**: Drag items from inventory to equipment slots for instant equipping
+- **Drag-and-Drop Unequipping**: Drag items from equipment slots back to inventory to unequip them
 - `socket <item> <gem>` - Socket a gem into an item (planned)
 - `unsocket <item> <socket_num>` - Remove a gem from a socket (planned)
 - `enchant <item> <enchantment>` - Apply an enchantment to an item (planned)
@@ -334,7 +342,11 @@ The game features 101+ distinct item types organized into categories:
 - Crafting tools (hammers, saws, looms)
 
 **Containers & Storage**
-- Backpacks and bags
+- **WoW-Style Bag System**: 5 quick bag slots for increasing inventory capacity
+- **12 Bag Types**: From Small Pouch (4 slots) to Bottomless Bag (40 slots)
+- **Dynamic Capacity**: Base 20 slots + equipped bag capacities
+- **Drag-and-Drop**: Easy bag equipping via drag-and-drop interface
+- Backpacks, pouches, satchels, and specialized bags
 - Sheaths and quivers
 - Containers with weight reduction
 
@@ -805,8 +817,15 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [x] Crafting system framework
 - [x] Disassembly mechanics with component recovery
 - [x] Item flags system (50+ flags)
+- [x] WoW-style bag system with 5 quick slots and dynamic capacity
+- [x] Grid-based inventory UI with hover tooltips
+- [x] Drag-and-drop bag equipping
+- [x] Container items with slot capacities (4-40 slots)
+- [x] Clothing items recognized as equipment (belts, cloaks, robes, etc.)
+- [x] Drag-and-drop equipment system for all equippable items
+- [x] Equipped items excluded from inventory (only appear in equipment slots)
+- [x] Drag-and-drop unequipping (drag from equipment to inventory)
 - [ ] Full crafting UI integration
-- [ ] Equipment display in character sheet
 - [ ] Socket/enchant commands
 
 ### Phase 3.5: Chat System ✅

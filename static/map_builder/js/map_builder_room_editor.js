@@ -1,10 +1,10 @@
 // map_builder_room_editor.js
 // Room/area modal logic, exit management, dropdown population
-import { areas, rooms, selectedRoom, roomModal, setSelectedRoom, setRooms, CANVAS_CENTER, CANVAS_PADDING, GRID_SIZE } from './map_builder_core.js';
+import { areas, rooms, selectedRoom, roomModal, setSelectedRoom, setRooms, CANVAS_CENTER, CANVAS_PADDING, GRID_SIZE, API_BASE, doorModal } from './map_builder_core.js';
 import { createRoom, updateRoom, deleteRoom as APIDeleteRoom, createArea, fetchRooms } from './map_builder_api.js';
 import { renderMap, renderAreaList, renderRoomList, updateSelectionDisplay } from './map_builder_render.js';
 import { addToUndoHistory } from './map_builder_undo.js';
-
+let currentDoorDirection = null;
 // Populate area select dropdown in room modal
 export function populateAreaSelect() {
     const select = document.getElementById('areaSelect');
@@ -174,22 +174,6 @@ export async function saveRoom() {
                 try {
                     targetRoom.exits = newExits;
                     await updateRoom(targetRoom.id, targetRoom);
-                    // await fetch(`${API_BASE}/api/rooms/${targetRoom.id}`, {
-                    //     method: 'PUT',
-                    //     headers: {
-                    //         'Content-Type': 'application/json'
-                    //     },
-                    //     body: JSON.stringify({
-                    //         room_id: targetRoom.room_id,
-                    //         name: targetRoom.name,
-                    //         description: targetRoom.description,
-                    //         area_id: targetRoom.area_id,
-                    //         x: targetRoom.x,
-                    //         y: targetRoom.y,
-                    //         z: targetRoom.z || 0,
-                    //         exits: newExits
-                    //     })
-                    // });
                 } catch (error) {
                     console.error('Error updating reciprocal exit:', error);
                 }
@@ -212,69 +196,8 @@ export async function saveRoom() {
         alert('Error saving room');
     }
 }
-// // Save room (create or update)
-// export async function saveRoom(roomData) {
-//     let newRoom = null;
-//     if (roomData.id) {
-//         newRoom = await updateRoom(roomData.id, roomData);
-//     } else {
-//         newRoom = await createRoom(roomData);
-//     }
 
-//     if (newRoom != null) {    
-//     // Add exit from current room to new room
-//     const updatedExits = { ...(selectedRoom.exits || {}) };
-//     updatedExits[direction.name] = newRoom.room_id;
-    
-//     // Update current room with new exit
-//     await fetch(`/api/rooms/${selectedRoom.id}`, {
-//         method: 'PUT',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             room_id: selectedRoom.room_id,
-//             name: selectedRoom.name,
-//             description: selectedRoom.description,
-//             area_id: selectedRoom.area_id,
-//             x: selectedRoom.x,
-//             y: selectedRoom.y,
-//             z: selectedRoom.z || 0,
-//             exits: updatedExits,
-//             lighting: selectedRoom.lighting || 'normal'
-//         })
-//     });
-    
-//     // Reload rooms and re-render
-//     setRooms(await fetchRooms());
-//     renderMap();
-    
-//     // Select the newly created room to continue walking
-//     const freshNewRoom = rooms.find(r => r.room_id === newRoom.room_id);
-//     if (freshNewRoom) {
-//         selectedRoom = freshNewRoom;
-        
-//         // Highlight the new room
-//         const nodes = document.querySelectorAll('.room-node');
-//         nodes.forEach(n => {
-//             n.classList.remove('selected');
-//             if (n.innerHTML.includes(freshNewRoom.name) && 
-//                 n.style.left === `${freshNewRoom.x * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px` &&
-//                 n.style.top === `${-freshNewRoom.y * GRID_SIZE + CANVAS_CENTER + CANVAS_PADDING}px`) {
-//                 n.classList.add('selected');
-//             }
-//         });
-        
-//         updateSelectionDisplay();
-//     }
-    
-//     console.log(`✓ Created room ${newRoom.room_id} at (${newX}, ${newY}, ${newZ})`);
-//     // ...refresh rooms and UI...
-// }
-// }
 // Delete room
-
-
 export async function deleteRoom() {
 
     if (!selectedRoom) return;
@@ -373,4 +296,287 @@ export async function saveMap() {
         console.error('Error saving map:', error);
         alert('Error exporting map');
     }
+}
+
+export function editDoor(direction) {
+    if (!selectedRoom) {
+        alert('Please select a room first');
+        return;
+    }
+    
+    currentDoorDirection = direction;
+    document.getElementById('doorDirection').textContent = direction.toUpperCase();
+    
+    // Populate key select
+    populateKeySelect();
+    
+    // Load existing door data if it exists
+    const existingDoor = selectedRoom.doors && selectedRoom.doors[direction];
+    
+    if (existingDoor) {
+        // Edit existing door
+        document.getElementById('doorId').value = existingDoor.door_id || '';
+        document.getElementById('doorName').value = existingDoor.name || '';
+        document.getElementById('doorDescription').value = existingDoor.description || '';
+        document.getElementById('doorKeyId').value = existingDoor.key_id || '';
+        document.getElementById('doorLockDifficulty').value = existingDoor.lock_difficulty || 0;
+        updateLockDifficultyLabel();
+        
+        // Set flags
+        const flags = existingDoor.flags || [];
+        document.getElementById('flagClosed').checked = flags.includes('closed');
+        document.getElementById('flagLocked').checked = flags.includes('locked');
+        document.getElementById('flagPickProof').checked = flags.includes('pick_proof');
+        document.getElementById('flagPassProof').checked = flags.includes('pass_proof');
+        document.getElementById('flagSecret').checked = flags.includes('secret');
+        document.getElementById('flagHidden').checked = flags.includes('hidden');
+        document.getElementById('flagNoLock').checked = flags.includes('no_lock');
+        document.getElementById('flagNoKnock').checked = flags.includes('no_knock');
+        document.getElementById('flagNoClose').checked = flags.includes('no_close');
+        
+        document.getElementById('deleteDoorBtn').style.display = 'inline-block';
+    } else {
+        // New door - generate default ID
+        const defaultDoorId = `door_${selectedRoom.room_id}_${direction}`;
+        document.getElementById('doorId').value = defaultDoorId;
+        document.getElementById('doorName').value = '';
+        document.getElementById('doorDescription').value = '';
+        document.getElementById('doorKeyId').value = '';
+        document.getElementById('doorLockDifficulty').value = 0;
+        updateLockDifficultyLabel();
+        
+        // Clear all flags
+        document.getElementById('flagClosed').checked = false;
+        document.getElementById('flagLocked').checked = false;
+        document.getElementById('flagPickProof').checked = false;
+        document.getElementById('flagPassProof').checked = false;
+        document.getElementById('flagSecret').checked = false;
+        document.getElementById('flagHidden').checked = false;
+        document.getElementById('flagNoLock').checked = false;
+        document.getElementById('flagNoKnock').checked = false;
+        document.getElementById('flagNoClose').checked = false;
+        
+        document.getElementById('deleteDoorBtn').style.display = 'none';
+    }
+    
+    doorModal.show();
+}
+
+export function updateLockDifficultyLabel() {
+    const difficulty = document.getElementById('doorLockDifficulty').value;
+    let label = difficulty;
+    
+    if (difficulty == 0) {
+        label += ' (No Lock)';
+    } else if (difficulty <= 25) {
+        label += ' (Trivial)';
+    } else if (difficulty <= 50) {
+        label += ' (Easy)';
+    } else if (difficulty <= 75) {
+        label += ' (Medium)';
+    } else if (difficulty <= 100) {
+        label += ' (Hard)';
+    } else if (difficulty <= 150) {
+        label += ' (Magical)';
+    } else if (difficulty <= 200) {
+        label += ' (Very Magical)';
+    } else {
+        label += ' (Nearly Impossible)';
+    }
+    
+    document.getElementById('lockDifficultyValue').textContent = label;
+}
+
+export async function saveDoor() {
+    if (!selectedRoom || !currentDoorDirection) {
+        alert('No room or direction selected');
+        return;
+    }
+    
+    // Collect door data
+    const doorData = {
+        door_id: document.getElementById('doorId').value.trim(),
+        name: document.getElementById('doorName').value.trim(),
+        description: document.getElementById('doorDescription').value.trim(),
+        key_id: document.getElementById('doorKeyId').value,
+        lock_difficulty: parseInt(document.getElementById('doorLockDifficulty').value),
+        flags: []
+    };
+    
+    // Collect flags
+    if (document.getElementById('flagClosed').checked) doorData.flags.push('closed');
+    if (document.getElementById('flagLocked').checked) doorData.flags.push('locked');
+    if (document.getElementById('flagPickProof').checked) doorData.flags.push('pick_proof');
+    if (document.getElementById('flagPassProof').checked) doorData.flags.push('pass_proof');
+    if (document.getElementById('flagSecret').checked) doorData.flags.push('secret');
+    if (document.getElementById('flagHidden').checked) doorData.flags.push('hidden');
+    if (document.getElementById('flagNoLock').checked) doorData.flags.push('no_lock');
+    if (document.getElementById('flagNoKnock').checked) doorData.flags.push('no_knock');
+    if (document.getElementById('flagNoClose').checked) doorData.flags.push('no_close');
+    
+    // Validate required fields
+    if (!doorData.door_id) {
+        alert('Door ID is required');
+        return;
+    }
+    
+    if (!doorData.name) {
+        alert('Door name is required');
+        return;
+    }
+    
+    // Validate locked doors have keys
+    if (doorData.flags.includes('locked') && !doorData.key_id) {
+        alert('Locked doors must have a key assigned!');
+        return;
+    }
+    
+    // Validate conflicting flags
+    if (doorData.flags.includes('no_lock') && doorData.flags.includes('locked')) {
+        alert('Door cannot have both "No Lock" and "Locked" flags');
+        return;
+    }
+    
+    if (doorData.flags.includes('no_close') && doorData.flags.includes('closed')) {
+        alert('Door cannot have both "No Close" and "Closed" flags');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/rooms/${selectedRoom.id}/doors/${currentDoorDirection}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(doorData)
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+            alert(`Error: ${result.error}\n${result.details ? result.details.join('\n') : ''}`);
+            return;
+        }
+        
+        // Update local room data
+        if (!selectedRoom.doors) {
+            selectedRoom.doors = {};
+        }
+        selectedRoom.doors[currentDoorDirection] = doorData;
+        
+        // Update the door button appearance
+        updateDoorButtons();
+        
+        doorModal.hide();
+        alert(`Door saved successfully for ${currentDoorDirection} direction`);
+    } catch (error) {
+        console.error('Error saving door:', error);
+        alert('Error saving door');
+    }
+}
+
+export async function deleteDoor() {
+    if (!selectedRoom || !currentDoorDirection) {
+        alert('No room or direction selected');
+        return;
+    }
+    
+    if (!confirm(`Delete the ${currentDoorDirection} door?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/rooms/${selectedRoom.id}/doors/${currentDoorDirection}`, {
+            method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+            alert(`Error: ${result.error}`);
+            return;
+        }
+        
+        // Remove from local room data
+        if (selectedRoom.doors && selectedRoom.doors[currentDoorDirection]) {
+            delete selectedRoom.doors[currentDoorDirection];
+        }
+        
+        // Update the door button appearance
+        updateDoorButtons();
+        
+        doorModal.hide();
+        alert('Door deleted successfully');
+    } catch (error) {
+        console.error('Error deleting door:', error);
+        alert('Error deleting door');
+    }
+}
+
+export function updateDoorButtons() {
+    const directions = ['north', 'south', 'east', 'west', 'up', 'down'];
+    
+    directions.forEach(direction => {
+        const button = document.querySelector(`button[onclick="editDoor('${direction}')"]`);
+        if (button) {
+            if (selectedRoom.doors && selectedRoom.doors[direction]) {
+                button.classList.remove('btn-outline-warning');
+                button.classList.add('btn-warning');
+                button.innerHTML = `<i class="fas fa-door-closed"></i> ${direction.charAt(0).toUpperCase() + direction.slice(1)} Door ✓`;
+            } else {
+                button.classList.remove('btn-warning');
+                button.classList.add('btn-outline-warning');
+                button.innerHTML = `<i class="fas fa-door-closed"></i> ${direction.charAt(0).toUpperCase() + direction.slice(1)} Door`;
+            }
+        }
+    });
+}
+
+export function showDoorHelp() {
+    const helpText = `Door System Help:
+
+Lock Difficulty:
+- 0: No lock
+- 1-100: Normal locks (pickable by thieves)
+- 101-255: Magical locks (wizard lock spell)
+
+Door Flags:
+- Closed: Door starts closed
+- Locked: Door is locked (requires key)
+- Pick Proof: Cannot be picked by thieves
+- Pass Proof: Cannot pass through at all
+- Secret: Hidden door (requires search)
+- Hidden: Not visible in room description
+- No Lock: Door cannot be locked
+- No Knock: Knock spell won't work
+- No Close: Door cannot be closed
+
+Important: Locked doors MUST have a key assigned!`;
+    
+    alert(helpText);
+}
+
+let availableKeys = [];
+
+export async function loadKeys() {
+    try {
+        const response = await fetch(`${API_BASE}/api/keys`);
+        availableKeys = await response.json();
+        console.log('Loaded keys:', availableKeys.length);
+    } catch (error) {
+        console.error('Error loading keys:', error);
+        availableKeys = [];
+    }
+}
+
+export function populateKeySelect() {
+    const keySelect = document.getElementById('doorKeyId');
+    keySelect.innerHTML = '<option value="">No Key Required</option>';
+    
+    availableKeys.forEach(key => {
+        const option = document.createElement('option');
+        option.value = key.template_id;
+        option.textContent = `${key.name} (${key.template_id})`;
+        keySelect.appendChild(option);
+    });
 }

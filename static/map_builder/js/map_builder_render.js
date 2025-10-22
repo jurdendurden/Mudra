@@ -23,10 +23,10 @@ export function renderAreaList() {
     return select;
 }
 
-export function filterRoomsByArea() {
+export async function filterRoomsByArea() {
     const selectedAreaId = document.getElementById('area-filter').value;
     clearMultiSelection();
-    setRooms(fetchRooms());
+    setRooms(await fetchRooms());
     renderRoomList(selectedAreaId);
     renderMap();
 }
@@ -36,6 +36,8 @@ export function clearMultiSelection() {
     setSelectedRoom(null);
     displayClearSelectedRooms();
     selectRoomsByIds([]);
+    updateSelectionDisplay();
+    updateAutoRoomToggle();
 }
 export function selectRoomsByIds(roomIds) {
     const select = document.getElementById('room-list');
@@ -46,16 +48,15 @@ export function selectRoomsByIds(roomIds) {
 
 export function displayClearSelectedRooms() {
     const clearButton = document.getElementById('clear-selected-rooms');
+    if(!!clearButton)
     if (multiSelectedRooms.length > 0) {
         clearButton.style.display = 'block';
     } else {
         clearButton.style.display = 'none';
     }
-}
-export function clearRoomListSelection() {
-    const select = document.getElementById('room-list');
-    Array.from(select.options).forEach(option => {
-        option.selected = false;
+    document.querySelectorAll('.room-node').forEach(n => {
+    n.classList.remove('selected');
+    n.classList.remove('multi-selected');
     });
 }
 export function clearRoomListSelection() {
@@ -64,6 +65,7 @@ export function clearRoomListSelection() {
         option.selected = false;
     });
 }
+
 // Render room list in sidebar
 export function renderRoomList(filterAreaId = null) {
     const select = document.getElementById('room-list');
@@ -389,20 +391,7 @@ function drawConnection(room1, room2, direction) {
     line.style.transform = `rotate(${angleDeg}deg)`;
     canvas.appendChild(line);
 }
-// Utility functions for selection display
-function displayClearSelectedRooms() {
-    document.querySelectorAll('.room-node').forEach(n => {
-        n.classList.remove('selected');
-        n.classList.remove('multi-selected');
-    });
-}
 
-function selectRoomsByIds(roomIds) {
-    displayClearSelectedRooms();
-    roomIds.forEach(id => {
-        selectRoomById(id, false);
-    });
-}
 
 function selectRoomById(roomId, remove = true) {
     const room = rooms.find(r => r.id === roomId);
@@ -514,11 +503,4 @@ export function updateAutoRoomToggle() {
         toggle.checked = false;
         setAutoRoomMode(false);
     }
-}
-
-export function clearMultiSelection() {
-    setMultiSelectedRooms([]);
-    displayClearSelectedRooms();
-    updateSelectionDisplay();
-    updateAutoRoomToggle();
 }

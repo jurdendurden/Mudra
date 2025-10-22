@@ -21,6 +21,7 @@ export function setDragOffset(val) { dragOffset = val; }
 export function setUndoHistory(val) { undoHistory = val; }
 export function setAutoRoomMode(val) { autoRoomMode = val; }
 export function setAPIBase(val) { API_BASE = val; }
+export function setDoorModal(val) { doorModal = val; }
 // map_builder_core.js
 // Initialization, global state, API base setup, main entry point
 
@@ -29,6 +30,7 @@ export let rooms = [];
 export let areas = [];
 export let selectedRoom = null;
 export let roomModal = null;
+export let doorModal = null;
 export let tooltip = null;
 export let multiSelectedRooms = [];
 export let isSelecting = false;

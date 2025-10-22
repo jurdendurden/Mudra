@@ -50,6 +50,10 @@ class Character(db.Model):
     # Avatar
     avatar = db.Column(db.String(50), nullable=True)
     
+    # Bag slots (5 quick bag slots like WoW)
+    # Format: {0: item_id, 1: item_id, 2: item_id, 3: item_id, 4: item_id}
+    bag_slots = db.Column(db.JSON, default=dict)
+    
     # Skills and spells (JSON fields)
     skills = db.Column(db.JSON, default=dict)
     spells = db.Column(db.JSON, default=dict)
@@ -116,21 +120,44 @@ class Character(db.Model):
         
         return False
     
+    def get_equipment_bonuses(self):
+        """Calculate total bonuses from equipped items"""
+        bonuses = {
+            'health': 0,
+            'mana': 0,
+            'movement': 0,
+            'strength': 0,
+            'intellect': 0
+        }
+        
+        # Get all equipped items
+        for item in self.equipped_items:
+            if item.template and item.template.equipment_stats:
+                stats = item.get_effective_stats()
+                for stat, value in stats.items():
+                    if stat in bonuses:
+                        bonuses[stat] += value
+        
+        return bonuses
+    
     def calculate_derived_stats(self):
-        """Calculate HP, mana, and movement based on attributes"""
-        # HP based on vitality and durability
+        """Calculate HP, mana, and movement based on attributes and equipment"""
+        # Get equipment bonuses
+        equipment_bonuses = self.get_equipment_bonuses()
+        
+        # HP based on vitality and durability + equipment
         vitality = self.get_attribute_value('body', 'vitality')
         durability = self.get_attribute_value('body', 'durability')
-        self.max_hp = 100 + (vitality * 5) + (durability * 3)
+        self.max_hp = 100 + (vitality * 5) + (durability * 3) + equipment_bonuses.get('health', 0)
         
-        # Mana based on mystical and magical
+        # Mana based on mystical and magical + equipment
         mystical = self.get_attribute_value('spirit', 'mystical')
         magical = self.get_attribute_value('spirit', 'magical')
-        self.max_mana = 50 + (mystical * 3) + (magical * 2)
+        self.max_mana = 50 + (mystical * 3) + (magical * 2) + equipment_bonuses.get('mana', 0)
         
-        # Movement based on endurance
+        # Movement based on endurance + equipment
         endurance = self.get_attribute_value('body', 'endurance')
-        self.max_movement = 100 + (endurance * 2)
+        self.max_movement = 100 + (endurance * 2) + equipment_bonuses.get('movement', 0)
         
         # Ensure current values don't exceed max
         if self.current_hp is None:

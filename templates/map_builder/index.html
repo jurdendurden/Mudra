@@ -597,6 +597,46 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Doors</label>
+                                <button type="button" class="btn btn-sm btn-info" onclick="showDoorHelp()">
+                                    <i class="fas fa-question-circle"></i> Help
+                                </button>
+                            </div>
+                            <div class="row" id="doorsList">
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('north')">
+                                        <i class="fas fa-door-closed"></i> North Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('south')">
+                                        <i class="fas fa-door-closed"></i> South Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('east')">
+                                        <i class="fas fa-door-closed"></i> East Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('west')">
+                                        <i class="fas fa-door-closed"></i> West Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('up')">
+                                        <i class="fas fa-door-closed"></i> Up Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('down')">
+                                        <i class="fas fa-door-closed"></i> Down Door
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label for="roomLighting" class="form-label">Lighting</label>
                             <select class="form-select" id="roomLighting">
                                 <option value="dark">Dark</option>
@@ -611,6 +651,138 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-danger" onclick="deleteRoom()" id="deleteBtn" style="display: none;">Delete</button>
                     <button type="button" class="btn btn-primary" onclick="saveRoom()">Save Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Door Editor Modal -->
+    <div class="modal fade" id="doorModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Door Editor - <span id="doorDirection"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="doorForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="doorId" class="form-label">Door ID</label>
+                                    <input type="text" class="form-control" id="doorId" required>
+                                    <small class="text-muted">Unique identifier for this door</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="doorName" class="form-label">Door Name</label>
+                                    <input type="text" class="form-control" id="doorName" required>
+                                    <small class="text-muted">e.g., "Heavy Oak Door"</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="doorDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="doorDescription" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="doorKeyId" class="form-label">Key Template ID</label>
+                                    <select class="form-select" id="doorKeyId">
+                                        <option value="">No Key Required</option>
+                                    </select>
+                                    <small class="text-muted">Required if door is locked</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="doorLockDifficulty" class="form-label">Lock Difficulty: <span id="lockDifficultyValue">0</span></label>
+                                    <input type="range" class="form-range" id="doorLockDifficulty" min="0" max="255" value="0" oninput="updateLockDifficultyLabel()">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">0 (Easy)</small>
+                                        <small class="text-muted">100 (Normal)</small>
+                                        <small class="text-muted">255 (Magical)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Door Flags</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagClosed">
+                                        <label class="form-check-label" for="flagClosed">
+                                            Closed
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door starts closed"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagLocked">
+                                        <label class="form-check-label" for="flagLocked">
+                                            Locked
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door is locked (requires key)"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagPickProof">
+                                        <label class="form-check-label" for="flagPickProof">
+                                            Pick Proof
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Cannot be picked"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagPassProof">
+                                        <label class="form-check-label" for="flagPassProof">
+                                            Pass Proof
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Cannot pass through (impassable)"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagSecret">
+                                        <label class="form-check-label" for="flagSecret">
+                                            Secret
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Hidden door (requires search)"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagHidden">
+                                        <label class="form-check-label" for="flagHidden">
+                                            Hidden
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Not visible in room description"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagNoLock">
+                                        <label class="form-check-label" for="flagNoLock">
+                                            No Lock
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door cannot be locked"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagNoKnock">
+                                        <label class="form-check-label" for="flagNoKnock">
+                                            No Knock
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Knock spell won't work"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagNoClose">
+                                        <label class="form-check-label" for="flagNoClose">
+                                            No Close
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door cannot be closed"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="deleteDoor()" id="deleteDoorBtn">Delete Door</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveDoor()">Save Door</button>
                 </div>
             </div>
         </div>
@@ -632,6 +804,9 @@
         let areas = [];
         let selectedRoom = null;
         let roomModal = null;
+        let doorModal = null;
+        let currentDoorDirection = null;
+        let availableKeys = [];
         let tooltip = null;
         let multiSelectedRooms = [];
         let isSelecting = false;
@@ -660,11 +835,15 @@
         // Initialize the map builder
         document.addEventListener('DOMContentLoaded', function() {
             roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
+            doorModal = new bootstrap.Modal(document.getElementById('doorModal'));
              
              // Create tooltip element
              tooltip = document.createElement('div');
              tooltip.className = 'room-tooltip';
              document.body.appendChild(tooltip);
+             
+             // Load available keys
+             loadKeys();
              
              // Create coordinate display element
              const coordDisplay = document.createElement('div');
@@ -1550,6 +1729,9 @@
             
             // Set lighting
             document.getElementById('roomLighting').value = room.lighting || 'normal';
+            
+            // Update door button states
+            updateDoorButtons();
             
             // Show delete button
             document.getElementById('deleteBtn').style.display = 'inline-block';
@@ -3178,6 +3360,289 @@
                 console.error('Error undoing action:', error);
                 alert('Error undoing action');
             }
+        }
+        
+        // ==================== Door Management Functions ====================
+        
+        async function loadKeys() {
+            try {
+                const response = await fetch('/api/keys');
+                availableKeys = await response.json();
+                console.log('Loaded keys:', availableKeys.length);
+            } catch (error) {
+                console.error('Error loading keys:', error);
+                availableKeys = [];
+            }
+        }
+        
+        function populateKeySelect() {
+            const keySelect = document.getElementById('doorKeyId');
+            keySelect.innerHTML = '<option value="">No Key Required</option>';
+            
+            availableKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key.template_id;
+                option.textContent = `${key.name} (${key.template_id})`;
+                keySelect.appendChild(option);
+            });
+        }
+        
+        function editDoor(direction) {
+            if (!selectedRoom) {
+                alert('Please select a room first');
+                return;
+            }
+            
+            currentDoorDirection = direction;
+            document.getElementById('doorDirection').textContent = direction.toUpperCase();
+            
+            // Populate key select
+            populateKeySelect();
+            
+            // Load existing door data if it exists
+            const existingDoor = selectedRoom.doors && selectedRoom.doors[direction];
+            
+            if (existingDoor) {
+                // Edit existing door
+                document.getElementById('doorId').value = existingDoor.door_id || '';
+                document.getElementById('doorName').value = existingDoor.name || '';
+                document.getElementById('doorDescription').value = existingDoor.description || '';
+                document.getElementById('doorKeyId').value = existingDoor.key_id || '';
+                document.getElementById('doorLockDifficulty').value = existingDoor.lock_difficulty || 0;
+                updateLockDifficultyLabel();
+                
+                // Set flags
+                const flags = existingDoor.flags || [];
+                document.getElementById('flagClosed').checked = flags.includes('closed');
+                document.getElementById('flagLocked').checked = flags.includes('locked');
+                document.getElementById('flagPickProof').checked = flags.includes('pick_proof');
+                document.getElementById('flagPassProof').checked = flags.includes('pass_proof');
+                document.getElementById('flagSecret').checked = flags.includes('secret');
+                document.getElementById('flagHidden').checked = flags.includes('hidden');
+                document.getElementById('flagNoLock').checked = flags.includes('no_lock');
+                document.getElementById('flagNoKnock').checked = flags.includes('no_knock');
+                document.getElementById('flagNoClose').checked = flags.includes('no_close');
+                
+                document.getElementById('deleteDoorBtn').style.display = 'inline-block';
+            } else {
+                // New door - generate default ID
+                const defaultDoorId = `door_${selectedRoom.room_id}_${direction}`;
+                document.getElementById('doorId').value = defaultDoorId;
+                document.getElementById('doorName').value = '';
+                document.getElementById('doorDescription').value = '';
+                document.getElementById('doorKeyId').value = '';
+                document.getElementById('doorLockDifficulty').value = 0;
+                updateLockDifficultyLabel();
+                
+                // Clear all flags
+                document.getElementById('flagClosed').checked = false;
+                document.getElementById('flagLocked').checked = false;
+                document.getElementById('flagPickProof').checked = false;
+                document.getElementById('flagPassProof').checked = false;
+                document.getElementById('flagSecret').checked = false;
+                document.getElementById('flagHidden').checked = false;
+                document.getElementById('flagNoLock').checked = false;
+                document.getElementById('flagNoKnock').checked = false;
+                document.getElementById('flagNoClose').checked = false;
+                
+                document.getElementById('deleteDoorBtn').style.display = 'none';
+            }
+            
+            doorModal.show();
+        }
+        
+        function updateLockDifficultyLabel() {
+            const difficulty = document.getElementById('doorLockDifficulty').value;
+            let label = difficulty;
+            
+            if (difficulty == 0) {
+                label += ' (No Lock)';
+            } else if (difficulty <= 25) {
+                label += ' (Trivial)';
+            } else if (difficulty <= 50) {
+                label += ' (Easy)';
+            } else if (difficulty <= 75) {
+                label += ' (Medium)';
+            } else if (difficulty <= 100) {
+                label += ' (Hard)';
+            } else if (difficulty <= 150) {
+                label += ' (Magical)';
+            } else if (difficulty <= 200) {
+                label += ' (Very Magical)';
+            } else {
+                label += ' (Nearly Impossible)';
+            }
+            
+            document.getElementById('lockDifficultyValue').textContent = label;
+        }
+        
+        async function saveDoor() {
+            if (!selectedRoom || !currentDoorDirection) {
+                alert('No room or direction selected');
+                return;
+            }
+            
+            // Collect door data
+            const doorData = {
+                door_id: document.getElementById('doorId').value.trim(),
+                name: document.getElementById('doorName').value.trim(),
+                description: document.getElementById('doorDescription').value.trim(),
+                key_id: document.getElementById('doorKeyId').value,
+                lock_difficulty: parseInt(document.getElementById('doorLockDifficulty').value),
+                flags: []
+            };
+            
+            // Collect flags
+            if (document.getElementById('flagClosed').checked) doorData.flags.push('closed');
+            if (document.getElementById('flagLocked').checked) doorData.flags.push('locked');
+            if (document.getElementById('flagPickProof').checked) doorData.flags.push('pick_proof');
+            if (document.getElementById('flagPassProof').checked) doorData.flags.push('pass_proof');
+            if (document.getElementById('flagSecret').checked) doorData.flags.push('secret');
+            if (document.getElementById('flagHidden').checked) doorData.flags.push('hidden');
+            if (document.getElementById('flagNoLock').checked) doorData.flags.push('no_lock');
+            if (document.getElementById('flagNoKnock').checked) doorData.flags.push('no_knock');
+            if (document.getElementById('flagNoClose').checked) doorData.flags.push('no_close');
+            
+            // Validate required fields
+            if (!doorData.door_id) {
+                alert('Door ID is required');
+                return;
+            }
+            
+            if (!doorData.name) {
+                alert('Door name is required');
+                return;
+            }
+            
+            // Validate locked doors have keys
+            if (doorData.flags.includes('locked') && !doorData.key_id) {
+                alert('Locked doors must have a key assigned!');
+                return;
+            }
+            
+            // Validate conflicting flags
+            if (doorData.flags.includes('no_lock') && doorData.flags.includes('locked')) {
+                alert('Door cannot have both "No Lock" and "Locked" flags');
+                return;
+            }
+            
+            if (doorData.flags.includes('no_close') && doorData.flags.includes('closed')) {
+                alert('Door cannot have both "No Close" and "Closed" flags');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/rooms/${selectedRoom.id}/doors/${currentDoorDirection}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(doorData)
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    alert(`Error: ${result.error}\n${result.details ? result.details.join('\n') : ''}`);
+                    return;
+                }
+                
+                // Update local room data
+                if (!selectedRoom.doors) {
+                    selectedRoom.doors = {};
+                }
+                selectedRoom.doors[currentDoorDirection] = doorData;
+                
+                // Update the door button appearance
+                updateDoorButtons();
+                
+                doorModal.hide();
+                alert(`Door saved successfully for ${currentDoorDirection} direction`);
+            } catch (error) {
+                console.error('Error saving door:', error);
+                alert('Error saving door');
+            }
+        }
+        
+        async function deleteDoor() {
+            if (!selectedRoom || !currentDoorDirection) {
+                alert('No room or direction selected');
+                return;
+            }
+            
+            if (!confirm(`Delete the ${currentDoorDirection} door?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/rooms/${selectedRoom.id}/doors/${currentDoorDirection}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    alert(`Error: ${result.error}`);
+                    return;
+                }
+                
+                // Remove from local room data
+                if (selectedRoom.doors && selectedRoom.doors[currentDoorDirection]) {
+                    delete selectedRoom.doors[currentDoorDirection];
+                }
+                
+                // Update the door button appearance
+                updateDoorButtons();
+                
+                doorModal.hide();
+                alert('Door deleted successfully');
+            } catch (error) {
+                console.error('Error deleting door:', error);
+                alert('Error deleting door');
+            }
+        }
+        
+        function updateDoorButtons() {
+            const directions = ['north', 'south', 'east', 'west', 'up', 'down'];
+            
+            directions.forEach(direction => {
+                const button = document.querySelector(`button[onclick="editDoor('${direction}')"]`);
+                if (button) {
+                    if (selectedRoom.doors && selectedRoom.doors[direction]) {
+                        button.classList.remove('btn-outline-warning');
+                        button.classList.add('btn-warning');
+                        button.innerHTML = `<i class="fas fa-door-closed"></i> ${direction.charAt(0).toUpperCase() + direction.slice(1)} Door ✓`;
+                    } else {
+                        button.classList.remove('btn-warning');
+                        button.classList.add('btn-outline-warning');
+                        button.innerHTML = `<i class="fas fa-door-closed"></i> ${direction.charAt(0).toUpperCase() + direction.slice(1)} Door`;
+                    }
+                }
+            });
+        }
+        
+        function showDoorHelp() {
+            const helpText = `Door System Help:
+
+Lock Difficulty:
+- 0: No lock
+- 1-100: Normal locks (pickable by thieves)
+- 101-255: Magical locks (wizard lock spell)
+
+Door Flags:
+- Closed: Door starts closed
+- Locked: Door is locked (requires key)
+- Pick Proof: Cannot be picked by thieves
+- Pass Proof: Cannot pass through at all
+- Secret: Hidden door (requires search)
+- Hidden: Not visible in room description
+- No Lock: Door cannot be locked
+- No Knock: Knock spell won't work
+- No Close: Door cannot be closed
+
+Important: Locked doors MUST have a key assigned!`;
+            
+            alert(helpText);
         }
     </script>
 </body>

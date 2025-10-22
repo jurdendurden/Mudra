@@ -4,6 +4,7 @@ from app import db
 from app.models.character import Character
 from app.models.room import Room
 from app.models.chat_message import ChatMessage
+from app.models.item import Item, ItemTemplate
 from app.utils.race_loader import apply_racial_bonuses, get_racial_skills, get_racial_skill_bonuses, get_all_race_data
 
 game_bp = Blueprint('game', __name__)
@@ -15,6 +16,29 @@ def get_starting_village_location():
         return starting_room, starting_room.x_coord, starting_room.y_coord, starting_room.z_coord
     # Default fallback to (0, 0, 0) if room not found
     return None, 0, 0, 0
+
+def give_starting_items(character):
+    """Give starting items to a new character"""
+    # Starting items: 2 potions and 1 cloth belt
+    starting_item_templates = ['minor_health_potion', 'minor_mana_potion', 'cloth_belt']
+    
+    for template_id in starting_item_templates:
+        template = ItemTemplate.query.filter_by(template_id=template_id).first()
+        if template:
+            item = Item(
+                template_id=template.id,
+                name=template.name,
+                description=template.description,
+                owner_character_id=character.id,
+                condition=100,
+                current_durability=template.max_durability
+            )
+            db.session.add(item)
+            print(f"[CREATE CHARACTER] Added starting item: {template.name}")
+        else:
+            print(f"[CREATE CHARACTER] Warning: Could not find template for {template_id}")
+    
+    db.session.commit()
 
 def validate_character_location(character):
     """Validate character location and reset to starting village if invalid"""
@@ -225,6 +249,9 @@ def create_character():
         # Verify the coordinates were saved
         db.session.refresh(character)
         print(f"[CREATE CHARACTER] Verified coordinates after commit: ({character.x_coord}, {character.y_coord}, {character.z_coord})")
+        
+        # Give starting items
+        give_starting_items(character)
         
         flash(f'Character {name} created successfully!', 'success')
         return redirect(url_for('game.index'))

@@ -12,6 +12,7 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Command Parser**: Comprehensive command system for all game interactions
 - **3D World System**: Full cartesian coordinate system with vertical movement (up/down)
 - **Map Builder**: Visual tool for creating and managing game world
+- **NPC Builder**: Comprehensive tool for creating NPCs with full character capabilities
 - **Live Minimap**: Canvas-based real-time map display showing nearby rooms, connections, and player position
 
 ### Character System
@@ -28,8 +29,30 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **Character Slot Limits**: Non-admin accounts start with 3 character slots, purchasable up to 20
 - **Shop System**: Spend account points to purchase additional character slots
 
+#### Character Sheet Interface
+- **5 Tab Navigation**: Character, Skills, Spells, Equipment, Inventory
+- **Character Tab**: View all basic info, stats, attributes (BODY, MIND, SPIRIT, KISMET), currency, and progression points
+- **Skills Tab**: Display learned skills and their levels (coming soon)
+- **Spells Tab**: View known spells and their details (coming soon)
+- **Equipment Tab**: Visual display of all 19 equipment slots with equipped items
+  - Slots: Head, Face, Neck, Shoulders, Chest, Back, Arms, Wrists, Hands, Waist, Legs, Feet, Left Ring, Right Ring, Ears, Main Hand, Off Hand, Two-Handed, Ranged
+  - Real-time stats summary showing total armor, weapon damage, attack speed
+  - Visual indicators for equipped vs empty slots
+- **Inventory Tab**: WoW-style inventory management with bag system
+  - 5 quick bag slots for equipping containers (drag-and-drop support)
+  - Dynamic inventory capacity (20 base slots + equipped bags)
+  - Grid-based item display with item icons
+  - Hover tooltips showing detailed item stats with quality-based coloring
+  - Item count and total weight tracking
+  - Equipped items do NOT take up inventory slots (they only appear in equipment slots)
+  - Bags range from 4 to 40 slots
+  - Weapon damage and armor stats display
+  - Drag items from equipment back to inventory to unequip them
+- **Keyboard Shortcut**: Press 'C' to open character sheet
+
 ### Item System
-- **Comprehensive Item Types**: 101+ item types including weapons, armor, gems, tools, crafting materials, and more
+- **Comprehensive Item Types**: 101+ item types including weapons, armor, clothing, gems, tools, crafting materials, and more
+- **Clothing Items**: Belts, cloaks, robes, and other clothing items can be equipped via drag-and-drop to equipment slots
 - **Socket System**: Items can have gem/rune sockets for customization and power
 - **Enchanting System**: Apply magical enchantments with various effects (damage types, resistances, stat bonuses)
 - **Material System**: Items crafted from different materials (mithril, dragonhide, etc.) with unique properties
@@ -56,6 +79,27 @@ progression system based on attributes, skills, and detailed item crafting/disas
 - **33+ Unique Rooms**: Each with detailed descriptions, items, NPCs, and environmental effects
 - **Coordinate Validation**: Automatic checking to prevent room overlaps
 - **Visual Map Builder**: Web-based tool for creating and editing rooms with real-time visualization
+
+#### Door, Lock & Key System
+- **Comprehensive Door Management**: Full-featured door system with locks and keys
+- **Lock Difficulty Range (0-255)**:
+  - **0**: No lock (door can be opened freely)
+  - **1-100**: Normal locks (pickable by thieves with lockpicking skill)
+  - **101-255**: Magical locks (enhanced by wizard lock spell)
+- **10 Available Keys**: From common rusty iron keys to legendary artifact keys
+- **Key Requirement**: Locked doors MUST have a key assigned (enforced by validation)
+- **9 Door Flags** for advanced behavior:
+  - **closed**: Door starts in closed state
+  - **locked**: Door is locked (requires key or lockpicking)
+  - **pick_proof**: Cannot be picked by thieves (immune to lockpicking)
+  - **pass_proof**: Cannot pass through at all (impassable barrier)
+  - **secret**: Hidden door (requires search or detection to find)
+  - **hidden**: Not visible in room description
+  - **no_lock**: Door cannot be locked
+  - **no_knock**: Knock spell won't work on this door
+  - **no_close**: Door cannot be closed
+- **Spell Support**: Designed for knock spell (magical door opening) and wizard lock (increase difficulty)
+- **Dual Validation**: Both frontend and backend enforce all rules consistently
 
 ## Technology Stack
 
@@ -160,8 +204,10 @@ Each room has:
 - `inventory/i` - View your inventory
 
 ### Equipment & Items
-- `equip <item>` - Equip an item
+- `equip <item>` - Equip an item (works with weapons, armor, and clothing)
 - `unequip <item>` - Unequip an item
+- **Drag-and-Drop Equipping**: Drag items from inventory to equipment slots for instant equipping
+- **Drag-and-Drop Unequipping**: Drag items from equipment slots back to inventory to unequip them
 - `socket <item> <gem>` - Socket a gem into an item (planned)
 - `unsocket <item> <socket_num>` - Remove a gem from a socket (planned)
 - `enchant <item> <enchantment>` - Apply an enchantment to an item (planned)
@@ -296,7 +342,11 @@ The game features 101+ distinct item types organized into categories:
 - Crafting tools (hammers, saws, looms)
 
 **Containers & Storage**
-- Backpacks and bags
+- **WoW-Style Bag System**: 5 quick bag slots for increasing inventory capacity
+- **12 Bag Types**: From Small Pouch (4 slots) to Bottomless Bag (40 slots)
+- **Dynamic Capacity**: Base 20 slots + equipped bag capacities
+- **Drag-and-Drop**: Easy bag equipping via drag-and-drop interface
+- Backpacks, pouches, satchels, and specialized bags
 - Sheaths and quivers
 - Containers with weight reduction
 
@@ -460,6 +510,218 @@ Features:
 - Room ID recycling (reuses deleted IDs)
 - Map export to JSON format
 - Real-time coordinate display
+- **Comprehensive Door/Lock/Key System** for room connections
+
+#### Using the Door Editor in Map Builder
+
+The Map Builder includes a full-featured door editor accessible when editing any room:
+
+**Accessing the Door Editor:**
+1. Select a room by clicking on it
+2. Click any directional door button (North, South, East, West, Up, Down)
+3. The door editor modal will open
+
+**Door Properties:**
+- **Door ID**: Unique identifier (required) - e.g., "village_gate_001"
+- **Door Name**: Display name (required) - e.g., "Heavy Oak Gate"
+- **Description**: Detailed description visible when examining the door
+- **Key Template**: Select from 10 available keys (REQUIRED if door is locked)
+- **Lock Difficulty** (0-255 slider):
+  - **0**: No lock - door can be freely opened
+  - **1-100**: Normal locks - pickable by thieves with lockpicking skill
+    - 1-25: Very easy
+    - 26-50: Easy
+    - 51-75: Medium
+    - 76-100: Hard
+  - **101-255**: Magical locks - enhanced by wizard lock spell
+    - 101-150: Magical
+    - 151-200: Very magical
+    - 201-255: Nearly impossible
+
+**Door Flags (checkboxes):**
+- **closed**: Door starts in closed state (players must open it)
+- **locked**: Door is locked - requires key or lockpicking (MUST assign a key!)
+- **pick_proof**: Cannot be picked by thieves (immune to lockpicking)
+- **pass_proof**: Completely impassable barrier (even when open)
+- **secret**: Hidden door requiring search or detection to find
+- **hidden**: Not visible in room description (secret passive)
+- **no_lock**: Door cannot be locked by any means
+- **no_knock**: Knock spell won't work on this door
+- **no_close**: Door cannot be closed
+
+**Validation Rules (Enforced):**
+- ✓ Locked doors MUST have a key assigned
+- ✓ Cannot combine "No Lock" with "Locked"
+- ✓ Cannot combine "No Close" with "Closed"
+- ✓ Lock difficulty must be 0-255
+- ✓ Door ID and name are required
+
+**Available Keys:**
+The system includes 10 pre-configured keys in `data/items/keys.json`:
+- **key_001**: Rusty Iron Key (common, 5 gold)
+- **key_002**: Brass Door Key (common, 15 gold)
+- **key_003**: Steel Gate Key (uncommon, 50 gold)
+- **key_004**: Silver Mansion Key (rare, 100 gold)
+- **key_005**: Golden Treasury Key (epic, 500 gold)
+- **key_006**: Skeleton Key (rare, 250 gold) - master key
+- **key_007**: Mithril Dungeon Key (epic, 750 gold) - magical
+- **key_008**: Obsidian Prison Key (legendary, 1000 gold) - cursed
+- **key_009**: Crystal Tower Key (legendary, 1500 gold)
+- **key_010**: Ancient Rune Key (artifact, 2500 gold) - quest item
+
+**Usage Examples:**
+
+*Simple Closed Door:*
+- Door ID: "inn_room_001"
+- Name: "Wooden Door"
+- Flags: closed
+- Lock Difficulty: 0
+- Key: None
+
+*Locked Door:*
+- Door ID: "treasure_vault_001"
+- Name: "Iron Treasury Door"
+- Flags: closed, locked
+- Lock Difficulty: 75
+- Key: key_005 (Golden Treasury Key)
+
+*Secret Magical Door:*
+- Door ID: "wizard_tower_secret"
+- Name: "Hidden Magical Portal"
+- Flags: secret, hidden, locked, no_knock
+- Lock Difficulty: 200
+- Key: key_010 (Ancient Rune Key)
+
+*Impassable Magical Barrier:*
+- Door ID: "demon_seal_001"
+- Name: "Demonic Seal"
+- Flags: closed, locked, pass_proof, no_knock, pick_proof
+- Lock Difficulty: 255
+- Key: key_010 (Ancient Rune Key)
+
+#### Door/Lock/Key System
+The Map Builder includes a comprehensive door system for creating locked doors, secret passages, and complex access control:
+
+**Lock Difficulty Ranges:**
+- `0`: No lock
+- `1-25`: Trivial locks (beginner thieves can pick)
+- `26-50`: Easy locks (novice thieves can pick)
+- `51-75`: Medium locks (experienced thieves needed)
+- `76-100`: Hard locks (master thieves only)
+- `101-150`: Magical locks (wizard lock spell)
+- `151-200`: Very magical locks (powerful wizard lock)
+- `201-255`: Nearly impossible (arcane sealing magic)
+
+**Door Flags:**
+- `closed`: Door starts in a closed state
+- `locked`: Door is locked (requires matching key)
+- `pick_proof`: Cannot be picked by thieves (must use key)
+- `pass_proof`: Cannot pass through at all (impassable wall)
+- `secret`: Hidden door that requires search to find
+- `hidden`: Door is not visible in room descriptions
+- `no_lock`: Door cannot be locked
+- `no_knock`: Knock spell will not work on this door
+- `no_close`: Door cannot be closed
+
+**Key System:**
+- Keys are item templates stored in `data/items/keys.json`
+- 10 pre-configured key templates from rusty iron keys to ancient rune keys
+- Each locked door MUST have an associated key template ID
+- System prevents creating locked doors without assigned keys
+- Keys can be unique (quest items) or common (dungeon keys)
+
+**Using the Door Editor:**
+1. Open a room for editing in the Map Builder
+2. Click on any of the 6 door buttons (North, South, East, West, Up, Down)
+3. Configure door properties:
+   - Unique door ID
+   - Door name and description
+   - Key template (required if locked)
+   - Lock difficulty (0-255 slider)
+   - Door flags (checkboxes)
+4. System validates:
+   - Locked doors have keys assigned
+   - Conflicting flags (e.g., no_lock + locked)
+   - Required fields (door ID, name)
+
+**Integration with Game Mechanics:**
+- Players will need keys in inventory to unlock doors
+- Thieves can attempt to pick locks (difficulty check)
+- Wizards can cast "Knock" spell to open doors (unless no_knock flag)
+- "Wizard Lock" spell increases lock difficulty by 100+
+- Secret doors require search skill checks to discover
+
+### NPC Builder Tool
+The NPC Builder is a comprehensive visual interface for creating and managing NPCs:
+
+```bash
+# Run the NPC builder (separate from main app)
+python npc_builder.py
+```
+
+Access at `http://localhost:5002`
+
+Features:
+- Full NPC creation with all character-like attributes
+- Auto-generated unique NPC IDs (editable with duplicate prevention)
+- Visual NPC list with search/filter functionality
+- Complete attribute system (Body, Mind, Spirit, Kismet)
+- Skills and spells management
+- Currency management (gold, silver, copper)
+- Room assignment with area-based filtering
+- AI behavior configuration
+- Faction and reputation settings
+- Respawn time configuration
+- Hostility and unique NPC flags
+
+**NPC Capabilities:**
+NPCs are functionally identical to player characters with additional AI features:
+- Full attribute system (14 sub-attributes across 4 prime attributes)
+- Skills and spells (can learn/cast like players)
+- Inventory and equipment (can carry items, wear armor/weapons)
+- Currency (can hold gold, silver, copper)
+- HP, Mana, and Movement stats
+- Trial Points and Progress Points
+- Race selection with all racial bonuses
+
+**NPC-Specific Features:**
+- **AI Behavior**: Passive, Aggressive, Defensive, Merchant, Quest Giver, Guard, Patrol
+- **Hostility**: Flag NPCs as hostile or friendly
+- **Respawn Time**: Configure respawn delay in seconds (0 = no respawn)
+- **Unique Flag**: Prevent respawn for special/quest NPCs
+- **Faction**: Assign NPCs to factions for reputation system
+- **Reputation Required**: Set minimum reputation to interact
+- **Loot Tables**: Define items dropped on death (coming soon)
+- **Dialogue Trees**: Create conversation paths (coming soon)
+
+**Using the NPC Builder:**
+1. Click "Create New NPC" to start building
+2. Fill in basic information:
+   - NPC ID (unique identifier)
+   - Name (must be unique)
+   - Race selection
+   - Description
+   - Avatar
+3. Set location (room and coordinates)
+4. Configure attributes manually or auto-calculate
+5. Add skills and spells as needed
+6. Set currency amounts
+7. Configure AI behavior and properties
+8. Save to database
+
+**Editing Existing NPCs:**
+- Click any NPC from the list to edit
+- All fields are editable
+- Changes save immediately to database
+- Delete NPCs with confirmation prompt
+
+**Integration with Game World:**
+- NPCs appear in assigned rooms
+- Can be interacted with by players
+- Merchant NPCs can trade items
+- Quest NPCs can give quests (when quest system is implemented)
+- Hostile NPCs will attack players
+- Respawn at configured intervals
 
 ### In-Game Minimap
 The game features a live minimap displayed on the right panel:
@@ -555,8 +817,15 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [x] Crafting system framework
 - [x] Disassembly mechanics with component recovery
 - [x] Item flags system (50+ flags)
+- [x] WoW-style bag system with 5 quick slots and dynamic capacity
+- [x] Grid-based inventory UI with hover tooltips
+- [x] Drag-and-drop bag equipping
+- [x] Container items with slot capacities (4-40 slots)
+- [x] Clothing items recognized as equipment (belts, cloaks, robes, etc.)
+- [x] Drag-and-drop equipment system for all equippable items
+- [x] Equipped items excluded from inventory (only appear in equipment slots)
+- [x] Drag-and-drop unequipping (drag from equipment to inventory)
 - [ ] Full crafting UI integration
-- [ ] Equipment display in character sheet
 - [ ] Socket/enchant commands
 
 ### Phase 3.5: Chat System ✅
@@ -601,7 +870,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [x] Visual Map Builder tool
 - [x] Coordinate validation system
 - [x] Multi-level support (up/down movement)
-- [ ] NPC framework
+- [x] NPC framework with visual builder tool
 - [ ] Loot generation
 - [x] Minimap implementation
 

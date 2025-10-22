@@ -1,0 +1,135 @@
+{
+  "keys": [
+    {
+      "template_id": "key_001",
+      "name": "Rusty Iron Key",
+      "description": "A small iron key, tarnished with age. Its simple design suggests it opens a basic lock.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.1,
+      "value": 5,
+      "quality_tier": "common",
+      "material": "iron",
+      "item_flags": ["no_drop"],
+      "max_durability": 50
+    },
+    {
+      "template_id": "key_002",
+      "name": "Brass Door Key",
+      "description": "A polished brass key with ornate engravings along its shaft. It appears well-maintained.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.1,
+      "value": 15,
+      "quality_tier": "common",
+      "material": "brass",
+      "item_flags": [],
+      "max_durability": 75
+    },
+    {
+      "template_id": "key_003",
+      "name": "Steel Gate Key",
+      "description": "A heavy steel key with a complex bit pattern. This key opens an important lock.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.2,
+      "value": 50,
+      "quality_tier": "uncommon",
+      "material": "steel",
+      "item_flags": ["no_drop"],
+      "max_durability": 100
+    },
+    {
+      "template_id": "key_004",
+      "name": "Silver Mansion Key",
+      "description": "An elegant silver key with fine craftsmanship. It bears the seal of a noble house.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.15,
+      "value": 100,
+      "quality_tier": "rare",
+      "material": "silver",
+      "item_flags": ["no_drop"],
+      "max_durability": 150
+    },
+    {
+      "template_id": "key_005",
+      "name": "Golden Treasury Key",
+      "description": "A magnificent golden key adorned with precious gems. This key opens only the most valuable vaults.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.3,
+      "value": 500,
+      "quality_tier": "epic",
+      "material": "gold",
+      "item_flags": ["no_drop", "unique"],
+      "max_durability": 200
+    },
+    {
+      "template_id": "key_006",
+      "name": "Skeleton Key",
+      "description": "A master key capable of opening multiple locks. Its intricate design allows it to bypass simple mechanisms.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.15,
+      "value": 250,
+      "quality_tier": "rare",
+      "material": "steel",
+      "item_flags": ["unique"],
+      "max_durability": 100
+    },
+    {
+      "template_id": "key_007",
+      "name": "Mithril Dungeon Key",
+      "description": "A lightweight yet incredibly strong key forged from mithril. It glows faintly with magical energy.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.05,
+      "value": 750,
+      "quality_tier": "epic",
+      "material": "mithril",
+      "item_flags": ["no_drop", "unique", "magical"],
+      "max_durability": 300
+    },
+    {
+      "template_id": "key_008",
+      "name": "Obsidian Prison Key",
+      "description": "A dark, sinister-looking key carved from obsidian. Dark magic seems to emanate from its surface.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.2,
+      "value": 1000,
+      "quality_tier": "legendary",
+      "material": "obsidian",
+      "item_flags": ["no_drop", "unique", "cursed", "magical"],
+      "max_durability": 500
+    },
+    {
+      "template_id": "key_009",
+      "name": "Crystal Tower Key",
+      "description": "A translucent key made of pure crystal. Light refracts through it in mesmerizing patterns.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.1,
+      "value": 1500,
+      "quality_tier": "legendary",
+      "material": "crystal",
+      "item_flags": ["no_drop", "unique", "magical"],
+      "max_durability": 250
+    },
+    {
+      "template_id": "key_010",
+      "name": "Ancient Rune Key",
+      "description": "An artifact from a forgotten age, covered in glowing runes. This key can open magically sealed doors.",
+      "base_type": "key",
+      "item_type": 20,
+      "weight": 0.15,
+      "value": 2500,
+      "quality_tier": "artifact",
+      "material": "enchanted_steel",
+      "item_flags": ["no_drop", "unique", "magical", "quest_item"],
+      "max_durability": 1000
+    }
+  ]
+}
+

@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mudra - NPC Builder</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .builder-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .builder-header {
+            background: #2c3e50;
+            padding: 15px;
+            border-bottom: 2px solid #34495e;
+        }
+        
+        .builder-main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 350px;
+            background: #34495e;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .content-area {
+            flex: 1;
+            background: #2c3e50;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .npc-card {
+            background: #1a252f;
+            border: 1px solid #34495e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .npc-card:hover {
+            background: #243447;
+            border-color: #3498db;
+        }
+        
+        .npc-card.selected {
+            background: #2c5282;
+            border-color: #3498db;
+        }
+        
+        .form-control, .form-select {
+            background-color: #34495e;
+            border: 1px solid #4a5f7f;
+            color: #ffffff;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: #34495e;
+            color: #ffffff;
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .form-control:read-only {
+            background-color: #2c3e50;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .form-control:disabled, .form-select:disabled, textarea:disabled {
+            background-color: #1a252f;
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #2c3e50;
+        }
+        
+        .attr-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #2980b9;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #21618c;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+            border-color: #229954;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            border-color: #c0392b;
+        }
+        
+        .section-title {
+            background: #1a252f;
+            padding: 10px;
+            margin: 20px 0 10px 0;
+            border-left: 4px solid #3498db;
+            font-weight: bold;
+        }
+        
+        .attribute-group {
+            background: #1a252f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .sub-attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 5px;
+        }
+        
+        .sub-attribute label {
+            min-width: 100px;
+            margin-right: 5px;
+            margin-bottom: 0;
+        }
+        
+        .sub-attribute input {
+            max-width: 60px;
+            text-align: center;
+        }
+        
+        .attr-btn {
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            min-width: 40px;
+            border: none;
+            background: #3498db;
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .attr-btn:hover {
+            background: #2980b9;
+        }
+        
+        .attr-btn:active {
+            background: #21618c;
+        }
+        
+        .skill-spell-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: #34495e;
+            border-radius: 4px;
+        }
+        
+        .skill-spell-item label {
+            flex: 1;
+            margin-right: 10px;
+            margin-bottom: 0;
+        }
+        
+        .skill-spell-item input {
+            max-width: 80px;
+        }
+        
+        .skill-spell-item button {
+            margin-left: 10px;
+        }
+        
+        
+        .stats-display {
+            background: #1a252f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-split {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-split label {
+            min-width: 100px;
+            margin-bottom: 0;
+        }
+        
+        .stat-split input {
+            max-width: 70px;
+            text-align: center;
+        }
+        
+        .stat-slash {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #95a5a6;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #34495e;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        
+        .currency-input {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .currency-input .input-group {
+            width: 100%;
+        }
+        
+        .currency-input .input-group input {
+            max-width: 80px;
+        }
+        
+        .npc-search {
+            margin-bottom: 15px;
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            margin-left: 5px;
+        }
+        
+        .hostile-badge {
+            background-color: #e74c3c;
+        }
+        
+        .passive-badge {
+            background-color: #27ae60;
+        }
+        
+        .unique-badge {
+            background-color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <div class="builder-container">
+        <!-- Header -->
+        <div class="builder-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2><i class="fas fa-users"></i> NPC Builder</h2>
+                <div>
+                    <button class="btn btn-success" id="createNewNpcBtn">
+                        <i class="fas fa-plus"></i> Create New NPC
+                    </button>
+                    <button type="button" class="btn btn-primary me-2" id="saveNpcBtn" disabled onclick="document.getElementById('npcForm').requestSubmit();">
+                        <i class="fas fa-save"></i> Save NPC
+                    </button>
+                    <button type="button" class="btn btn-danger me-2" id="deleteNpcBtn" disabled>
+                        <i class="fas fa-trash"></i> Delete NPC
+                    </button>
+                    <button type="button" class="btn btn-secondary me-2" id="cancelEditBtn" disabled>
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <a href="/" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Back to Game
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="builder-main">
+            <!-- Sidebar with NPC List -->
+            <div class="sidebar">
+                <h4>NPCs</h4>
+                <input type="text" class="form-control npc-search" id="npcSearch" placeholder="Search NPCs...">
+                <div id="npcList">
+                    <!-- NPCs will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div id="editorArea">
+                    <h3 id="editorTitle">Create New NPC</h3>
+                    
+                    <form id="npcForm">
+                        <!-- Basic Information -->
+                        <div class="section-title">Basic Information</div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">NPC ID *</label>
+                                <input type="text" class="form-control" id="npcId" required>
+                                <small class="text-muted">Auto-generated unique ID (editable)</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Name *</label>
+                                <input type="text" class="form-control" id="npcName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Race</label>
+                                <select class="form-select" id="npcRace">
+                                    <option value="">Select Race</option>
+                                    {% for race in races %}
+                                    <option value="{{ race }}">{{ race }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="npcDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <!-- Location -->
+                        <div class="section-title">Location</div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Area Filter</label>
+                                <select class="form-select" id="areaFilter">
+                                    <option value="">All Areas</option>
+                                </select>
+                                <small class="text-muted">Filter rooms by area</small>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">Room</label>
+                                <select class="form-select" id="npcRoom">
+                                    <option value="">Select Room</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">X Coordinate</label>
+                                <input type="number" class="form-control" id="npcX" value="0" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Y Coordinate</label>
+                                <input type="number" class="form-control" id="npcY" value="0" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Z Coordinate</label>
+                                <input type="number" class="form-control" id="npcZ" value="0" readonly>
+                            </div>
+                        </div>
+                        <small class="text-muted">Coordinates are automatically set based on the selected room.</small>
+                        
+                        <!-- Attributes -->
+                        <div class="section-title">Attributes</div>
+                        
+                        <div class="row">
+                            <!-- Body -->
+                            <div class="col-md-6 mb-3">
+                                <div class="attribute-group">
+                                    <h5>Body</h5>
+                                    <div class="sub-attribute">
+                                        <label>Strength</label>
+                                        <input type="number" class="form-control attr-input" id="attr_body_strength" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_strength', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_strength', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_strength', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Durability</label>
+                                        <input type="number" class="form-control attr-input" id="attr_body_durability" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_durability', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_durability', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_durability', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Endurance</label>
+                                        <input type="number" class="form-control attr-input" id="attr_body_endurance" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_endurance', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_endurance', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_endurance', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Vitality</label>
+                                        <input type="number" class="form-control attr-input" id="attr_body_vitality" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_vitality', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_vitality', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_body_vitality', 25)">+25</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mind -->
+                            <div class="col-md-6 mb-3">
+                                <div class="attribute-group">
+                                    <h5>Mind</h5>
+                                    <div class="sub-attribute">
+                                        <label>Intellect</label>
+                                        <input type="number" class="form-control attr-input" id="attr_mind_intellect" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_intellect', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_intellect', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_intellect', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Cognition</label>
+                                        <input type="number" class="form-control attr-input" id="attr_mind_cognition" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_cognition', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_cognition', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_cognition', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Willpower</label>
+                                        <input type="number" class="form-control attr-input" id="attr_mind_willpower" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_willpower', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_willpower', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_willpower', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Psionics</label>
+                                        <input type="number" class="form-control attr-input" id="attr_mind_psionics" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_psionics', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_psionics', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_mind_psionics', 25)">+25</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Spirit -->
+                            <div class="col-md-6 mb-3">
+                                <div class="attribute-group">
+                                    <h5>Spirit</h5>
+                                    <div class="sub-attribute">
+                                        <label>Mystical</label>
+                                        <input type="number" class="form-control attr-input" id="attr_spirit_mystical" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_mystical', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_mystical', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_mystical', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Magical</label>
+                                        <input type="number" class="form-control attr-input" id="attr_spirit_magical" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_magical', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_magical', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_magical', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Metaphysical</label>
+                                        <input type="number" class="form-control attr-input" id="attr_spirit_metaphysical" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_metaphysical', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_metaphysical', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_metaphysical', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Percipience</label>
+                                        <input type="number" class="form-control attr-input" id="attr_spirit_percipience" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_percipience', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_percipience', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_spirit_percipience', 25)">+25</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Kismet -->
+                            <div class="col-md-6 mb-3">
+                                <div class="attribute-group">
+                                    <h5>Kismet</h5>
+                                    <div class="sub-attribute">
+                                        <label>Luck</label>
+                                        <input type="number" class="form-control attr-input" id="attr_kismet_luck" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_kismet_luck', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_kismet_luck', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_kismet_luck', 25)">+25</button>
+                                    </div>
+                                    <div class="sub-attribute">
+                                        <label>Charisma</label>
+                                        <input type="number" class="form-control attr-input" id="attr_kismet_charisma" value="0" min="0" max="100">
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_kismet_charisma', 1)">+1</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_kismet_charisma', 10)">+10</button>
+                                        <button type="button" class="attr-btn" onclick="incrementAttr('attr_kismet_charisma', 25)">+25</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Derived Stats -->
+                        <div class="section-title">Stats & Currency</div>
+                        <div class="stats-display">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="stat-split">
+                                        <label>HP</label>
+                                        <input type="number" class="form-control stat-current" id="currentHp" value="100" min="0" data-max-field="maxHp">
+                                        <span class="stat-slash">/</span>
+                                        <input type="number" class="form-control stat-max" id="maxHp" value="100" min="1">
+                                    </div>
+                                    <div class="stat-split">
+                                        <label>Mana</label>
+                                        <input type="number" class="form-control stat-current" id="currentMana" value="50" min="0" data-max-field="maxMana">
+                                        <span class="stat-slash">/</span>
+                                        <input type="number" class="form-control stat-max" id="maxMana" value="50" min="1">
+                                    </div>
+                                    <div class="stat-split">
+                                        <label>Movement</label>
+                                        <input type="number" class="form-control stat-current" id="currentMovement" value="100" min="0" data-max-field="maxMovement">
+                                        <span class="stat-slash">/</span>
+                                        <input type="number" class="form-control stat-max" id="maxMovement" value="100" min="1">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="currency-input">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Gold</span>
+                                            <input type="number" class="form-control" id="gold" value="0" min="0">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Silver</span>
+                                            <input type="number" class="form-control" id="silver" value="0" min="0">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Copper</span>
+                                            <input type="number" class="form-control" id="copper" value="0" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Trial Points</label>
+                                    <input type="number" class="form-control" id="trialPoints" value="20" min="0">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Progress Points</label>
+                                    <input type="number" class="form-control" id="progressPoints" value="0" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Skills -->
+                        <div class="section-title">Skills</div>
+                        <div id="skillsContainer" class="mb-3">
+                            <button type="button" class="btn btn-sm btn-primary" id="addSkillBtn">
+                                <i class="fas fa-plus"></i> Add Skill
+                            </button>
+                            <div id="skillsList" class="mt-2">
+                                <!-- Skills will be added here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Spells -->
+                        <div class="section-title">Spells</div>
+                        <div id="spellsContainer" class="mb-3">
+                            <button type="button" class="btn btn-sm btn-primary" id="addSpellBtn">
+                                <i class="fas fa-plus"></i> Add Spell
+                            </button>
+                            <div id="spellsList" class="mt-2">
+                                <!-- Spells will be added here -->
+                            </div>
+                        </div>
+                        
+                        <!-- NPC Behavior -->
+                        <div class="section-title">NPC Behavior</div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">AI Behavior</label>
+                                <select class="form-select" id="aiBehavior">
+                                    <option value="passive">Passive</option>
+                                    <option value="aggressive">Aggressive</option>
+                                    <option value="defensive">Defensive</option>
+                                    <option value="merchant">Merchant</option>
+                                    <option value="quest_giver">Quest Giver</option>
+                                    <option value="guard">Guard</option>
+                                    <option value="patrol">Patrol</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Faction</label>
+                                <input type="text" class="form-control" id="faction" placeholder="e.g., town_guard">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Respawn Time (seconds)</label>
+                                <input type="number" class="form-control" id="respawnTime" value="0" min="0">
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="isHostile">
+                                    <label class="form-check-label" for="isHostile">Hostile</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="isUnique">
+                                    <label class="form-check-label" for="isUnique">Unique (No Respawn)</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Reputation Required</label>
+                                <input type="number" class="form-control" id="reputationRequired" value="0">
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let npcs = [];
+        let skills = {{ skills|tojson }};
+        let spells = {{ spells|tojson }};
+        let currentNpcId = null;
+        let rooms = [];
+        let areas = [];
+        let isEditing = false;
+        
+        // Load NPCs on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNPCs();
+            loadAreas();
+            loadRooms();
+            
+            // Event listeners
+            document.getElementById('createNewNpcBtn').addEventListener('click', showCreateForm);
+            document.getElementById('npcForm').addEventListener('submit', saveNPC);
+            document.getElementById('cancelEditBtn').addEventListener('click', hideEditor);
+            document.getElementById('deleteNpcBtn').addEventListener('click', deleteNPC);
+            document.getElementById('addSkillBtn').addEventListener('click', showSkillSelector);
+            document.getElementById('addSpellBtn').addEventListener('click', showSpellSelector);
+            document.getElementById('npcSearch').addEventListener('input', filterNPCs);
+            document.getElementById('areaFilter').addEventListener('change', filterRoomsByArea);
+            document.getElementById('npcRoom').addEventListener('change', updateCoordinatesFromRoom);
+            
+            // Add input validation for all attribute inputs
+            document.querySelectorAll('.attr-input').forEach(input => {
+                input.addEventListener('input', validateAttributeInput);
+                input.addEventListener('blur', validateAttributeInput);
+            });
+            
+            // Add validation for stat current/max fields
+            document.querySelectorAll('.stat-current').forEach(input => {
+                input.addEventListener('input', validateStatCurrent);
+                input.addEventListener('blur', validateStatCurrent);
+            });
+            
+            document.querySelectorAll('.stat-max').forEach(input => {
+                input.addEventListener('input', validateStatMax);
+                input.addEventListener('blur', validateStatMax);
+            });
+            
+            // Disable form fields initially
+            disableFormFields();
+        });
+        
+        function disableFormFields() {
+            // Disable all form inputs, selects, and textareas
+            document.querySelectorAll('#npcForm input, #npcForm select, #npcForm textarea').forEach(field => {
+                field.disabled = true;
+            });
+            
+            // Disable all attribute increment buttons
+            document.querySelectorAll('.attr-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Disable skill and spell action buttons
+            document.getElementById('addSkillBtn').disabled = true;
+            document.getElementById('addSpellBtn').disabled = true;
+        }
+        
+        function enableFormFields() {
+            // Enable all form inputs, selects, and textareas
+            document.querySelectorAll('#npcForm input, #npcForm select, #npcForm textarea').forEach(field => {
+                field.disabled = false;
+            });
+            
+            // Enable all attribute increment buttons
+            document.querySelectorAll('.attr-btn').forEach(btn => {
+                btn.disabled = false;
+            });
+            
+            // Enable skill and spell action buttons
+            document.getElementById('addSkillBtn').disabled = false;
+            document.getElementById('addSpellBtn').disabled = false;
+        }
+        
+        function loadNPCs() {
+            fetch('/api/npcs')
+                .then(response => response.json())
+                .then(data => {
+                    npcs = data;
+                    renderNPCList();
+                })
+                .catch(error => console.error('Error loading NPCs:', error));
+        }
+        
+        function loadAreas() {
+            fetch('/api/areas')
+                .then(response => response.json())
+                .then(data => {
+                    areas = data;
+                    const select = document.getElementById('areaFilter');
+                    data.forEach(area => {
+                        const option = document.createElement('option');
+                        option.value = area.id;  // Use area.id (integer) not area.area_id (string)
+                        option.textContent = area.name;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading areas:', error));
+        }
+        
+        function loadRooms() {
+            fetch('/api/rooms')
+                .then(response => response.json())
+                .then(data => {
+                    rooms = data;
+                    populateRoomDropdown();
+                })
+                .catch(error => console.error('Error loading rooms:', error));
+        }
+        
+        function populateRoomDropdown() {
+            const areaFilter = document.getElementById('areaFilter').value;
+            const roomSelect = document.getElementById('npcRoom');
+            const currentValue = roomSelect.value; // Preserve current selection
+            
+            // Clear existing options except the first one
+            roomSelect.innerHTML = '<option value="">Select Room</option>';
+            
+            // Filter rooms by selected area
+            const filteredRooms = areaFilter 
+                ? rooms.filter(room => room.area_id === parseInt(areaFilter))
+                : rooms;
+            
+            // Sort rooms by name
+            filteredRooms.sort((a, b) => a.name.localeCompare(b.name));
+            
+            // Populate dropdown
+            filteredRooms.forEach(room => {
+                const option = document.createElement('option');
+                option.value = room.id;
+                option.textContent = `${room.name} (${room.room_id})`;
+                option.dataset.areaId = room.area_id;
+                roomSelect.appendChild(option);
+            });
+            
+            // Restore previous selection if it's still available
+            if (currentValue) {
+                roomSelect.value = currentValue;
+            }
+        }
+        
+        function filterRoomsByArea() {
+            populateRoomDropdown();
+        }
+        
+        function updateCoordinatesFromRoom() {
+            const roomId = document.getElementById('npcRoom').value;
+            if (!roomId) {
+                document.getElementById('npcX').value = 0;
+                document.getElementById('npcY').value = 0;
+                document.getElementById('npcZ').value = 0;
+                return;
+            }
+            
+            const room = rooms.find(r => r.id === parseInt(roomId));
+            if (room) {
+                document.getElementById('npcX').value = room.x;
+                document.getElementById('npcY').value = room.y;
+                document.getElementById('npcZ').value = room.z;
+            }
+        }
+        
+        function renderNPCList() {
+            const list = document.getElementById('npcList');
+            list.innerHTML = '';
+            
+            npcs.forEach(npc => {
+                const card = document.createElement('div');
+                card.className = 'npc-card';
+                card.innerHTML = `
+                    <strong>${npc.name}</strong>
+                    <br>
+                    <small>${npc.npc_id}</small>
+                    ${npc.is_hostile ? '<span class="badge hostile-badge">Hostile</span>' : '<span class="badge passive-badge">Passive</span>'}
+                    ${npc.is_unique ? '<span class="badge unique-badge">Unique</span>' : ''}
+                    <br>
+                    <small class="text-muted">${npc.race || 'No Race'} | ${npc.ai_behavior}</small>
+                `;
+                card.addEventListener('click', () => editNPC(npc.id));
+                list.appendChild(card);
+            });
+        }
+        
+        function filterNPCs() {
+            const search = document.getElementById('npcSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.npc-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(search) ? 'block' : 'none';
+            });
+        }
+        
+        function generateUniqueNpcId() {
+            // Extract all numeric IDs from existing NPCs with pattern "npc_X"
+            const numericIds = npcs
+                .map(npc => {
+                    const match = npc.npc_id.match(/^npc_(\d+)$/);
+                    return match ? parseInt(match[1], 10) : null;
+                })
+                .filter(id => id !== null);
+            
+            // Find the highest number and increment
+            const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
+            return `npc_${maxId + 1}`;
+        }
+        
+        function showCreateForm() {
+            // Check if already editing and confirm
+            if (isEditing) {
+                if (!confirm('You have unsaved changes. Are you sure you want to create a new NPC? Your current work will be lost.')) {
+                    return;
+                }
+            }
+            
+            currentNpcId = null;
+            isEditing = true;
+            document.getElementById('editorTitle').textContent = 'Create New NPC';
+            
+            // Enable Save and Cancel, disable Delete
+            document.getElementById('saveNpcBtn').disabled = false;
+            document.getElementById('deleteNpcBtn').disabled = true;
+            document.getElementById('cancelEditBtn').disabled = false;
+            
+            // Enable form fields
+            enableFormFields();
+            
+            document.getElementById('npcForm').reset();
+            document.getElementById('skillsList').innerHTML = '';
+            document.getElementById('spellsList').innerHTML = '';
+            
+            // Generate and set a unique NPC ID
+            document.getElementById('npcId').value = generateUniqueNpcId();
+            
+            // Reset area filter and repopulate rooms
+            document.getElementById('areaFilter').value = '';
+            populateRoomDropdown();
+        }
+        
+        function editNPC(id) {
+            // Check if already editing and confirm
+            if (isEditing) {
+                if (!confirm('You have unsaved changes. Are you sure you want to edit a different NPC? Your current work will be lost.')) {
+                    return;
+                }
+            }
+            
+            const npc = npcs.find(n => n.id === id);
+            if (!npc) return;
+            
+            currentNpcId = id;
+            isEditing = true;
+            document.getElementById('editorTitle').textContent = 'Edit NPC: ' + npc.name;
+            
+            // Enable all action buttons
+            document.getElementById('saveNpcBtn').disabled = false;
+            document.getElementById('deleteNpcBtn').disabled = false;
+            document.getElementById('cancelEditBtn').disabled = false;
+            
+            // Enable form fields
+            enableFormFields();
+            
+            // Basic info
+            document.getElementById('npcId').value = npc.npc_id;
+            document.getElementById('npcName').value = npc.name;
+            document.getElementById('npcRace').value = npc.race || '';
+            document.getElementById('npcDescription').value = npc.description || '';
+            
+            // Location
+            // Set area filter based on the room's area
+            if (npc.current_room_id) {
+                const room = rooms.find(r => r.id === npc.current_room_id);
+                if (room && room.area_id) {
+                    document.getElementById('areaFilter').value = room.area_id;
+                    populateRoomDropdown();
+                }
+            }
+            document.getElementById('npcRoom').value = npc.current_room_id || '';
+            document.getElementById('npcX').value = npc.x;
+            document.getElementById('npcY').value = npc.y;
+            document.getElementById('npcZ').value = npc.z;
+            
+            // Attributes
+            const attrs = npc.attributes || {};
+            ['body', 'mind', 'spirit', 'kismet'].forEach(prime => {
+                const primeAttrs = attrs[prime] || {};
+                Object.keys(primeAttrs).forEach(sub => {
+                    const elem = document.getElementById(`attr_${prime}_${sub}`);
+                    if (elem) elem.value = primeAttrs[sub];
+                });
+            });
+            
+            // Stats
+            document.getElementById('maxHp').value = npc.max_hp;
+            document.getElementById('currentHp').value = npc.current_hp;
+            document.getElementById('maxMana').value = npc.max_mana;
+            document.getElementById('currentMana').value = npc.current_mana;
+            document.getElementById('maxMovement').value = npc.max_movement;
+            document.getElementById('currentMovement').value = npc.current_movement;
+            document.getElementById('trialPoints').value = npc.trial_points;
+            document.getElementById('progressPoints').value = npc.progress_points;
+            
+            // Currency
+            document.getElementById('gold').value = npc.gold;
+            document.getElementById('silver').value = npc.silver;
+            document.getElementById('copper').value = npc.copper;
+            
+            // Skills
+            const skillsList = document.getElementById('skillsList');
+            skillsList.innerHTML = '';
+            Object.entries(npc.skills || {}).forEach(([skillId, level]) => {
+                addSkillToList(skillId, level);
+            });
+            
+            // Spells
+            const spellsList = document.getElementById('spellsList');
+            spellsList.innerHTML = '';
+            Object.entries(npc.spells || {}).forEach(([spellId, level]) => {
+                addSpellToList(spellId, level);
+            });
+            
+            // Behavior
+            document.getElementById('aiBehavior').value = npc.ai_behavior || 'passive';
+            document.getElementById('faction').value = npc.faction || '';
+            document.getElementById('respawnTime').value = npc.respawn_time || 0;
+            document.getElementById('isHostile').checked = npc.is_hostile || false;
+            document.getElementById('isUnique').checked = npc.is_unique || false;
+            document.getElementById('reputationRequired').value = npc.reputation_required || 0;
+        }
+        
+        function hideEditor() {
+            isEditing = false;
+            currentNpcId = null;
+            
+            // Disable all action buttons
+            document.getElementById('saveNpcBtn').disabled = true;
+            document.getElementById('deleteNpcBtn').disabled = true;
+            document.getElementById('cancelEditBtn').disabled = true;
+            
+            // Disable form fields
+            disableFormFields();
+            
+            // Reset form
+            document.getElementById('editorTitle').textContent = 'Create New NPC';
+            document.getElementById('npcForm').reset();
+            document.getElementById('skillsList').innerHTML = '';
+            document.getElementById('spellsList').innerHTML = '';
+            
+            // Reset area filter
+            document.getElementById('areaFilter').value = '';
+            populateRoomDropdown();
+        }
+        
+        function saveNPC(e) {
+            e.preventDefault();
+            
+            // Collect attributes
+            const attributes = {
+                body: {
+                    strength: parseInt(document.getElementById('attr_body_strength').value),
+                    durability: parseInt(document.getElementById('attr_body_durability').value),
+                    endurance: parseInt(document.getElementById('attr_body_endurance').value),
+                    vitality: parseInt(document.getElementById('attr_body_vitality').value)
+                },
+                mind: {
+                    intellect: parseInt(document.getElementById('attr_mind_intellect').value),
+                    cognition: parseInt(document.getElementById('attr_mind_cognition').value),
+                    willpower: parseInt(document.getElementById('attr_mind_willpower').value),
+                    psionics: parseInt(document.getElementById('attr_mind_psionics').value)
+                },
+                spirit: {
+                    mystical: parseInt(document.getElementById('attr_spirit_mystical').value),
+                    magical: parseInt(document.getElementById('attr_spirit_magical').value),
+                    metaphysical: parseInt(document.getElementById('attr_spirit_metaphysical').value),
+                    percipience: parseInt(document.getElementById('attr_spirit_percipience').value)
+                },
+                kismet: {
+                    luck: parseInt(document.getElementById('attr_kismet_luck').value),
+                    charisma: parseInt(document.getElementById('attr_kismet_charisma').value)
+                }
+            };
+            
+            // Collect skills
+            const skillsObj = {};
+            document.querySelectorAll('.skill-item').forEach(item => {
+                const skillId = item.dataset.skillId;
+                const level = parseInt(item.querySelector('input').value);
+                skillsObj[skillId] = level;
+            });
+            
+            // Collect spells
+            const spellsObj = {};
+            document.querySelectorAll('.spell-item').forEach(item => {
+                const spellId = item.dataset.spellId;
+                const level = parseInt(item.querySelector('input').value);
+                spellsObj[spellId] = level;
+            });
+            
+            const npcData = {
+                npc_id: document.getElementById('npcId').value,
+                name: document.getElementById('npcName').value,
+                race: document.getElementById('npcRace').value || null,
+                description: document.getElementById('npcDescription').value,
+                current_room_id: document.getElementById('npcRoom').value || null,
+                x: parseInt(document.getElementById('npcX').value),
+                y: parseInt(document.getElementById('npcY').value),
+                z: parseInt(document.getElementById('npcZ').value),
+                attributes: attributes,
+                max_hp: parseInt(document.getElementById('maxHp').value),
+                current_hp: parseInt(document.getElementById('currentHp').value),
+                max_mana: parseInt(document.getElementById('maxMana').value),
+                current_mana: parseInt(document.getElementById('currentMana').value),
+                max_movement: parseInt(document.getElementById('maxMovement').value),
+                current_movement: parseInt(document.getElementById('currentMovement').value),
+                trial_points: parseInt(document.getElementById('trialPoints').value),
+                progress_points: parseInt(document.getElementById('progressPoints').value),
+                gold: parseInt(document.getElementById('gold').value),
+                silver: parseInt(document.getElementById('silver').value),
+                copper: parseInt(document.getElementById('copper').value),
+                avatar: null,
+                skills: skillsObj,
+                spells: spellsObj,
+                ai_behavior: document.getElementById('aiBehavior').value,
+                is_hostile: document.getElementById('isHostile').checked,
+                respawn_time: parseInt(document.getElementById('respawnTime').value),
+                loot_table: {},
+                dialogue: {},
+                faction: document.getElementById('faction').value || null,
+                reputation_required: parseInt(document.getElementById('reputationRequired').value),
+                is_unique: document.getElementById('isUnique').checked
+            };
+            
+            const url = currentNpcId ? `/api/npcs/${currentNpcId}` : '/api/npcs';
+            const method = currentNpcId ? 'PUT' : 'POST';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(npcData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'Failed to save NPC');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('NPC saved successfully!');
+                isEditing = false;
+                loadNPCs();
+                hideEditor();
+            })
+            .catch(error => {
+                console.error('Error saving NPC:', error);
+                alert('Error: ' + error.message);
+            });
+        }
+        
+        function deleteNPC() {
+            if (!currentNpcId) return;
+            
+            if (!confirm('Are you sure you want to delete this NPC?')) return;
+            
+            fetch(`/api/npcs/${currentNpcId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('NPC deleted successfully!');
+                    isEditing = false;
+                    loadNPCs();
+                    hideEditor();
+                } else {
+                    alert('Error deleting NPC');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting NPC:', error);
+                alert('Error deleting NPC');
+            });
+        }
+        
+        function showSkillSelector() {
+            const skillId = prompt('Enter skill ID (e.g., smithing, alchemy):');
+            if (!skillId) return;
+            
+            if (!skills[skillId]) {
+                alert('Skill not found: ' + skillId);
+                return;
+            }
+            
+            addSkillToList(skillId, 1);
+        }
+        
+        function addSkillToList(skillId, level) {
+            const skillsList = document.getElementById('skillsList');
+            const skillName = skills[skillId]?.name || skillId;
+            
+            const item = document.createElement('div');
+            item.className = 'skill-spell-item skill-item';
+            item.dataset.skillId = skillId;
+            item.innerHTML = `
+                <label>${skillName} (${skillId})</label>
+                <input type="number" class="form-control" value="${level}" min="0" max="100">
+                <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            skillsList.appendChild(item);
+        }
+        
+        function showSpellSelector() {
+            const spellId = prompt('Enter spell ID (e.g., heal_minor, fireball):');
+            if (!spellId) return;
+            
+            if (!spells[spellId]) {
+                alert('Spell not found: ' + spellId);
+                return;
+            }
+            
+            addSpellToList(spellId, 1);
+        }
+        
+        function addSpellToList(spellId, level) {
+            const spellsList = document.getElementById('spellsList');
+            const spellName = spells[spellId]?.name || spellId;
+            
+            const item = document.createElement('div');
+            item.className = 'skill-spell-item spell-item';
+            item.dataset.spellId = spellId;
+            item.innerHTML = `
+                <label>${spellName} (${spellId})</label>
+                <input type="number" class="form-control" value="${level}" min="0" max="100">
+                <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            spellsList.appendChild(item);
+        }
+        
+        function incrementAttr(attrId, amount) {
+            const input = document.getElementById(attrId);
+            if (!input) return;
+            
+            let currentValue = parseInt(input.value) || 0;
+            let newValue = currentValue + amount;
+            
+            // Clamp between 0 and 100
+            newValue = Math.max(0, Math.min(100, newValue));
+            
+            input.value = newValue;
+        }
+        
+        function validateAttributeInput(event) {
+            const input = event.target;
+            let value = parseInt(input.value);
+            
+            // Handle invalid input
+            if (isNaN(value)) {
+                input.value = 0;
+                return;
+            }
+            
+            // Clamp between 0 and 100
+            if (value < 0) {
+                input.value = 0;
+            } else if (value > 100) {
+                input.value = 100;
+            }
+        }
+        
+        function validateStatCurrent(event) {
+            const currentInput = event.target;
+            let currentValue = parseInt(currentInput.value);
+            
+            // Handle invalid input
+            if (isNaN(currentValue) || currentValue < 0) {
+                currentInput.value = 0;
+                return;
+            }
+            
+            // Get the corresponding max field
+            const maxFieldId = currentInput.dataset.maxField;
+            const maxInput = document.getElementById(maxFieldId);
+            const maxValue = parseInt(maxInput.value) || 1;
+            
+            // Current can't be higher than max
+            if (currentValue > maxValue) {
+                currentInput.value = maxValue;
+            }
+        }
+        
+        function validateStatMax(event) {
+            const maxInput = event.target;
+            let maxValue = parseInt(maxInput.value);
+            
+            // Handle invalid input - min 1
+            if (isNaN(maxValue) || maxValue < 1) {
+                maxInput.value = 1;
+                return;
+            }
+            
+            // Find corresponding current field and adjust if needed
+            const maxFieldId = maxInput.id;
+            const currentInput = document.querySelector(`[data-max-field="${maxFieldId}"]`);
+            
+            if (currentInput) {
+                const currentValue = parseInt(currentInput.value) || 0;
+                if (currentValue > maxValue) {
+                    currentInput.value = maxValue;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

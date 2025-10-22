@@ -71,28 +71,104 @@ def load_rooms():
     print(f"Loaded {len(data['rooms'])} rooms")
 
 def load_item_templates():
-    """Load item templates from JSON file"""
-    with open('data/items/templates.json', 'r') as f:
-        data = json.load(f)
+    """Load item templates from JSON files"""
+    item_files = [
+        'data/items/weapons.json',
+        'data/items/armor.json',
+        'data/items/consumables.json',
+        'data/items/containers.json',
+        'data/items/crafting_materials.json',
+        'data/items/gems.json',
+        'data/items/keys.json',
+        'data/items/magical_items.json',
+        'data/items/misc_items.json',
+        'data/items/tools.json',
+        'data/items/clothing.json',
+        'data/items/ammunition.json',
+        'data/items/cooking_items.json',
+        'data/items/furniture.json',
+        'data/items/special_items.json',
+        'data/items/recipes.json',
+        'data/items/crafting_stations.json',
+    ]
     
-    for template_data in data['item_templates'].values():
-        template = ItemTemplate(
-            template_id=template_data['template_id'],
-            name=template_data['name'],
-            description=template_data['description'],
-            base_type=template_data['base_type'],
-            subtype=template_data.get('subtype'),
-            weight=template_data.get('weight', 0.0),
-            value=template_data.get('value', 0),
-            quality_tier=template_data.get('quality_tier', 'common'),
-            components_required=template_data.get('components_required', []),
-            disassembly_data=template_data.get('disassembly_data', {}),
-            equipment_stats=template_data.get('equipment_stats', {}),
-            requirements=template_data.get('requirements', {})
-        )
-        db.session.add(template)
+    total_loaded = 0
     
-    print(f"Loaded {len(data['item_templates'])} item templates")
+    for file_path in item_files:
+        if not os.path.exists(file_path):
+            print(f"Skipping {file_path} (not found)")
+            continue
+            
+        try:
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+            
+            # Handle different JSON structures (some files have top-level keys, some don't)
+            items_dict = data
+            if isinstance(data, dict) and len(data) == 1:
+                # If there's a wrapper key like 'item_templates', unwrap it
+                first_key = list(data.keys())[0]
+                if isinstance(data[first_key], dict):
+                    items_dict = data[first_key]
+            
+            for template_data in items_dict.values():
+                if not isinstance(template_data, dict):
+                    continue
+                    
+                # Check if template already exists
+                existing = ItemTemplate.query.filter_by(template_id=template_data['template_id']).first()
+                if existing:
+                    continue
+                
+                template = ItemTemplate(
+                    template_id=template_data['template_id'],
+                    name=template_data['name'],
+                    description=template_data.get('description', ''),
+                    item_type=template_data.get('item_type', 13),
+                    base_type=template_data['base_type'],
+                    subtype=template_data.get('subtype'),
+                    weight=template_data.get('weight', 0.0),
+                    value=template_data.get('value', 0),
+                    quality_tier=template_data.get('quality_tier', 'common'),
+                    material=template_data.get('material'),
+                    item_flags=template_data.get('item_flags', []),
+                    item_flags_2=template_data.get('item_flags_2', []),
+                    wear_flags=template_data.get('wear_flags', []),
+                    socket_count=template_data.get('socket_count', 0),
+                    socket_types=template_data.get('socket_types', []),
+                    weapon_type=template_data.get('weapon_type'),
+                    weapon_flags=template_data.get('weapon_flags', []),
+                    base_damage_min=template_data.get('base_damage_min'),
+                    base_damage_max=template_data.get('base_damage_max'),
+                    attack_speed=template_data.get('attack_speed', 1.0),
+                    damage_types=template_data.get('damage_types', []),
+                    armor_class=template_data.get('armor_class', 0),
+                    armor_slot=template_data.get('armor_slot'),
+                    damage_reduction=template_data.get('damage_reduction', {}),
+                    container_capacity=template_data.get('container_capacity', 0),
+                    container_weight_capacity=template_data.get('container_weight_capacity', 0.0),
+                    weight_reduction=template_data.get('weight_reduction', 0.0),
+                    consumable_charges=template_data.get('consumable_charges', 1),
+                    consumable_effects=template_data.get('consumable_effects', []),
+                    crafting_skill=template_data.get('crafting_skill'),
+                    crafting_difficulty=template_data.get('crafting_difficulty', 1),
+                    components_required=template_data.get('components_required', []),
+                    disassembly_data=template_data.get('disassembly_data', {}),
+                    equipment_stats=template_data.get('equipment_stats', {}),
+                    requirements=template_data.get('requirements', {}),
+                    max_durability=template_data.get('max_durability', 100),
+                    max_enchantments=template_data.get('max_enchantments', 0),
+                    enchantable=template_data.get('enchantable', True),
+                    icon_path=template_data.get('icon_path')
+                )
+                db.session.add(template)
+                total_loaded += 1
+            
+            print(f"Loaded {len(items_dict)} items from {os.path.basename(file_path)}")
+        except Exception as e:
+            print(f"Error loading {file_path}: {e}")
+    
+    print(f"Total item templates loaded: {total_loaded}")
 
 def load_skills():
     """Load skills from JSON file"""

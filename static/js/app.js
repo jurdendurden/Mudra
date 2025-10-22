@@ -247,6 +247,14 @@ class GameClient {
             return;
         }
         
+        // Handle client-side commands
+        const cmdLower = command.toLowerCase().trim();
+        if (cmdLower === 'inventory' || cmdLower === 'i') {
+            this.addOutput(`> ${command}`, 'command');
+            toggleInventoryModal();
+            return;
+        }
+        
         // Add to history
         this.commandHistory.push(command);
         this.historyIndex = this.commandHistory.length;

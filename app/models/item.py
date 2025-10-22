@@ -16,6 +16,7 @@ class ItemTemplate(db.Model):
     template_id = db.Column(db.String(100), unique=True, nullable=False, index=True)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
+    icon_path = db.Column(db.String(255))  # Path to item icon image
     
     # Item type classification
     item_type = db.Column(db.Integer, nullable=False, default=ItemType.TRASH)  # ItemType enum
@@ -167,6 +168,8 @@ class Item(db.Model):
     # Ownership and location
     owner_character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
     equipped_character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
+    owner_npc_id = db.Column(db.Integer, db.ForeignKey('npcs.id'))
+    equipped_npc_id = db.Column(db.Integer, db.ForeignKey('npcs.id'))
     equipped_slot = db.Column(db.String(50))  # Which slot it's equipped in
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
     container_id = db.Column(db.Integer, db.ForeignKey('items.id'))  # For containers
@@ -589,11 +592,14 @@ class Item(db.Model):
         self.last_repaired_at = datetime.utcnow()
     
     def is_equipment(self):
-        """Check if this is equipment (weapon/armor/accessory)"""
+        """Check if this is equipment (weapon/armor/accessory/clothing)"""
         if not self.template:
             return False
         base_type = self.template.base_type
-        return base_type.startswith('weapon.') or base_type.startswith('armor.') or base_type.startswith('accessory.')
+        return (base_type.startswith('weapon.') or 
+                base_type.startswith('armor.') or 
+                base_type.startswith('accessory.') or
+                base_type.startswith('clothing.'))
     
     def is_weapon(self):
         """Check if this is a weapon"""
@@ -607,12 +613,33 @@ class Item(db.Model):
         """Check if this is a consumable"""
         return self.template and self.template.base_type.startswith('consumable.')
     
+    def is_clothing(self):
+        """Check if this is clothing"""
+        return self.template and self.template.base_type.startswith('clothing.')
+    
     def is_container(self):
         """Check if this is a container"""
         return self.template and (
             self.template.base_type == 'container' or 
             self.template.item_type == ItemType.CONTAINER
         )
+    
+    def is_key(self):
+        """Check if this is a key"""
+        return self.template and self.template.base_type == 'key'
+    
+    def can_unlock_door(self, door_data):
+        """Check if this key can unlock a specific door"""
+        if not self.is_key() or not door_data:
+            return False
+        
+        # Keys match doors by template_id
+        required_key_id = door_data.get('key_id')
+        if not required_key_id:
+            return False
+        
+        # Match by template_id from the template
+        return self.template.template_id == required_key_id
     
     def __repr__(self):
         return f'<Item {self.name} (ID: {self.id})>'

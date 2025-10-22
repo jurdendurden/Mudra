@@ -38,10 +38,34 @@
     "value": 30,
     "quality_tier": "common",
     "wear_flags": ["take", "hold"],
+    "icon_path": "assets/items/potions/minor_health.png",
     "consumable_charges": 1,
     "consumable_effects": [
       {
         "type": "heal",
+        "amount": 25,
+        "duration": 0
+      }
+    ],
+    "crafting_skill": "alchemy",
+    "crafting_difficulty": 1
+  },
+  "minor_mana_potion": {
+    "template_id": "minor_mana_potion",
+    "name": "Minor Mana Potion",
+    "description": "A simple blue potion that restores a small amount of mana.",
+    "item_type": 10,
+    "base_type": "consumable.potion.mana",
+    "subtype": "potion",
+    "weight": 0.4,
+    "value": 30,
+    "quality_tier": "common",
+    "wear_flags": ["take", "hold"],
+    "icon_path": "assets/items/potions/minor_mana.png",
+    "consumable_charges": 1,
+    "consumable_effects": [
+      {
+        "type": "restore_mana",
         "amount": 25,
         "duration": 0
       }

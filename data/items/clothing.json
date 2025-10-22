@@ -103,6 +103,27 @@
     "max_durability": 80,
     "enchantable": true,
     "max_enchantments": 1
+  },
+  "cloth_belt": {
+    "template_id": "cloth_belt",
+    "name": "Cloth Belt",
+    "description": "A simple cloth belt for securing garments.",
+    "item_type": 11,
+    "base_type": "clothing.belt",
+    "subtype": "clothing",
+    "weight": 0.2,
+    "value": 5,
+    "quality_tier": "common",
+    "material": "cloth",
+    "wear_flags": ["take", "waist"],
+    "armor_class": 0,
+    "armor_slot": "waist",
+    "icon_path": "assets/items/belts/cloth_belt.png",
+    "max_durability": 50,
+    "enchantable": false,
+    "equipment_stats": {
+      "health": 5
+    }
   }
 }
 

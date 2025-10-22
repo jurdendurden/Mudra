@@ -50,6 +50,7 @@ def get_rooms():
         'y': room.y_coord,
         'z': room.z_coord,
         'exits': room.exits,
+        'doors': room.doors or {},
         'lighting': room.lighting
     } for room in rooms])
 
@@ -104,6 +105,7 @@ def create_room():
         'y': room.y_coord,
         'z': room.z_coord,
         'exits': room.exits,
+        'doors': room.doors or {},
         'lighting': room.lighting
     })
 
@@ -135,6 +137,7 @@ def update_room(room_id):
     room.y_coord = data.get('y', room.y_coord)
     room.z_coord = data.get('z', room.z_coord)
     room.exits = data.get('exits', room.exits)
+    room.doors = data.get('doors', room.doors)
     room.lighting = data.get('lighting', room.lighting)
     
     db.session.commit()
@@ -149,6 +152,7 @@ def update_room(room_id):
         'y': room.y_coord,
         'z': room.z_coord,
         'exits': room.exits,
+        'doors': room.doors or {},
         'lighting': room.lighting
     })
 
@@ -203,6 +207,69 @@ def create_area():
         'area_id': area.area_id,
         'name': area.name,
         'description': area.description
+    })
+
+@app.route('/api/rooms/<int:room_id>/doors', methods=['GET'])
+def get_room_doors(room_id):
+    """Get all doors for a specific room"""
+    room = Room.query.get_or_404(room_id)
+    return jsonify(room.doors or {})
+
+@app.route('/api/rooms/<int:room_id>/doors/<direction>', methods=['POST', 'PUT'])
+def create_or_update_door(room_id, direction):
+    """Create or update a door in a specific direction"""
+    room = Room.query.get_or_404(room_id)
+    data = request.get_json()
+    
+    # Validate door data
+    is_valid, errors = room.validate_door_data(data)
+    if not is_valid:
+        return jsonify({'error': 'Invalid door data', 'details': errors}), 400
+    
+    # Add or update the door
+    room.add_door(direction, data)
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'direction': direction,
+        'door': data
+    })
+
+@app.route('/api/rooms/<int:room_id>/doors/<direction>', methods=['DELETE'])
+def delete_door(room_id, direction):
+    """Delete a door from a specific direction"""
+    room = Room.query.get_or_404(room_id)
+    
+    # Remove the door
+    room.remove_door(direction)
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+@app.route('/api/keys')
+def get_keys():
+    """Get all available key templates"""
+    keys_file = os.path.join(basedir, 'data', 'items', 'keys.json')
+    try:
+        with open(keys_file, 'r') as f:
+            keys_data = json.load(f)
+            return jsonify(keys_data.get('keys', []))
+    except FileNotFoundError:
+        return jsonify([])
+
+@app.route('/api/doors/validate', methods=['POST'])
+def validate_door():
+    """Validate door data without saving"""
+    data = request.get_json()
+    
+    # Create a temporary room instance for validation
+    temp_room = Room()
+    is_valid, errors = temp_room.validate_door_data(data)
+    
+    return jsonify({
+        'valid': is_valid,
+        'errors': errors
     })
 
 if __name__ == '__main__':

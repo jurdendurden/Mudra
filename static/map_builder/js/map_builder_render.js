@@ -1,6 +1,7 @@
 // map_builder_render.js
 // Rendering: map, sidebar, tooltips, gridlines, coordinate labels
-import { rooms, areas, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE, selectionBox, setSelectionBox, setMultiSelectedRooms, setSelectedRoom, autoRoomMode, setAutoRoomMode } from './map_builder_core.js';
+import { fetchRooms } from './map_builder_api.js';
+import { rooms, areas, selectedRoom, multiSelectedRooms, CANVAS_CENTER, GRID_SIZE, selectionBox, setSelectionBox, setMultiSelectedRooms, setSelectedRoom, autoRoomMode, setAutoRoomMode, setRooms } from './map_builder_core.js';
 import { openRoomEditor } from './map_builder_room_editor.js';
 
 // Render area list in sidebar
@@ -25,10 +26,44 @@ export function renderAreaList() {
 export function filterRoomsByArea() {
     const selectedAreaId = document.getElementById('area-filter').value;
     clearMultiSelection();
+    setRooms(fetchRooms());
     renderRoomList(selectedAreaId);
     renderMap();
 }
 
+export function clearMultiSelection() {
+    setMultiSelectedRooms([]);
+    setSelectedRoom(null);
+    displayClearSelectedRooms();
+    selectRoomsByIds([]);
+}
+export function selectRoomsByIds(roomIds) {
+    const select = document.getElementById('room-list');
+    Array.from(select.options).forEach(option => {
+        option.selected = roomIds.includes(parseInt(option.value));
+    });
+}
+
+export function displayClearSelectedRooms() {
+    const clearButton = document.getElementById('clear-selected-rooms');
+    if (multiSelectedRooms.length > 0) {
+        clearButton.style.display = 'block';
+    } else {
+        clearButton.style.display = 'none';
+    }
+}
+export function clearRoomListSelection() {
+    const select = document.getElementById('room-list');
+    Array.from(select.options).forEach(option => {
+        option.selected = false;
+    });
+}
+export function clearRoomListSelection() {
+    const select = document.getElementById('room-list');
+    Array.from(select.options).forEach(option => {
+        option.selected = false;
+    });
+}
 // Render room list in sidebar
 export function renderRoomList(filterAreaId = null) {
     const select = document.getElementById('room-list');

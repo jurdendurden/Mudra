@@ -1,5 +1,6 @@
 // map_builder_room_editor.test.js
 // Unit tests for map_builder_room_editor.js
+import { roomModal, setRoomModal } from '../map_builder_core.js';
 import {
   populateAreaSelect,
   openRoomEditor,
@@ -13,6 +14,7 @@ import {
   autoSelectExits
 } from '../map_builder_room_editor.js';
 global.alert = jest.fn();
+global.confirm = jest.fn();
 describe('map_builder_room_editor', () => {
 // Global fetch mock for all API calls
 beforeAll(() => {
@@ -58,10 +60,18 @@ beforeAll(() => {
   });
 
   test('openRoomEditor does not throw', () => {
-    expect(() => openRoomEditor(rooms[0])).not.toThrow();
+    setRoomModal({});
+    setRoomModal({
+      show: jest.fn(),
+      hide: jest.fn()
+    });
+    openRoomEditor(rooms[0]);
+    expect(roomModal.show).toHaveBeenCalled();
   });
 
   test('saveRoom does not throw', async () => {
+    roomModal.show = jest.fn();
+    roomModal.hide = jest.fn();
     await expect(saveRoom()).resolves.not.toThrow();
   });
 

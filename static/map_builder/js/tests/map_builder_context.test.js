@@ -53,7 +53,7 @@ beforeAll(() => {
   });
 });
   test('handleContextMenu does not throw for room node', () => {
-    const event = { target: { classList: { contains: () => true }, closest: () => ({ style: { left: '0' } }) }, preventDefault: jest.fn() };
+    const event = { target: { classList: { contains: () => true }, closest: () => ({ style: { left: '0' } }),  style: { left: '0' } }, preventDefault: jest.fn() };
     expect(() => handleContextMenu(event)).not.toThrow();
   });
 
@@ -80,11 +80,13 @@ beforeAll(() => {
 
   test('changeSelectedRoomNames does not throw if no selection', async () => {
     global.multiSelectedRooms = [];
+    global.document.getElementById = jest.fn(() => ({ style: { display: 'block' } }));
     await expect(changeSelectedRoomNames()).resolves.not.toThrow();
   });
 
   test('handleKeyPress does not throw for Enter', () => {
-    const event = { key: 'Enter', target: { tagName: 'INPUT' } };
+    global.document.getElementById = jest.fn(() => ({ classList: { contains: jest.fn(() => true) } }));
+    const event = { key: 'Enter', target: { tagName: 'INPUT' }, preventDefault: jest.fn() };
     expect(() => handleKeyPress(event)).not.toThrow();
   });
 });

@@ -46,10 +46,37 @@ import {
 describe('map_builder_render', () => {
   beforeEach(() => {
     setAreas([{ area_id: 'area_001', name: 'Area 1' }]);
-    setRooms = [{ room_id: 'room_001', name: 'Room 1', x: 0, y: 0, z: 0 }];
+    // Correctly set rooms using setRooms function and define rooms for test scope
+    setRooms([{ room_id: 'room_001', name: 'Room 1', x: 0, y: 0, z: 0 }]);
+    global.rooms = [{ room_id: 'room_001', name: 'Room 1', x: 0, y: 0, z: 0 }];
     global.document = {
-      getElementById: jest.fn((id) => ({ innerHTML: '', value: 'all', checked: false, addEventListener: jest.fn(), querySelectorAll: jest.fn(() => []) })),
-      createElement: jest.fn(() => ({ className: '', style: {}, appendChild: jest.fn(), remove: jest.fn() })),
+      getElementById: jest.fn((id) => ({
+        innerHTML: '',
+        value: 'all',
+        checked: false,
+        addEventListener: jest.fn(),
+        querySelectorAll: jest.fn(() => []),
+        appendChild: jest.fn(), // Add appendChild for select compatibility
+        remove: jest.fn(),
+        style: {},
+        className: '',
+        classList: {
+          add: jest.fn(),
+          remove: jest.fn(),
+          contains: jest.fn()
+        }
+      })),
+      createElement: jest.fn(() => ({
+        className: '',
+        style: {},
+        appendChild: jest.fn(),
+        remove: jest.fn(),
+        classList: {
+          add: jest.fn(),
+          remove: jest.fn(),
+          contains: jest.fn()
+        }
+      })),
       querySelector: jest.fn(() => null)
     };
   });

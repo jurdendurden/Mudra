@@ -9,13 +9,9 @@ import {
 
 // Mocks for DOM and global state
 beforeEach(() => {
-  global.rooms = [];
-  global.selectedRoom = null;
-  global.autoRoomMode = true;
-  global.isDraggingRoom = false;
-  global.isSelecting = false;
   global.window = {};
 });
+
 global.alert = jest.fn();
 describe('map_builder_canvas', () => {
   test('handleCanvasClick creates room at position', async () => {

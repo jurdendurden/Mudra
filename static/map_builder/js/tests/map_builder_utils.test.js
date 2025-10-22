@@ -1,6 +1,8 @@
 // map_builder_utils.test.js
 // Unit tests for map_builder_utils.js
 import { deepCopy, getNextRoomId, getOppositeDirection } from '../map_builder_utils.js';
+import { setRooms } from '../map_builder_core.js';
+
 global.alert = jest.fn();
 describe('map_builder_utils', () => {
   test('deepCopy creates a deep clone', () => {
@@ -18,7 +20,7 @@ describe('map_builder_utils', () => {
       { room_id: 'room_002' },
       { room_id: 'room_004' }
     ];
-    global.rooms = rooms;
+    setRooms(rooms);
     expect(getNextRoomId()).toBe('room_003');
   });
 

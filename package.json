@@ -1,0 +1,13 @@
+{
+  "name": "map-builder-test",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "cross-env NODE_ENV=test jest"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5"
+  }
+}

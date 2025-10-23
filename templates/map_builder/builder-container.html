@@ -1,0 +1,76 @@
+<div class="builder-container">
+    <!-- Header -->
+    <div class="builder-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3><i class="fas fa-hammer"></i> Mudra Map Builder</h3>
+            <div class="d-flex align-items-center">
+                <div class="form-check form-switch me-4">
+                    <input class="form-check-input" type="checkbox" id="surroundingAreasToggle" onchange="renderMap()">
+                    <label class="form-check-label text-white" for="surroundingAreasToggle">
+                        <i class="fas fa-map-marked-alt"></i> Surrounding Areas
+                    </label>
+                </div>
+                <div class="form-check form-switch me-4">
+                    <input class="form-check-input" type="checkbox" id="autoRoomToggle" onchange="toggleAutoRoom()" disabled>
+                    <label class="form-check-label text-white" for="autoRoomToggle" id="autoRoomLabel" style="opacity: 0.5;">
+                        <i class="fas fa-walking"></i> Auto Room
+                    </label>
+                </div>
+                <div class="form-check form-switch me-4">
+                    <input class="form-check-input" type="checkbox" id="showCoordinatesToggle" onchange="toggleCoordinateLabels()">
+                    <label class="form-check-label text-white" for="showCoordinatesToggle">
+                        <i class="fas fa-hashtag"></i> Show X/Y
+                    </label>
+                </div>
+                <div class="form-check form-switch me-2">
+                    <input class="form-check-input" type="checkbox" id="gridlinesToggle" onchange="toggleGridlines()" checked>
+                    <label class="form-check-label text-white" for="gridlinesToggle">
+                        <i class="fas fa-border-all"></i> Gridlines
+                    </label>
+                </div>
+                <select class="form-select form-select-sm me-4" id="gridAlignmentSelect" onchange="updateGridAlignment()" style="width: 140px;">
+                    <option value="boxed">Boxed</option>
+                    <option value="centered">Centered</option>
+                </select>
+                <label class="me-2 text-white">Z-Level:</label>
+                <select class="form-select me-3" id="zLevelFilter" onchange="renderMap()" style="width: 100px;">
+                    <option value="all">All</option>
+                </select>
+                <button class="btn btn-info btn-sm me-2" id="copySelectedBtn" onclick="copySelectedRooms()" style="display: none;">
+                    <i class="fas fa-copy"></i> Copy Selected
+                </button>
+                <button class="btn btn-warning btn-sm me-2" id="autoExitBtn" onclick="autoExitSelectedRooms()" disabled>
+                    <i class="fas fa-route"></i> Auto Exit
+                </button>
+                <button class="btn btn-secondary btn-sm me-2" id="undoBtn" onclick="undoLastAction()" disabled>
+                    <i class="fas fa-undo"></i> Undo
+                </button>
+                <button class="btn btn-success me-2" onclick="saveMap()">
+                    <i class="fas fa-save"></i> Save Map
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="builder-main">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h5>Current Area</h5>
+            <select class="form-select mb-3" id="area-filter">
+            </select>
+            
+            <h5>Rooms</h5>
+            <select class="form-select" id="room-list" size="20">
+                <!-- Room list will be populated by JavaScript -->
+            </select>
+        </div>
+        
+        <!-- Canvas -->
+        <div class="canvas-container">
+            <div class="map-canvas" id="map-canvas">
+                <!-- Room nodes and connections will be rendered here -->
+            </div>
+        </div>
+    </div>
+</div>

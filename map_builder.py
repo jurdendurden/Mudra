@@ -2,13 +2,15 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 import os
 import json
 
-# Create Flask application for map builder
-app = Flask(__name__)
-
 # Get absolute path to database
 basedir = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(basedir, 'instance', 'mud_game.db')
+
+# Create Flask application for map builder
+app = Flask(__name__, template_folder='templates', static_folder='static/map_builder')
+
 # Convert to forward slashes for SQLite URI (works on all platforms)
+
 db_uri = db_path.replace('\\', '/')
 
 # Configuration
@@ -29,8 +31,10 @@ def builder_index():
     # Get all areas and rooms for the builder
     areas = Area.query.all()
     rooms = Room.query.all()
-    
-    return render_template('map_builder/index.html', areas=areas, rooms=rooms)
+    # Detect the script root for subdirectory mounting
+    from flask import request
+    api_base = request.script_root.rstrip('/')
+    return render_template('map_builder/index.html', areas=areas, rooms=rooms, api_base=api_base)
 
 @app.route('/api/rooms')
 def get_rooms():

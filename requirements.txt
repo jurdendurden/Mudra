@@ -9,3 +9,4 @@ python-socketio==5.10.0
 WTForms==3.1.1
 python-dotenv==1.0.0
 bcrypt==4.1.2
+eventlet==0.40.3

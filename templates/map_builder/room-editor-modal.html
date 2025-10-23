@@ -1,0 +1,158 @@
+<div class="modal fade" id="roomModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Room Editor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="roomForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="roomId" class="form-label">Room ID</label>
+                                <input type="text" class="form-control" id="roomId" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="roomName" class="form-label">Room Name</label>
+                                <input type="text" class="form-control" id="roomName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="areaSelect" class="form-label">Area</label>
+                                <select class="form-select" id="areaSelect">
+                                    <option value="">Select Area</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="roomX" class="form-label">X Position (East/West)</label>
+                                <input type="number" class="form-control" id="roomX" value="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="roomY" class="form-label">Y Position (North/South)</label>
+                                <input type="number" class="form-control" id="roomY" value="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="roomZ" class="form-label">Z Position (Up/Down)</label>
+                                <input type="number" class="form-control" id="roomZ" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="roomDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="roomDescription" rows="4"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label mb-0">Exits</label>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-primary" onclick="selectAllExits()">
+                                    <i class="fas fa-check-double"></i> Select All
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="clearAllExits()">
+                                    <i class="fas fa-times"></i> Clear All
+                                </button>
+                                <button type="button" class="btn btn-outline-success" onclick="autoSelectExits()">
+                                    <i class="fas fa-magic"></i> Auto Detect
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="exitNorth" onchange="handleExitChange('north', this.checked)">
+                                    <label class="form-check-label" for="exitNorth">North</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="exitSouth" onchange="handleExitChange('south', this.checked)">
+                                    <label class="form-check-label" for="exitSouth">South</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="exitEast" onchange="handleExitChange('east', this.checked)">
+                                    <label class="form-check-label" for="exitEast">East</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="exitWest" onchange="handleExitChange('west', this.checked)">
+                                    <label class="form-check-label" for="exitWest">West</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="exitUp" onchange="handleExitChange('up', this.checked)">
+                                    <label class="form-check-label" for="exitUp">Up</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="exitDown" onchange="handleExitChange('down', this.checked)">
+                                    <label class="form-check-label" for="exitDown">Down</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label mb-0">Doors</label>
+                            <button type="button" class="btn btn-sm btn-info" onclick="showDoorHelp()">
+                                <i class="fas fa-question-circle"></i> Help
+                            </button>
+                        </div>
+                        <div class="row" id="doorsList">
+                            <div class="col-md-4 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('north')">
+                                    <i class="fas fa-door-closed"></i> North Door
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('south')">
+                                    <i class="fas fa-door-closed"></i> South Door
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('east')">
+                                    <i class="fas fa-door-closed"></i> East Door
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('west')">
+                                    <i class="fas fa-door-closed"></i> West Door
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('up')">
+                                    <i class="fas fa-door-closed"></i> Up Door
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('down')">
+                                    <i class="fas fa-door-closed"></i> Down Door
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="roomLighting" class="form-label">Lighting</label>
+                        <select class="form-select" id="roomLighting">
+                            <option value="dark">Dark</option>
+                            <option value="dim">Dim</option>
+                            <option value="normal" selected>Normal</option>
+                            <option value="bright">Bright</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="deleteRoom()" id="deleteBtn" style="display: none;">Delete</button>
+                <button type="button" class="btn btn-primary" onclick="saveRoom()">Save Room</button>
+            </div>
+        </div>
+    </div>
+</div>

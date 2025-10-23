@@ -45,6 +45,7 @@ export function openRoomEditor(room) {
     document.getElementById('exitUp').checked = room.exits?.up || false;
     document.getElementById('exitDown').checked = room.exits?.down || false;
 
+    updateDoorButtons();
     
     roomModal.show();
 }

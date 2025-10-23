@@ -7,7 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(basedir, 'instance', 'mud_game.db')
 
 # Create Flask application for map builder
-app = Flask(__name__, template_folder='templates', static_folder='static')
+app = Flask(__name__, template_folder='templates', static_folder='static/map_builder')
 
 # Convert to forward slashes for SQLite URI (works on all platforms)
 

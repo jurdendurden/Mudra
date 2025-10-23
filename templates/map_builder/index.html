@@ -14,408 +14,9 @@
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <style>
-        body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
         
-        .builder-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .builder-header {
-            background: #2c3e50;
-            padding: 15px;
-            border-bottom: 2px solid #34495e;
-        }
-        
-        .builder-main {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-        
-        .sidebar {
-            width: 300px;
-            background: #34495e;
-            padding: 15px;
-            overflow-y: auto;
-        }
-        
-        .canvas-container {
-            flex: 1;
-            background: #2c3e50;
-            position: relative;
-            overflow: auto;
-        }
-        
-        .map-canvas {
-            width: 100%;
-            height: 100%;
-            background: #1a252f;
-            position: relative;
-            min-width: 2000px;
-            min-height: 2000px;
-            padding-top: 10px;
-            padding-left: 10px;
-        }
-        
-        .map-canvas.gridlines-boxed {
-            background-image: 
-                linear-gradient(to right, rgba(52, 152, 219, 0.15) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(52, 152, 219, 0.15) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: 1005px 1005px;
-        }
-        
-        .map-canvas.gridlines-centered {
-            background-image: 
-                linear-gradient(to right, rgba(52, 152, 219, 0.15) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(52, 152, 219, 0.15) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: 1030px 1030px;
-        }
-        
-        .room-node {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: #3498db;
-            border: 2px solid #2980b9;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: grab;
-            font-size: 8px;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            user-select: none;
-        }
-        
-        .room-node.surrounding-area {
-            background: #2c3e50;
-            border: 2px solid #34495e;
-            opacity: 0.7;
-            cursor: default;
-        }
-        
-        .room-node.surrounding-area:hover {
-            border-color: #7f8c8d;
-            transform: scale(1.05);
-        }
-        
-        .room-node:hover {
-            border-color: #00ff00;
-            transform: scale(1.1);
-        }
-        
-        .room-node.selected {
-            outline: 1px solid #00ff00;
-            outline-offset: 1px;
-        }
-        
-        .room-node.multi-selected {
-            outline: 1px solid #00ff00;
-            outline-offset: 2px;
-        }
-        
-        .exit-indicator {
-            position: absolute;
-            width: 0;
-            height: 0;
-            pointer-events: none;
-        }
-        
-        .exit-up {
-            top: 2px;
-            right: 2px;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-bottom: 6px solid #22e6e6;
-        }
-        
-        .exit-down {
-            top: 2px;
-            left: 2px;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-top: 6px solid #22e6e6;
-        }
-        
-        .selection-box {
-            position: absolute;
-            border: 1px solid #00ff00;
-            background: rgba(0, 255, 0, 0.1);
-            pointer-events: none;
-            z-index: 999;
-        }
-        
-        .room-tooltip {
-            position: absolute;
-            background: rgba(44, 62, 80, 0.95);
-            color: #ecf0f1;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 11px;
-            white-space: pre-line;
-            pointer-events: none;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transition: opacity 0.15s ease-in;
-            line-height: 1.4;
-        }
-        
-        .room-tooltip.show {
-            opacity: 1;
-        }
-        
-        .coord-display {
-            position: fixed;
-            bottom: 20px;
-            left: 320px;
-            background: rgba(44, 62, 80, 0.95);
-            color: #00ff00;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 14px;
-            font-weight: bold;
-            z-index: 1001;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            pointer-events: none;
-        }
-        
-        .coordinate-label {
-            position: absolute;
-            color: #95a5a6;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 10px;
-            font-weight: bold;
-            pointer-events: none;
-            user-select: none;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            z-index: 100;
-        }
-        
-        .coordinate-label.x-axis {
-            top: 0px;
-            transform: translateX(-50%);
-        }
-        
-        .coordinate-label.y-axis {
-            left: 0px;
-            top: 0px;
-            transform: translateY(-50%);
-            writing-mode: horizontal-tb;
-        }
-        
-        .connection-line {
-            position: absolute;
-            background: #95a5a6;
-            height: 2px;
-            transform-origin: left center;
-            pointer-events: none;
-        }
-        
-        .toolbar {
-            background: #34495e;
-            padding: 10px;
-            border-bottom: 1px solid #4a5f7a;
-        }
-        
-        .form-control, .form-select {
-            background: #2c3e50;
-            border: 1px solid #4a5f7a;
-            color: white;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            background: #2c3e50;
-            border-color: #3498db;
-            color: white;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-        }
-        
-        .btn-primary {
-            background: #3498db;
-            border-color: #2980b9;
-        }
-        
-        .btn-primary:hover {
-            background: #2980b9;
-            border-color: #1f4e79;
-        }
-        
-        .btn-success {
-            background: #27ae60;
-            border-color: #229954;
-        }
-        
-        .btn-success:hover {
-            background: #229954;
-            border-color: #1e8449;
-        }
-        
-        .btn-danger {
-            background: #e74c3c;
-            border-color: #c0392b;
-        }
-        
-        .btn-danger:hover {
-            background: #c0392b;
-            border-color: #a93226;
-        }
-        
-        .btn-warning {
-            background: #f39c12;
-            border-color: #e67e22;
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background: #e67e22;
-            border-color: #d35400;
-            color: white;
-        }
-        
-        .btn-warning:disabled {
-            background: #7f8c8d;
-            border-color: #6c7a89;
-            color: #bdc3c7;
-            opacity: 0.6;
-        }
-        
-        .btn-secondary {
-            background: #95a5a6;
-            border-color: #7f8c8d;
-        }
-        
-        .btn-secondary:hover:not(:disabled) {
-            background: #7f8c8d;
-            border-color: #6c7a89;
-        }
-        
-        .btn-secondary:disabled {
-            background: #4a5f7a;
-            border-color: #34495e;
-            color: #7f8c8d;
-            opacity: 0.6;
-        }
-        
-        .modal-content {
-            background: #2c3e50;
-            color: white;
-        }
-        
-        .modal-header {
-            border-bottom: 1px solid #4a5f7a;
-        }
-        
-        .modal-footer {
-            border-top: 1px solid #4a5f7a;
-        }
-        
-        .btn-outline-primary {
-            color: #3498db;
-            border-color: #3498db;
-        }
-        
-        .btn-outline-primary:hover {
-            background: #3498db;
-            border-color: #3498db;
-            color: white;
-        }
-        
-        .btn-outline-secondary {
-            color: #95a5a6;
-            border-color: #95a5a6;
-        }
-        
-        .btn-outline-secondary:hover {
-            background: #95a5a6;
-            border-color: #95a5a6;
-            color: white;
-        }
-        
-        .btn-outline-success {
-            color: #27ae60;
-            border-color: #27ae60;
-        }
-        
-        .btn-outline-success:hover {
-            background: #27ae60;
-            border-color: #27ae60;
-            color: white;
-        }
-        
-        .form-check-input {
-            background-color: #34495e;
-            border-color: #4a5f7a;
-        }
-        
-        .form-check-input:checked {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-        
-        .form-check-input:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
-        }
-        
-        .form-select-sm {
-            background-color: #2c3e50;
-            border-color: #4a5f7a;
-            color: white;
-            font-size: 0.875rem;
-        }
-        
-        .form-select-sm:focus {
-            background-color: #2c3e50;
-            border-color: #3498db;
-            color: white;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-        }
-        
-        .context-menu {
-            position: fixed;
-            background: #2c3e50;
-            border: 1px solid #34495e;
-            border-radius: 4px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            min-width: 150px;
-            padding: 4px 0;
-        }
-        
-        .context-menu-item {
-            padding: 8px 16px;
-            color: #ecf0f1;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .context-menu-item:hover {
-            background: #34495e;
-        }
-        
-        .context-menu-item i {
-            width: 16px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -424,8 +25,51 @@
         <div class="builder-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h3><i class="fas fa-hammer"></i> Mudra Map Builder</h3>
-                <div class="d-flex align-items-center" id="toolbar-controls">
-                    
+                <div class="d-flex align-items-center">
+                    <div class="form-check form-switch me-4">
+                        <input class="form-check-input" type="checkbox" id="surroundingAreasToggle" onchange="renderMap()">
+                        <label class="form-check-label text-white" for="surroundingAreasToggle">
+                            <i class="fas fa-map-marked-alt"></i> Surrounding Areas
+                        </label>
+                    </div>
+                    <div class="form-check form-switch me-4">
+                        <input class="form-check-input" type="checkbox" id="autoRoomToggle" onchange="toggleAutoRoom()" disabled>
+                        <label class="form-check-label text-white" for="autoRoomToggle" id="autoRoomLabel" style="opacity: 0.5;">
+                            <i class="fas fa-walking"></i> Auto Room
+                        </label>
+                    </div>
+                    <div class="form-check form-switch me-4">
+                        <input class="form-check-input" type="checkbox" id="showCoordinatesToggle" onchange="toggleCoordinateLabels()">
+                        <label class="form-check-label text-white" for="showCoordinatesToggle">
+                            <i class="fas fa-hashtag"></i> Show X/Y
+                        </label>
+                    </div>
+                    <div class="form-check form-switch me-2">
+                        <input class="form-check-input" type="checkbox" id="gridlinesToggle" onchange="toggleGridlines()" checked>
+                        <label class="form-check-label text-white" for="gridlinesToggle">
+                            <i class="fas fa-border-all"></i> Gridlines
+                        </label>
+                    </div>
+                    <select class="form-select form-select-sm me-4" id="gridAlignmentSelect" onchange="updateGridAlignment()" style="width: 140px;">
+                        <option value="boxed">Boxed</option>
+                        <option value="centered">Centered</option>
+                    </select>
+                    <label class="me-2 text-white">Z-Level:</label>
+                    <select class="form-select me-3" id="zLevelFilter" onchange="renderMap()" style="width: 100px;">
+                        <option value="all">All</option>
+                    </select>
+                    <button class="btn btn-info btn-sm me-2" id="copySelectedBtn" onclick="copySelectedRooms()" style="display: none;">
+                        <i class="fas fa-copy"></i> Copy Selected
+                    </button>
+                    <button class="btn btn-warning btn-sm me-2" id="autoExitBtn" onclick="autoExitSelectedRooms()" disabled>
+                        <i class="fas fa-route"></i> Auto Exit
+                    </button>
+                    <button class="btn btn-secondary btn-sm me-2" id="undoBtn" onclick="undoLastAction()" disabled>
+                        <i class="fas fa-undo"></i> Undo
+                    </button>
+                    <button class="btn btn-success me-2" onclick="saveMap()">
+                        <i class="fas fa-save"></i> Save Map
+                    </button>
                 </div>
             </div>
         </div>
@@ -439,18 +83,323 @@
                 </select>
                 
                 <h5>Rooms</h5>
-                <select class="form-select" id="room-list" size="20" multiple>
+                <select class="form-select" id="room-list" size="20">
                     <!-- Room list will be populated by JavaScript -->
                 </select>
             </div>
             
-            <div class="modal fade" id="roomModal" tabindex="-1">
+            <!-- Canvas -->
+            <div class="canvas-container">
+                <div class="map-canvas" id="map-canvas">
+                    <!-- Room nodes and connections will be rendered here -->
+                </div>
             </div>
         </div>
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        
-        <script type="module" src="/static/map_builder/js/map_builder.js"></script>
+    </div>
+    
+    <!-- Room Editor Modal -->
+    <div class="modal fade" id="roomModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Room Editor</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="roomForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roomId" class="form-label">Room ID</label>
+                                    <input type="text" class="form-control" id="roomId" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomName" class="form-label">Room Name</label>
+                                    <input type="text" class="form-control" id="roomName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="areaSelect" class="form-label">Area</label>
+                                    <select class="form-select" id="areaSelect">
+                                        <option value="">Select Area</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roomX" class="form-label">X Position (East/West)</label>
+                                    <input type="number" class="form-control" id="roomX" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomY" class="form-label">Y Position (North/South)</label>
+                                    <input type="number" class="form-control" id="roomY" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomZ" class="form-label">Z Position (Up/Down)</label>
+                                    <input type="number" class="form-control" id="roomZ" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roomDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="roomDescription" rows="4"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Exits</label>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-primary" onclick="selectAllExits()">
+                                        <i class="fas fa-check-double"></i> Select All
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearAllExits()">
+                                        <i class="fas fa-times"></i> Clear All
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success" onclick="autoSelectExits()">
+                                        <i class="fas fa-magic"></i> Auto Detect
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitNorth" onchange="handleExitChange('north', this.checked)">
+                                        <label class="form-check-label" for="exitNorth">North</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitSouth" onchange="handleExitChange('south', this.checked)">
+                                        <label class="form-check-label" for="exitSouth">South</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitEast" onchange="handleExitChange('east', this.checked)">
+                                        <label class="form-check-label" for="exitEast">East</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitWest" onchange="handleExitChange('west', this.checked)">
+                                        <label class="form-check-label" for="exitWest">West</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitUp" onchange="handleExitChange('up', this.checked)">
+                                        <label class="form-check-label" for="exitUp">Up</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exitDown" onchange="handleExitChange('down', this.checked)">
+                                        <label class="form-check-label" for="exitDown">Down</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Doors</label>
+                                <button type="button" class="btn btn-sm btn-info" onclick="showDoorHelp()">
+                                    <i class="fas fa-question-circle"></i> Help
+                                </button>
+                            </div>
+                            <div class="row" id="doorsList">
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('north')">
+                                        <i class="fas fa-door-closed"></i> North Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('south')">
+                                        <i class="fas fa-door-closed"></i> South Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('east')">
+                                        <i class="fas fa-door-closed"></i> East Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('west')">
+                                        <i class="fas fa-door-closed"></i> West Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('up')">
+                                        <i class="fas fa-door-closed"></i> Up Door
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="editDoor('down')">
+                                        <i class="fas fa-door-closed"></i> Down Door
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roomLighting" class="form-label">Lighting</label>
+                            <select class="form-select" id="roomLighting">
+                                <option value="dark">Dark</option>
+                                <option value="dim">Dim</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="bright">Bright</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteRoom()" id="deleteBtn" style="display: none;">Delete</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRoom()">Save Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Door Editor Modal -->
+    <div class="modal fade" id="doorModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Door Editor - <span id="doorDirection"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="doorForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="doorId" class="form-label">Door ID</label>
+                                    <input type="text" class="form-control" id="doorId" required>
+                                    <small class="text-muted">Unique identifier for this door</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="doorName" class="form-label">Door Name</label>
+                                    <input type="text" class="form-control" id="doorName" required>
+                                    <small class="text-muted">e.g., "Heavy Oak Door"</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="doorDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="doorDescription" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="doorKeyId" class="form-label">Key Template ID</label>
+                                    <select class="form-select" id="doorKeyId">
+                                        <option value="">No Key Required</option>
+                                    </select>
+                                    <small class="text-muted">Required if door is locked</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="doorLockDifficulty" class="form-label">Lock Difficulty: <span id="lockDifficultyValue">0</span></label>
+                                    <input type="range" class="form-range" id="doorLockDifficulty" min="0" max="255" value="0" oninput="updateLockDifficultyLabel()">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">0 (Easy)</small>
+                                        <small class="text-muted">100 (Normal)</small>
+                                        <small class="text-muted">255 (Magical)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Door Flags</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagClosed">
+                                        <label class="form-check-label" for="flagClosed">
+                                            Closed
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door starts closed"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagLocked">
+                                        <label class="form-check-label" for="flagLocked">
+                                            Locked
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door is locked (requires key)"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagPickProof">
+                                        <label class="form-check-label" for="flagPickProof">
+                                            Pick Proof
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Cannot be picked"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagPassProof">
+                                        <label class="form-check-label" for="flagPassProof">
+                                            Pass Proof
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Cannot pass through (impassable)"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagSecret">
+                                        <label class="form-check-label" for="flagSecret">
+                                            Secret
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Hidden door (requires search)"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagHidden">
+                                        <label class="form-check-label" for="flagHidden">
+                                            Hidden
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Not visible in room description"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagNoLock">
+                                        <label class="form-check-label" for="flagNoLock">
+                                            No Lock
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door cannot be locked"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagNoKnock">
+                                        <label class="form-check-label" for="flagNoKnock">
+                                            No Knock
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Knock spell won't work"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flagNoClose">
+                                        <label class="form-check-label" for="flagNoClose">
+                                            No Close
+                                            <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="Door cannot be closed"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="deleteDoor()" id="deleteDoorBtn">Delete Door</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveDoor()">Save Door</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu" style="display: none;">
+        <div class="context-menu-item" onclick="changeSelectedRoomNames()">
+            <i class="fas fa-edit"></i> Change Name
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script type="module" src="{{ url_for('static', filename='js/map_builder.js') }}"></script>
 
             
 </body>
